@@ -16,9 +16,11 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
+file(GLOB TEST_SOURCES "tests/*.cpp")
+
 add_executable(
   test_module
-  tests/test_module.cpp
+  ${TEST_SOURCES}
 )
 target_link_libraries(
   test_module
