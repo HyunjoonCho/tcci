@@ -6,6 +6,8 @@ extern "C" {
 
 TEST(SingleTokenTest, IntegerToken) {
     tokenizer_handle tokenizer = tokenizer_init("123");
+    int length = get_current_token_length(tokenizer);
+    EXPECT_EQ(length, 3);
     token_t token = get_next_token(tokenizer);
     EXPECT_EQ(token.type, INTEGER);
     EXPECT_STREQ(token.value, "123");

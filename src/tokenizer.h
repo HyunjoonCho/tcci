@@ -18,4 +18,5 @@ typedef struct tokenizer tokenizer;
 typedef tokenizer *tokenizer_handle;
 
 tokenizer_handle tokenizer_init(const char *input);
+int get_current_token_length(tokenizer_handle tokenizer);
 token_t get_next_token(tokenizer_handle tokenizer);
