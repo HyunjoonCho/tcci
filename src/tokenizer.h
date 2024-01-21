@@ -4,6 +4,7 @@ typedef enum {
     ADD_OPERATOR,
     SUBTRACT_OPERATOR,
     UNKNOWN,
+    NULLTOKEN,
 } token_type;
 
 struct token_t {
