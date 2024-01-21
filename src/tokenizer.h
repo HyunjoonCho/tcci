@@ -16,5 +16,5 @@ typedef struct token_t token_t;
 typedef struct tokenizer tokenizer;
 typedef tokenizer *tokenizer_handle;
 
-tokenizer_handle tokenizer_init(char *input);
+tokenizer_handle tokenizer_init(const char *input);
 token_t get_next_token(tokenizer_handle tokenizer);
