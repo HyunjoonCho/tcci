@@ -16,6 +16,9 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
+file(GLOB LIB_SOURCES "src/*.c")
+add_library(common_lib ${LIB_SOURCES})
+
 file(GLOB TEST_SOURCES "tests/*.cpp")
 
 add_executable(
@@ -24,6 +27,7 @@ add_executable(
 )
 target_link_libraries(
   test_module
+  common_lib
   GTest::gtest_main
 )
 
