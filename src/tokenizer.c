@@ -17,12 +17,12 @@ tokenizer_handle tokenizer_init(const char *input) {
     return new_tokenizer;
 }
 
-token_type get_token_type_from(char *input) {
-    if (strchr(input, '+') != NULL) {
+token_type get_token_type_from(char *token) {
+    if (strchr(token, '+') != NULL) {
         return ADD_OPERATOR;
-    } else if (strchr(input, '-') != NULL) {
+    } else if (strchr(token, '-') != NULL) {
         return SUBTRACT_OPERATOR;
-    } else if (strchr(input, '.') != NULL) {
+    } else if (strchr(token, '.') != NULL) {
         return FLOAT;
     } else {
         return INTEGER;
