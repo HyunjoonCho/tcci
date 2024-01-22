@@ -3,6 +3,7 @@ typedef enum {
     FLOAT,
     ADD_OPERATOR,
     SUBTRACT_OPERATOR,
+    MULTIPLY_OPERATOR,
     UNKNOWN,
     NULLTOKEN,
 } token_type;

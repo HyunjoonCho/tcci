@@ -34,6 +34,14 @@ TEST(SingleTokenTest, SubtractOperatorToken) {
     EXPECT_STREQ(token.value, "-");
 }
 
+
+TEST(SingleTokenTest, MultiplyOperatorToken) {
+    tokenizer_handle tokenizer = tokenizer_init("*");
+    token_t token = get_next_token(tokenizer);
+    EXPECT_EQ(token.type, MULTIPLY_OPERATOR);
+    EXPECT_STREQ(token.value, "*");
+}
+
 TEST(MultiTokenTest, AddIntegerToInteger) {
     tokenizer_handle tokenizer = tokenizer_init("123 + 456");
     token_t token = get_next_token(tokenizer);
@@ -60,9 +68,25 @@ TEST(MultiTokenTest, SubtractIntegerFromFloat) {
     EXPECT_STREQ(token.value, "1");
 }
 
+
 TEST(MultiTokenTest, ReturnNullAfterLastToken) {
     tokenizer_handle tokenizer = tokenizer_init("1");
     token_t token = get_next_token(tokenizer);
     token = get_next_token(tokenizer);
     EXPECT_EQ(token.type, NULLTOKEN);
+}
+
+TEST(MultiTokenTest, MoreTokensToRead) {
+    tokenizer_handle tokenizer = tokenizer_init("1.23 - 5 * 4.2");
+    token_t token = get_next_token(tokenizer);
+    EXPECT_EQ(token.type, FLOAT);
+    EXPECT_STREQ(token.value, "1.23");
+    token = get_next_token(tokenizer);
+    token = get_next_token(tokenizer);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token.type, MULTIPLY_OPERATOR);
+    EXPECT_STREQ(token.value, "*");
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token.type, FLOAT);
+    EXPECT_STREQ(token.value, "4.2");
 }
