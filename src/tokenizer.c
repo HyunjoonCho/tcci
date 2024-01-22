@@ -22,6 +22,8 @@ token_type get_token_type_from(char *token) {
         return ADD_OPERATOR;
     } else if (strchr(token, '-') != NULL) {
         return SUBTRACT_OPERATOR;
+    } else if (strchr(token, '*') != NULL) {
+        return MULTIPLY_OPERATOR;
     } else if (strchr(token, '.') != NULL) {
         return FLOAT;
     } else {
