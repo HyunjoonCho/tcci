@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 extern "C" {
-    #include "../src/tokenizer.h"
+    #include "../src/commons.h"
 }
 
 TEST(SingleTokenTest, IntegerToken) {

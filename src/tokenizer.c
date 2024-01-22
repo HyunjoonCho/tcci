@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "tokenizer.h"
+#include "commons.h"
 
 struct tokenizer {
     int current;
