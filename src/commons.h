@@ -20,6 +20,7 @@ typedef enum {
 
 typedef enum {
     ADD,
+    SUBTRACT,
     MULTIPLY,
 } op_type;
 

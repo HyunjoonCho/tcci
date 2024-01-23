@@ -25,10 +25,10 @@ TEST(ParserTest, ParseSimpleExpression) {
 }
 
 TEST(ParserTest, ParseExpressionWithPriority) {
-    // Create an array of tokens representing an expression: "2 + 3 * 4"
+    // Create an array of tokens representing an expression: "2 - 3 * 4"
     token_t tokens[] = {
         {INTEGER, "2"},
-        {ADD_OPERATOR, "+"},
+        {SUBTRACT_OPERATOR, "-"},
         {INTEGER, "3"},
         {MULTIPLY_OPERATOR, "*"},
         {INTEGER, "4"},
@@ -39,7 +39,7 @@ TEST(ParserTest, ParseExpressionWithPriority) {
 
     // Assert the parsed expression
     EXPECT_EQ(expr.type, BINARY_OP);
-    EXPECT_EQ(expr.op, ADD);
+    EXPECT_EQ(expr.op, SUBTRACT);
     EXPECT_EQ(expr.left_operand->type, LITERAL);
     EXPECT_STREQ(expr.left_operand->value, "2");
 
