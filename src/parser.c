@@ -19,13 +19,47 @@ expr_t *turn_token_into_expr(token_t token) {
 }
 
 expr_t *parse_expression(token_t *tokens,int token_count) {
-    // stack
-    expr_t *root = turn_token_into_expr(tokens[1]);
-    expr_t *left = turn_token_into_expr(tokens[0]);
-    expr_t *right = turn_token_into_expr(tokens[2]);
-    
-    root->left_operand = left;
-    root->right_operand = right;
+    if (token_count == 1) return turn_token_into_expr(tokens[0]);
 
-    return root;
+    expr_t **expr_list = malloc(sizeof(token_count * sizeof(expr_t *)));
+
+    for (int i = 0; i < token_count; i++) {
+        expr_t *expr = turn_token_into_expr(tokens[i]);
+        expr_list[i] = expr;
+    }
+    
+    int current = 0;
+    for (int i = 0; i < token_count; i++) {
+        if (expr_list[i] == NULL) break;
+        if (expr_list[current]->type == BINARY_OP && expr_list[current]->op == MULTIPLY) { // higher priority operator
+            expr_list[current]->left_operand = expr_list[current - 1];
+            expr_list[current]->right_operand = expr_list[current + 1];
+
+            for (int j = current; j <= token_count - 1; j++) {
+                expr_list[j - 1] = expr_list[j];
+            }
+            expr_list[token_count - 1] = NULL;
+        } else {
+            current++;
+        }
+    }
+
+    current = 0;
+    for (int i = 0; i < token_count; i++) {
+        if (expr_list[i] == NULL) break;
+        if (expr_list[current]->type == BINARY_OP && 
+            (expr_list[current]->op == ADD || expr_list[current]->op == SUBTRACT)) {
+            expr_list[current]->left_operand = expr_list[current - 1];
+            expr_list[current]->right_operand = expr_list[current + 1];
+
+            for (int j = current; j <= token_count - 1; j++) {
+                expr_list[j - 1] = expr_list[j];
+            }
+            expr_list[token_count - 1] = NULL;
+        } else {
+            current++;
+        }
+    }
+
+    return expr_list[0];
 }
