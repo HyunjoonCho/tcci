@@ -1,3 +1,6 @@
+#ifndef COMMONS_H
+#define COMMONS_H
+
 typedef enum {
     INTEGER,
     FLOAT,
@@ -43,3 +46,5 @@ int get_current_token_length(tokenizer_handle tokenizer);
 token_t *get_next_token(tokenizer_handle tokenizer);
 
 expr_t *parse_expression(token_t **tokens,int token_count);
+
+#endif
