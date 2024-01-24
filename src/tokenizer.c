@@ -45,20 +45,18 @@ int get_current_token_length(tokenizer_handle tokenizer) {
     return token_length;
 }
 
-token_t get_next_token(tokenizer_handle tokenizer) {
+token_t *get_next_token(tokenizer_handle tokenizer) {
+    token_t *next_token = malloc(sizeof(token_t));
     if (tokenizer->current >= strlen(tokenizer->input)) {
-        token_t null_token;
-        null_token.type = NULLTOKEN;
-        return null_token;
+        next_token->type = NULLTOKEN;
+        return next_token;
     }
 
     int token_length = get_current_token_length(tokenizer);
-
-    token_t next_token;
     char *new_value = malloc(sizeof(token_length));
     strncpy(new_value,tokenizer->input + tokenizer->current, token_length);
-    next_token.type = get_token_type_from(new_value);
-    next_token.value = new_value;
+    next_token->type = get_token_type_from(new_value);
+    next_token->value = new_value;
 
     tokenizer->current += token_length + 1;
 
