@@ -42,4 +42,4 @@ tokenizer_handle tokenizer_init(const char *input);
 int get_current_token_length(tokenizer_handle tokenizer);
 token_t *get_next_token(tokenizer_handle tokenizer);
 
-expr_t *parse_expression(token_t *tokens,int token_count);
+expr_t *parse_expression(token_t **tokens,int token_count);

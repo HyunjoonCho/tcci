@@ -4,16 +4,27 @@ extern "C" {
     #include "../src/commons.h"
 }
 
+token_t *generate_test_token(token_type type, const char *value) {
+    token_t *new_token = (token_t *)malloc(sizeof(token_t));
+    new_token->type = type;
+
+    char *new_value = (char *)malloc(sizeof(*value));
+    strcpy(new_value, value);
+    new_token->value = new_value;
+
+    return new_token;
+}
+
 TEST(ParserTest, ParseSimpleExpression) {
     // Create an array of tokens representing a simple expression: "2 + 3"
-    token_t tokens[] = {
-        {INTEGER, "2"},
-        {ADD_OPERATOR, "+"},
-        {INTEGER, "3"},
+    token_t *tokens[] = {
+        generate_test_token(INTEGER, "2"),
+        generate_test_token(ADD_OPERATOR, "+"),
+        generate_test_token(INTEGER, "3"),
     };
 
     // Parse the array of tokens
-    expr_t *expr = parse_expression(tokens, sizeof(tokens) / sizeof(tokens[0]));
+    expr_t *expr = parse_expression(tokens, 3);
 
     // Assert the parsed expression
     EXPECT_EQ(expr->type, BINARY_OP);
@@ -26,16 +37,16 @@ TEST(ParserTest, ParseSimpleExpression) {
 
 TEST(ParserTest, ParseExpressionWithPriority) {
     // Create an array of tokens representing an expression: "2 - 3 * 4"
-    token_t tokens[] = {
-        {INTEGER, "2"},
-        {SUBTRACT_OPERATOR, "-"},
-        {INTEGER, "3"},
-        {MULTIPLY_OPERATOR, "*"},
-        {INTEGER, "4"},
+    token_t *tokens[] = {
+        generate_test_token(INTEGER, "2"),
+        generate_test_token(SUBTRACT_OPERATOR, "-"),
+        generate_test_token(INTEGER, "3"),
+        generate_test_token(MULTIPLY_OPERATOR, "*"),
+        generate_test_token(INTEGER, "4"),
     };
 
     // Parse the array of tokens
-    expr_t *expr = parse_expression(tokens, sizeof(tokens) / sizeof(tokens[0]));
+    expr_t *expr = parse_expression(tokens, 5);
 
     // Assert the parsed expression
     EXPECT_EQ(expr->type, BINARY_OP);
