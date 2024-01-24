@@ -22,7 +22,7 @@ expr_t *turn_token_into_expr(token_t *token) {
 expr_t *parse_expression(token_t **tokens, int token_count) {
     if (token_count == 1) return turn_token_into_expr(tokens[0]);
 
-    expr_t **expr_list = malloc(sizeof(token_count * sizeof(expr_t *)));
+    expr_t **expr_list = malloc(token_count * sizeof(expr_t *));
 
     for (int i = 0; i < token_count; i++) {
         expr_t *expr = turn_token_into_expr(tokens[i]);
