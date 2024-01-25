@@ -10,6 +10,11 @@ expr_t *turn_token_into_expr(token_t *token) {
         char *value = malloc(sizeof(*(token->value)));
         strcpy(value, token->value);
         expr->value = value;
+    } else if (token->type == FLOAT) {
+        expr->type = LITERAL;
+        char *value = malloc(sizeof(*(token->value)));
+        strcpy(value, token->value);
+        expr->value = value;      
     } else {
         expr->type = BINARY_OP;
         if (token->type == ADD_OPERATOR) expr->op = ADD;
