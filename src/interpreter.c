@@ -57,21 +57,6 @@ literal_t *evaluate_expr(expr_t *expr) {
     return zero_literal;
 }
 
-char *interpret_expr(expr_t *root) {
-    literal_t *result = evaluate_expr(root);
-
-    char *str;
-    if (result->is_int) {
-        printf("RESULT INT %d\n", result->value.int_value);
-        int size = snprintf(NULL, 0, "%d", result->value.int_value);
-        str = (char *)malloc(size + 1);
-        snprintf(str, size + 1, "%d", result->value.int_value);
-    } else {
-        printf("RESULT float %f\n", result->value.float_value);
-        int size = snprintf(NULL, 0, "%f", result->value.float_value);
-        str = (char *)malloc(size + 1);
-        snprintf(str, size + 1, "%f", result->value.float_value);
-    }
-
-    return str;
+literal_t *interpret_expr(expr_t *root) {
+    return evaluate_expr(root);
 }

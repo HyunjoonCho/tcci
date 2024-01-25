@@ -18,6 +18,6 @@ struct literal_t {
 
 typedef struct literal_t literal_t;
 
-char *interpret_expr(expr_t *root);
+literal_t *interpret_expr(expr_t *root);
 
 #endif
