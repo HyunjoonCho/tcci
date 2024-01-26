@@ -40,10 +40,12 @@ expr_t *parse_expression(token_t **tokens, int token_count) {
         if (expr_list[current]->type == BINARY_OP && expr_list[current]->op == MULTIPLY) { // higher priority operator
             expr_list[current]->left_operand = expr_list[current - 1];
             expr_list[current]->right_operand = expr_list[current + 1];
+            expr_list[current - 1] = expr_list[current];
 
-            for (int j = current; j <= token_count - 1; j++) {
-                expr_list[j - 1] = expr_list[j];
+            for (int j = current + 2; j < token_count; j++) {
+                expr_list[j - 2] = expr_list[j];
             }
+            expr_list[token_count - 2] = NULL;
             expr_list[token_count - 1] = NULL;
         } else {
             current++;
@@ -57,10 +59,12 @@ expr_t *parse_expression(token_t **tokens, int token_count) {
             (expr_list[current]->op == ADD || expr_list[current]->op == SUBTRACT)) {
             expr_list[current]->left_operand = expr_list[current - 1];
             expr_list[current]->right_operand = expr_list[current + 1];
+            expr_list[current - 1] = expr_list[current];
 
-            for (int j = current; j <= token_count - 1; j++) {
-                expr_list[j - 1] = expr_list[j];
+            for (int j = current + 2; j < token_count; j++) {
+                expr_list[j - 2] = expr_list[j];
             }
+            expr_list[token_count - 2] = NULL;
             expr_list[token_count - 1] = NULL;
         } else {
             current++;
