@@ -71,5 +71,19 @@ expr_t *parse_expression(token_t **tokens, int token_count) {
         }
     }
 
-    return expr_list[0];
+    expr_t *root = expr_list[0];
+    free(expr_list);
+
+    return root;
+}
+
+void free_expr(expr_t *expr) {
+    if (expr->type == BINARY_OP) {
+        free_expr(expr->left_operand);
+        free_expr(expr->right_operand);
+        free(expr);
+    } else {
+        free(expr->value);
+        free(expr);
+    }
 }

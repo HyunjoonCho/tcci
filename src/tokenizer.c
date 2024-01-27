@@ -62,3 +62,11 @@ token_t *get_next_token(tokenizer_handle tokenizer) {
 
     return next_token;
 }
+
+void free_tokens(token_t **tokens, int token_count) {
+    for (int i = 0; i < token_count; i++) {
+        token_t *token = tokens[i];
+        free(token->value);
+        free(token);
+    }
+}
