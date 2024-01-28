@@ -24,6 +24,12 @@ token_type get_token_type_from(char *token) {
         return SUBTRACT_OPERATOR;
     } else if (strchr(token, '*') != NULL) {
         return MULTIPLY_OPERATOR;
+    } else if (strchr(token, '/') != NULL) {
+        return DIVIDE_OPERATOR;
+    } else if (strchr(token, '(') != NULL) {
+        return OPEN_PAREN;
+    } else if (strchr(token, ')') != NULL) {
+        return CLOSE_PAREN;
     } else if (strchr(token, '.') != NULL) {
         return FLOAT;
     } else {
@@ -31,18 +37,44 @@ token_type get_token_type_from(char *token) {
     }
 }
 
+int is_predefined_char(char c) {
+    return strchr("+-*/()", c) != NULL;
+}
+
+int is_numeric(char c) {
+    return (c >= '0' && c <= '9');
+}
+
+void remove_leading_spaces(tokenizer_handle tokenizer) {
+    char *token = tokenizer->input + tokenizer->current;
+    size_t remaining_length = strlen(token);
+
+    for (int i = 0; i < remaining_length; i++) {
+        if (token[i] != ' ') {
+            tokenizer->current += i;
+            remaining_length -= i;
+            break;
+        }
+    }
+}
+
 int get_current_token_length(tokenizer_handle tokenizer) {
     char *token = tokenizer->input + tokenizer->current;
     size_t remaining_length = strlen(token);
 
-    int token_length = remaining_length;
-    for (int i = 1; i < remaining_length; i++) {
-        if (token[i] == ' ') {
-            token_length = i;
-            break;
+    if (is_predefined_char(token[0])) return 1;
+
+    int is_float_token = 0;
+    for (int i = 0; i < remaining_length; i++) {
+        if (!is_numeric(token[i])) {
+            if (token[i] == '.' && !is_float_token) { // no exception handling till now
+                is_float_token = 1;
+            } else {
+                return i;
+            }
         }
     }
-    return token_length;
+    return remaining_length;
 }
 
 token_t *get_next_token(tokenizer_handle tokenizer) {
@@ -52,13 +84,14 @@ token_t *get_next_token(tokenizer_handle tokenizer) {
         return next_token;
     }
 
+    remove_leading_spaces(tokenizer);
     int token_length = get_current_token_length(tokenizer);
     char *new_value = malloc(sizeof(token_length));
     strncpy(new_value,tokenizer->input + tokenizer->current, token_length);
     next_token->type = get_token_type_from(new_value);
     next_token->value = new_value;
 
-    tokenizer->current += token_length + 1;
+    tokenizer->current += token_length;
 
     return next_token;
 }
