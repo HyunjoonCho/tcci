@@ -87,6 +87,18 @@ TEST(MultiTokenTest, MoreTokensToRead) {
     check_token(token, FLOAT, "4.2");
 }
 
+TEST(MultiTokenTest, NoSpaceBetweenTokens) {
+    tokenizer_handle tokenizer = tokenizer_init("1.23-5*4.2");
+    token_t *token = get_next_token(tokenizer);
+    check_token(token, FLOAT, "1.23");
+    token = get_next_token(tokenizer);
+    token = get_next_token(tokenizer);
+    token = get_next_token(tokenizer);
+    check_token(token, MULTIPLY_OPERATOR, "*");
+    token = get_next_token(tokenizer);
+    check_token(token, FLOAT, "4.2");
+}
+
 TEST(MultiTokenTest, PriorityWithParentheses) {
     tokenizer_handle tokenizer = tokenizer_init("(5 + 3) * 2");
     token_t *token = get_next_token(tokenizer);
