@@ -52,7 +52,6 @@ void remove_leading_spaces(tokenizer_handle tokenizer) {
     for (int i = 0; i < remaining_length; i++) {
         if (token[i] != ' ') {
             tokenizer->current += i;
-            remaining_length -= i;
             break;
         }
     }
@@ -86,8 +85,9 @@ token_t *get_next_token(tokenizer_handle tokenizer) {
 
     remove_leading_spaces(tokenizer);
     int token_length = get_next_token_length(tokenizer);
-    char *new_value = malloc(sizeof(token_length));
-    strncpy(new_value,tokenizer->input + tokenizer->current, token_length);
+    char *new_value = malloc(token_length + 1);
+    strncpy(new_value, tokenizer->input + tokenizer->current, token_length);
+    new_value[token_length] = '\0';
     next_token->type = get_token_type_from(new_value);
     next_token->value = new_value;
 
