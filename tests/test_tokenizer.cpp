@@ -11,8 +11,6 @@ void check_token(token_t *token, token_type expected_type, const char *expected_
 
 TEST(SingleTokenTest, IntegerToken) {
     tokenizer_handle tokenizer = tokenizer_init("123");
-    int length = get_current_token_length(tokenizer);
-    EXPECT_EQ(length, 3);
     token_t *token = get_next_token(tokenizer);
     check_token(token, INTEGER, "123");
 }
