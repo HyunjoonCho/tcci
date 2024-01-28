@@ -27,8 +27,8 @@ TEST(InterpreterTest, AdditionInteger) {
                                          create_literal_expr(INTEGER, "3"));
 
     literal_t *result = interpret_expr(root);
-    ASSERT_TRUE(result->is_int);
-    ASSERT_EQ(result->value.int_value, 8);
+    EXPECT_TRUE(result->is_int);
+    EXPECT_EQ(result->value.int_value, 8);
     free(result);
 }
 
@@ -38,8 +38,8 @@ TEST(InterpreterTest, SubtractionFloat) {
                                          create_literal_expr(FLOAT, "3.5"));
 
     literal_t *result = interpret_expr(root);
-    ASSERT_FALSE(result->is_int);
-    ASSERT_FLOAT_EQ(result->value.float_value, 7.0);
+    EXPECT_FALSE(result->is_int);
+    EXPECT_FLOAT_EQ(result->value.float_value, 7.0);
     free(result);
 }
 
@@ -49,7 +49,7 @@ TEST(InterpreterTest, MultiplicationMixed) {
                                          create_literal_expr(FLOAT, "2.5"));
 
     literal_t *result = interpret_expr(root);
-    ASSERT_FALSE(result->is_int);
-    ASSERT_FLOAT_EQ(result->value.float_value, 10.0);
+    EXPECT_FALSE(result->is_int);
+    EXPECT_FLOAT_EQ(result->value.float_value, 10.0);
     free(result);
 }
