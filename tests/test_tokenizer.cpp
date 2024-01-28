@@ -41,6 +41,13 @@ TEST(SingleTokenTest, MultiplyOperatorToken) {
     check_token(token, MULTIPLY_OPERATOR, "*");
 }
 
+TEST(SingleTokenTest, DivideOperatorToken) {
+    tokenizer_handle tokenizer = tokenizer_init("/");
+    token_t *token = get_next_token(tokenizer);
+    check_token(token, DIVIDE_OPERATOR, "/");
+}
+
+
 TEST(MultiTokenTest, AddIntegerToInteger) {
     tokenizer_handle tokenizer = tokenizer_init("123 + 456");
     token_t *token = get_next_token(tokenizer);
@@ -78,4 +85,44 @@ TEST(MultiTokenTest, MoreTokensToRead) {
     check_token(token, MULTIPLY_OPERATOR, "*");
     token = get_next_token(tokenizer);
     check_token(token, FLOAT, "4.2");
+}
+
+TEST(MultiTokenTest, PriorityWithParentheses) {
+    tokenizer_handle tokenizer = tokenizer_init("(5 + 3) * 2");
+    token_t *token = get_next_token(tokenizer);
+    check_token(token, OPEN_PAREN, "(");
+    token = get_next_token(tokenizer);
+    check_token(token, INTEGER, "5");
+    token = get_next_token(tokenizer);
+    check_token(token, ADD_OPERATOR, "+");
+    token = get_next_token(tokenizer);
+    check_token(token, INTEGER, "3");
+    token = get_next_token(tokenizer);
+    check_token(token, CLOSE_PAREN, ")");
+    token = get_next_token(tokenizer);
+    check_token(token, MULTIPLY_OPERATOR, "*");
+    token = get_next_token(tokenizer);
+    check_token(token, INTEGER, "2");
+}
+
+TEST(MultiTokenTest, MoreThanThreeOperators) {
+    tokenizer_handle tokenizer = tokenizer_init("1 + 2 * 3 - 4 / 2");
+    token_t *token = get_next_token(tokenizer);
+    check_token(token, INTEGER, "1");
+    token = get_next_token(tokenizer);
+    check_token(token, ADD_OPERATOR, "+");
+    token = get_next_token(tokenizer);
+    check_token(token, INTEGER, "2");
+    token = get_next_token(tokenizer);
+    check_token(token, MULTIPLY_OPERATOR, "*");
+    token = get_next_token(tokenizer);
+    check_token(token, INTEGER, "3");
+    token = get_next_token(tokenizer);
+    check_token(token, SUBTRACT_OPERATOR, "-");
+    token = get_next_token(tokenizer);
+    check_token(token, INTEGER, "4");
+    token = get_next_token(tokenizer);
+    check_token(token, DIVIDE_OPERATOR, "/");
+    token = get_next_token(tokenizer);
+    check_token(token, INTEGER, "2");
 }

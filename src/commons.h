@@ -7,7 +7,9 @@ typedef enum {
     ADD_OPERATOR,
     SUBTRACT_OPERATOR,
     MULTIPLY_OPERATOR,
-    UNKNOWN,
+    DIVIDE_OPERATOR,
+    OPEN_PAREN,
+    CLOSE_PAREN,
     NULLTOKEN,
 } token_type;
 
