@@ -18,9 +18,10 @@ int main() {
             printf("Error or end of input.\n");
             break;
         }
-        size_t len = strcspn(user_input, "\n") + 1;
+        size_t len = strcspn(user_input, "\n");
         char *input = malloc(len + 1);
         strncpy(input, user_input, len);
+        input[len] = '\0';
 
         if (strncmp(input, "exit", 4) == 0) {
             printf("Exiting...\n");
