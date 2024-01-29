@@ -11,7 +11,7 @@ struct tokenizer {
 tokenizer_handle tokenizer_init(const char *input) {
     tokenizer_handle new_tokenizer = malloc(sizeof(tokenizer));
     new_tokenizer->current = 0;
-    char *new_input = malloc(sizeof(*input));
+    char *new_input = malloc(strlen(input) + 1);
     strcpy(new_input, input);
     new_tokenizer->input = new_input;
     return new_tokenizer;
