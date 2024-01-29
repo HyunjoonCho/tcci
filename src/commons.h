@@ -20,7 +20,8 @@ struct token_t {
 
 typedef enum {
     BINARY_OP,
-    LITERAL,
+    INTEGER_EXPR,
+    FLOAT_EXPR,
 } expr_type;
 
 typedef enum {
@@ -29,12 +30,19 @@ typedef enum {
     MULTIPLY,
 } op_type;
 
+union literal_value {
+    int int_value;
+    float float_value;
+};
+
+typedef union literal_value literal_value;
+
 struct expr_t {
     expr_type type;
     op_type op;
+    literal_value value;
     struct expr_t *left_operand;
     struct expr_t *right_operand;
-    char *value;
 };
 
 typedef struct token_t token_t;

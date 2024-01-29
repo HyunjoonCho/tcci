@@ -6,15 +6,11 @@
 expr_t *turn_token_into_expr(token_t *token) {
     expr_t *expr = malloc(sizeof(expr_t));
     if (token->type == INTEGER) {
-        expr->type = LITERAL;
-        char *value = malloc(sizeof(*(token->value)));
-        strcpy(value, token->value);
-        expr->value = value;
+        expr->type = INTEGER_EXPR;
+        expr->value.int_value = atoi(token->value);
     } else if (token->type == FLOAT) {
-        expr->type = LITERAL;
-        char *value = malloc(sizeof(*(token->value)));
-        strcpy(value, token->value);
-        expr->value = value;      
+        expr->type = FLOAT_EXPR;
+        expr->value.float_value = atof(token->value);      
     } else {
         expr->type = BINARY_OP;
         if (token->type == ADD_OPERATOR) expr->op = ADD;
@@ -87,7 +83,6 @@ void free_expr(expr_t *expr) {
         free_expr(expr->right_operand);
         free(expr);
     } else {
-        free(expr->value);
         free(expr);
     }
 }

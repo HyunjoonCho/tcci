@@ -5,7 +5,7 @@
 #include "interpreter.h"
 
 void print_literal(literal_t *literal) {
-    if (literal->is_int) printf("%d\n", literal->value.int_value);
+    if (literal->type == INTEGER_LITERAL) printf("%d\n", literal->value.int_value);
     else printf("%f\n", literal->value.float_value);
 }
 

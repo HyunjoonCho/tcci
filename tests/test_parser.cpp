@@ -29,10 +29,10 @@ TEST(ParserTest, ParseSimpleIntegerExpression) {
     // Assert the parsed expression
     EXPECT_EQ(expr->type, BINARY_OP);
     EXPECT_EQ(expr->op, ADD);
-    EXPECT_EQ(expr->left_operand->type, LITERAL);
-    EXPECT_STREQ(expr->left_operand->value, "2");
-    EXPECT_EQ(expr->right_operand->type, LITERAL);
-    EXPECT_STREQ(expr->right_operand->value, "3");
+    EXPECT_EQ(expr->left_operand->type, INTEGER_EXPR);
+    EXPECT_EQ(expr->left_operand->value.int_value, 2);
+    EXPECT_EQ(expr->right_operand->type, INTEGER_EXPR);
+    EXPECT_EQ(expr->right_operand->value.int_value, 3);
 }
 
 TEST(ParserTest, ParseSimpleFloatExpression) {
@@ -49,10 +49,10 @@ TEST(ParserTest, ParseSimpleFloatExpression) {
     // Assert the parsed expression
     EXPECT_EQ(expr->type, BINARY_OP);
     EXPECT_EQ(expr->op, ADD);
-    EXPECT_EQ(expr->left_operand->type, LITERAL);
-    EXPECT_STREQ(expr->left_operand->value, "2.7");
-    EXPECT_EQ(expr->right_operand->type, LITERAL);
-    EXPECT_STREQ(expr->right_operand->value, "3.2");
+    EXPECT_EQ(expr->left_operand->type, FLOAT_EXPR);
+    EXPECT_FLOAT_EQ(expr->left_operand->value.float_value, 2.7);
+    EXPECT_EQ(expr->right_operand->type, FLOAT_EXPR);
+    EXPECT_FLOAT_EQ(expr->right_operand->value.float_value, 3.2);
 }
 
 TEST(ParserTest, ParseIntegerExpressionWithPriority) {
@@ -71,16 +71,16 @@ TEST(ParserTest, ParseIntegerExpressionWithPriority) {
     // Assert the parsed expression
     EXPECT_EQ(expr->type, BINARY_OP);
     EXPECT_EQ(expr->op, SUBTRACT);
-    EXPECT_EQ(expr->left_operand->type, LITERAL);
-    EXPECT_STREQ(expr->left_operand->value, "2");
+    EXPECT_EQ(expr->left_operand->type, INTEGER_EXPR);
+    EXPECT_EQ(expr->left_operand->value.int_value, 2);
 
     // Right operand should be another binary op
     EXPECT_EQ(expr->right_operand->type, BINARY_OP);
     EXPECT_EQ(expr->right_operand->op, MULTIPLY);
-    EXPECT_EQ(expr->right_operand->left_operand->type, LITERAL);
-    EXPECT_STREQ(expr->right_operand->left_operand->value, "3");
-    EXPECT_EQ(expr->right_operand->right_operand->type, LITERAL);
-    EXPECT_STREQ(expr->right_operand->right_operand->value, "4");
+    EXPECT_EQ(expr->right_operand->left_operand->type, INTEGER_EXPR);
+    EXPECT_EQ(expr->right_operand->left_operand->value.int_value, 3);
+    EXPECT_EQ(expr->right_operand->right_operand->type, INTEGER_EXPR);
+    EXPECT_EQ(expr->right_operand->right_operand->value.int_value, 4);
 }
 
 TEST(ParserTest, ParseMixedExpressionWithPriority) {
@@ -102,11 +102,11 @@ TEST(ParserTest, ParseMixedExpressionWithPriority) {
 
     EXPECT_EQ(expr->left_operand->type, BINARY_OP);
     EXPECT_EQ(expr->left_operand->op, MULTIPLY);
-    EXPECT_EQ(expr->left_operand->left_operand->type, LITERAL);
-    EXPECT_STREQ(expr->left_operand->left_operand->value, "2");
-    EXPECT_EQ(expr->left_operand->right_operand->type, LITERAL);
-    EXPECT_STREQ(expr->left_operand->right_operand->value, "7.9");
+    EXPECT_EQ(expr->left_operand->left_operand->type, INTEGER_EXPR);
+    EXPECT_EQ(expr->left_operand->left_operand->value.int_value, 2);
+    EXPECT_EQ(expr->left_operand->right_operand->type, FLOAT_EXPR);
+    EXPECT_FLOAT_EQ(expr->left_operand->right_operand->value.float_value, 7.9);
 
-    EXPECT_EQ(expr->right_operand->type, LITERAL);
-    EXPECT_STREQ(expr->right_operand->value, "9");
+    EXPECT_EQ(expr->right_operand->type, INTEGER_EXPR);
+    EXPECT_EQ(expr->right_operand->value.int_value, 9);
 }

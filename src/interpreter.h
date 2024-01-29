@@ -4,15 +4,14 @@
 #include <stdbool.h>
 #include "commons.h"
 
-union literal_value {
-    int int_value;
-    float float_value;
-};
 
-typedef union literal_value literal_value;
+typedef enum {
+    INTEGER_LITERAL,
+    FLOAT_LITERAL,
+} literal_type;
 
 struct literal_t {
-    bool is_int;
+    literal_type type;
     literal_value value;
 };
 
