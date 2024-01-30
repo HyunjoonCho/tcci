@@ -42,6 +42,7 @@ struct expr_t {
     expr_type type;
     op_type op;
     literal_value value;
+    int op_priority;
     struct expr_t *left_operand;
     struct expr_t *right_operand;
 };

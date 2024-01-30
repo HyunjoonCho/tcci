@@ -23,10 +23,8 @@ TEST(ParserTest, ParseSimpleIntegerExpression) {
         generate_test_token(INTEGER, "3"),
     };
 
-    // Parse the array of tokens
     expr_t *expr = parse_expression(tokens, 3);
 
-    // Assert the parsed expression
     EXPECT_EQ(expr->type, BINARY_OP);
     EXPECT_EQ(expr->op, ADD);
     EXPECT_EQ(expr->left_operand->type, INTEGER_EXPR);
@@ -43,10 +41,8 @@ TEST(ParserTest, ParseSimpleFloatExpression) {
         generate_test_token(FLOAT, "3.2"),
     };
 
-    // Parse the array of tokens
     expr_t *expr = parse_expression(tokens, 3);
 
-    // Assert the parsed expression
     EXPECT_EQ(expr->type, BINARY_OP);
     EXPECT_EQ(expr->op, ADD);
     EXPECT_EQ(expr->left_operand->type, FLOAT_EXPR);
@@ -65,16 +61,13 @@ TEST(ParserTest, ParseIntegerExpressionWithPriority) {
         generate_test_token(INTEGER, "4"),
     };
 
-    // Parse the array of tokens
     expr_t *expr = parse_expression(tokens, 5);
 
-    // Assert the parsed expression
     EXPECT_EQ(expr->type, BINARY_OP);
     EXPECT_EQ(expr->op, SUBTRACT);
     EXPECT_EQ(expr->left_operand->type, INTEGER_EXPR);
     EXPECT_EQ(expr->left_operand->value.int_value, 2);
 
-    // Right operand should be another binary op
     EXPECT_EQ(expr->right_operand->type, BINARY_OP);
     EXPECT_EQ(expr->right_operand->op, MULTIPLY);
     EXPECT_EQ(expr->right_operand->left_operand->type, INTEGER_EXPR);
@@ -84,7 +77,7 @@ TEST(ParserTest, ParseIntegerExpressionWithPriority) {
 }
 
 TEST(ParserTest, ParseMixedExpressionWithPriority) {
-    // Create an array of tokens representing an expression: "2 - 3 * 4"
+    // Create an array of tokens representing an expression: "2 * 7.9 + 9"
     token_t *tokens[] = {
         generate_test_token(INTEGER, "2"),
         generate_test_token(MULTIPLY_OPERATOR, "*"),
@@ -93,10 +86,8 @@ TEST(ParserTest, ParseMixedExpressionWithPriority) {
         generate_test_token(INTEGER, "9"),
     };
 
-    // Parse the array of tokens
     expr_t *expr = parse_expression(tokens, 5);
 
-    // Assert the parsed expression
     EXPECT_EQ(expr->type, BINARY_OP);
     EXPECT_EQ(expr->op, ADD);
 
@@ -143,10 +134,8 @@ TEST(ParserTest, ParseMixedExpressionWithParentheses) {
         generate_test_token(INTEGER, "4"),
     };
 
-    // Parse the array of tokens
     expr_t *expr = parse_expression(tokens, 7);
 
-    // Assert the parsed expression
     EXPECT_EQ(expr->type, BINARY_OP);
     EXPECT_EQ(expr->op, MULTIPLY);
 
@@ -175,10 +164,10 @@ TEST(ParserTest, ParseMoreThanThreeOperators) {
         generate_test_token(INTEGER, "2"),
     };
 
-    // Parse the array of tokens
     expr_t *expr = parse_expression(tokens, 9);
 
-    // Assert the parsed expression
+    // TODO: dependency to op prioritizing algorithm > better correctness check needed
+    // for this case, ADD may come first
     EXPECT_EQ(expr->type, BINARY_OP);
     EXPECT_EQ(expr->op, SUBTRACT);
 
