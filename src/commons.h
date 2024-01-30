@@ -28,6 +28,7 @@ typedef enum {
     ADD,
     SUBTRACT,
     MULTIPLY,
+    DIVIDE,
 } op_type;
 
 union literal_value {

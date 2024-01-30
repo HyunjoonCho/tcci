@@ -110,3 +110,93 @@ TEST(ParserTest, ParseMixedExpressionWithPriority) {
     EXPECT_EQ(expr->right_operand->type, INTEGER_EXPR);
     EXPECT_EQ(expr->right_operand->value.int_value, 9);
 }
+
+TEST(ParserTest, ParseIntegerExpressionWithDivision) {
+    // Create an array of tokens representing an expression: "8 / 2"
+    token_t *tokens[] = {
+        generate_test_token(INTEGER, "8"),
+        generate_test_token(DIVIDE_OPERATOR, "/"),
+        generate_test_token(INTEGER, "2"),
+    };
+
+    // Parse the array of tokens
+    expr_t *expr = parse_expression(tokens, 3);
+
+    // Assert the parsed expression
+    EXPECT_EQ(expr->type, BINARY_OP);
+    EXPECT_EQ(expr->op, DIVIDE);
+    EXPECT_EQ(expr->left_operand->type, INTEGER_EXPR);
+    EXPECT_EQ(expr->left_operand->value.int_value, 8);
+    EXPECT_EQ(expr->right_operand->type, INTEGER_EXPR);
+    EXPECT_EQ(expr->right_operand->value.int_value, 2);
+}
+
+TEST(ParserTest, ParseMixedExpressionWithParentheses) {
+    // Create an array of tokens representing an expression: "(2 + 3) * 4"
+    token_t *tokens[] = {
+        generate_test_token(OPEN_PAREN, "("),
+        generate_test_token(INTEGER, "2"),
+        generate_test_token(ADD_OPERATOR, "+"),
+        generate_test_token(INTEGER, "3"),
+        generate_test_token(CLOSE_PAREN, ")"),
+        generate_test_token(MULTIPLY_OPERATOR, "*"),
+        generate_test_token(INTEGER, "4"),
+    };
+
+    // Parse the array of tokens
+    expr_t *expr = parse_expression(tokens, 7);
+
+    // Assert the parsed expression
+    EXPECT_EQ(expr->type, BINARY_OP);
+    EXPECT_EQ(expr->op, MULTIPLY);
+
+    EXPECT_EQ(expr->left_operand->type, BINARY_OP);
+    EXPECT_EQ(expr->left_operand->op, ADD);
+    EXPECT_EQ(expr->left_operand->left_operand->type, INTEGER_EXPR);
+    EXPECT_EQ(expr->left_operand->left_operand->value.int_value, 2);
+    EXPECT_EQ(expr->left_operand->right_operand->type, INTEGER_EXPR);
+    EXPECT_EQ(expr->left_operand->right_operand->value.int_value, 3);
+
+    EXPECT_EQ(expr->right_operand->type, INTEGER_EXPR);
+    EXPECT_EQ(expr->right_operand->value.int_value, 4);
+}
+
+TEST(ParserTest, ParseMoreThanThreeOperators) {
+    // Create an array of tokens representing an expression: "1 + 2 * 3 - 4 / 2"
+    token_t *tokens[] = {
+        generate_test_token(INTEGER, "1"),
+        generate_test_token(ADD_OPERATOR, "+"),
+        generate_test_token(INTEGER, "2"),
+        generate_test_token(MULTIPLY_OPERATOR, "*"),
+        generate_test_token(INTEGER, "3"),
+        generate_test_token(SUBTRACT_OPERATOR, "-"),
+        generate_test_token(INTEGER, "4"),
+        generate_test_token(DIVIDE_OPERATOR, "/"),
+        generate_test_token(INTEGER, "2"),
+    };
+
+    // Parse the array of tokens
+    expr_t *expr = parse_expression(tokens, 9);
+
+    // Assert the parsed expression
+    EXPECT_EQ(expr->type, BINARY_OP);
+    EXPECT_EQ(expr->op, SUBTRACT);
+
+    EXPECT_EQ(expr->left_operand->type, BINARY_OP);
+    EXPECT_EQ(expr->left_operand->op, ADD);
+    EXPECT_EQ(expr->left_operand->left_operand->type, INTEGER_EXPR);
+    EXPECT_EQ(expr->left_operand->left_operand->value.int_value, 1);
+    EXPECT_EQ(expr->left_operand->right_operand->type, BINARY_OP);
+    EXPECT_EQ(expr->left_operand->right_operand->op, MULTIPLY);
+    EXPECT_EQ(expr->left_operand->right_operand->left_operand->type, INTEGER_EXPR);
+    EXPECT_EQ(expr->left_operand->right_operand->left_operand->value.int_value, 2);
+    EXPECT_EQ(expr->left_operand->right_operand->right_operand->type, INTEGER_EXPR);
+    EXPECT_EQ(expr->left_operand->right_operand->right_operand->value.int_value, 3);
+
+    EXPECT_EQ(expr->right_operand->type, BINARY_OP);
+    EXPECT_EQ(expr->right_operand->op, DIVIDE);
+    EXPECT_EQ(expr->right_operand->left_operand->type, INTEGER_EXPR);
+    EXPECT_EQ(expr->right_operand->left_operand->value.int_value, 4);
+    EXPECT_EQ(expr->right_operand->right_operand->type, INTEGER_EXPR);
+    EXPECT_EQ(expr->right_operand->right_operand->value.int_value, 2);
+}
