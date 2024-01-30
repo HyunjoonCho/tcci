@@ -16,6 +16,7 @@ expr_t *turn_token_into_expr(token_t *token) {
         if (token->type == ADD_OPERATOR) expr->op = ADD;
         else if (token->type == SUBTRACT_OPERATOR) expr->op = SUBTRACT;
         else if (token->type == MULTIPLY_OPERATOR) expr->op = MULTIPLY;
+        else if (token->type == DIVIDE_OPERATOR) expr->op = DIVIDE;
     }
     return expr;
 }
@@ -24,7 +25,8 @@ expr_t *assemble_tree(expr_t **expr_list, int token_count) {
     int current = 0;
     for (int i = 0; i < token_count; i++) {
         if (expr_list[i] == NULL) break;
-        if (expr_list[current]->type == BINARY_OP && expr_list[current]->op == MULTIPLY) { // higher priority operator
+        if (expr_list[current]->type == BINARY_OP && 
+            (expr_list[current]->op == MULTIPLY || expr_list[current]->op == DIVIDE)) {
             expr_list[current]->left_operand = expr_list[current - 1];
             expr_list[current]->right_operand = expr_list[current + 1];
             expr_list[current - 1] = expr_list[current];
