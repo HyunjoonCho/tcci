@@ -60,3 +60,43 @@ TEST(InterpreterTest, MultiplicationMixed) {
     EXPECT_FLOAT_EQ(result->value.float_value, 10.0);
     free(result);
 }
+
+TEST(InterpreterTest, DivisionFloat) {
+    expr_t *root = create_binary_op_expr(DIVIDE,
+                                         create_literal_expr(15.0f),
+                                         create_literal_expr(3.0f));
+
+    literal_t *result = interpret_expr(root);
+    EXPECT_EQ(result->type, FLOAT_LITERAL);
+    EXPECT_FLOAT_EQ(result->value.float_value, 5.0);
+    free(result);
+}
+
+TEST(InterpreterTest, DivisionInteger) {
+    expr_t *root = create_binary_op_expr(DIVIDE,
+                                         create_literal_expr(4),
+                                         create_literal_expr(8));
+
+    literal_t *result = interpret_expr(root);
+    EXPECT_EQ(result->type, FLOAT_LITERAL);
+    EXPECT_FLOAT_EQ(result->value.float_value, 0.5);
+    free(result);
+}
+
+TEST(InterpreterTest, MoreThanThreeOperators) {
+    // Expression: 2 * 3 + 5 / 2 - 1
+    expr_t *root = create_binary_op_expr(SUBTRACT,
+                                         create_binary_op_expr(ADD,
+                                                              create_binary_op_expr(MULTIPLY,
+                                                                                   create_literal_expr(2),
+                                                                                   create_literal_expr(3)),
+                                                              create_binary_op_expr(DIVIDE,
+                                                                                   create_literal_expr(5),
+                                                                                   create_literal_expr(2))),
+                                         create_literal_expr(1));
+
+    literal_t *result = interpret_expr(root);
+    EXPECT_EQ(result->type, FLOAT_LITERAL);
+    EXPECT_EQ(result->value.float_value, 7.5);
+    free(result);
+}
