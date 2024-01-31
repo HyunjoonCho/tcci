@@ -7,7 +7,7 @@ literal_t *evaluate_expr(expr_t *expr) {
     if (expr->type == BINARY_OP) {
         literal_t *l = evaluate_expr(expr->left_operand);
         literal_t *r = evaluate_expr(expr->right_operand);
-        if (l->type == INTEGER_LITERAL && r->type == INTEGER_LITERAL) {
+        if (l->type == INTEGER_LITERAL && r->type == INTEGER_LITERAL && expr->op != DIVIDE) {
             if (expr->op == ADD) l->value.int_value += r->value.int_value;
             else if (expr->op == SUBTRACT) l->value.int_value -= r->value.int_value;
             else if (expr->op == MULTIPLY) l->value.int_value *= r->value.int_value;
@@ -21,6 +21,7 @@ literal_t *evaluate_expr(expr_t *expr) {
             if (expr->op == ADD) l->value.float_value += r->value.float_value;
             else if (expr->op == SUBTRACT) l->value.float_value -= r->value.float_value;
             else if (expr->op == MULTIPLY) l->value.float_value *= r->value.float_value;
+            else if (expr->op == DIVIDE) l->value.float_value /= r->value.float_value;
         } 
         free(r);
         return l;
