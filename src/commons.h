@@ -10,6 +10,11 @@ typedef enum {
     DIVIDE_OPERATOR,
     OPEN_PAREN,
     CLOSE_PAREN,
+    INTEGER_TYPE,
+    FLOAT_TYPE,
+    IDENTIFIER,
+    ASSIGN,
+    SEMICOLON,
     NULLTOKEN,
 } token_type;
 

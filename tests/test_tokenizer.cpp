@@ -136,3 +136,77 @@ TEST(MultiTokenTest, MoreThanThreeOperators) {
     token = get_next_token(tokenizer);
     check_token(token, INTEGER, "2");
 }
+
+TEST(VariableTest, IntegerDeclaration) {
+    tokenizer_handle tokenizer = tokenizer_init("int x;");
+    token_t *token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, INTEGER_TYPE);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, IDENTIFIER);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, SEMICOLON);
+}
+
+TEST(VariableTest, FloatInitialization) {
+    tokenizer_handle tokenizer = tokenizer_init("float y = 3.14;");
+    token_t *token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, FLOAT_TYPE);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, IDENTIFIER);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, ASSIGN);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, FLOAT);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, SEMICOLON);
+}
+
+TEST(VariableTest, VariableDeclarationAndInitialization) {
+    tokenizer_handle tokenizer = tokenizer_init("int a = 5;");
+    token_t *token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, INTEGER_TYPE);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, IDENTIFIER);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, ASSIGN);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, INTEGER);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, SEMICOLON);
+}
+
+TEST(VariableTest, MultipleDeclarations) {
+    tokenizer_handle tokenizer = tokenizer_init("int x; float y = 3.14; int z = 42;");
+    
+    // Test for the first declaration
+    token_t *token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, INTEGER_TYPE);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, IDENTIFIER);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, SEMICOLON);
+
+    // Test for the second declaration
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, FLOAT_TYPE);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, IDENTIFIER);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, ASSIGN);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, FLOAT);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, SEMICOLON);
+
+    // Test for the third declaration
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, INTEGER_TYPE);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, IDENTIFIER);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, ASSIGN);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, INTEGER);
+    token = get_next_token(tokenizer);
+    EXPECT_EQ(token->type, SEMICOLON);
+}
