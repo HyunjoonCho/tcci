@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 #include "commons.h"
 
 struct tokenizer {
@@ -17,32 +18,58 @@ tokenizer_handle tokenizer_init(const char *input) {
     return new_tokenizer;
 }
 
-token_type get_token_type_from(char *token) {
-    if (strchr(token, '+') != NULL) {
-        return ADD_OPERATOR;
-    } else if (strchr(token, '-') != NULL) {
-        return SUBTRACT_OPERATOR;
-    } else if (strchr(token, '*') != NULL) {
-        return MULTIPLY_OPERATOR;
-    } else if (strchr(token, '/') != NULL) {
-        return DIVIDE_OPERATOR;
-    } else if (strchr(token, '(') != NULL) {
-        return OPEN_PAREN;
-    } else if (strchr(token, ')') != NULL) {
-        return CLOSE_PAREN;
-    } else if (strchr(token, '.') != NULL) {
-        return FLOAT;
-    } else {
-        return INTEGER;
-    }
+bool is_predefined_char(char c) {
+    return strchr("+-*/();=", c) != NULL;
 }
 
-int is_predefined_char(char c) {
-    return strchr("+-*/()", c) != NULL;
-}
-
-int is_numeric(char c) {
+bool is_numeric(char c) {
     return (c >= '0' && c <= '9');
+}
+
+bool is_alphabet(char c) {
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+}
+
+short is_number_token(char *token, int token_length) {
+    bool is_float = false;
+    for (int i = 0; i < token_length; i++) {
+        if (!is_numeric(token[i])) {
+            if (!is_float && token[i] == '.') is_float = true;
+            else return -1; 
+        } 
+    }
+    return is_float ? 1 : 0;
+}
+
+token_type get_token_type_from(char *token, int token_length) {
+    if (token_length == 1 && strchr(token, '+') != NULL) {
+        return ADD_OPERATOR;
+    } else if (token_length == 1 && strchr(token, '-') != NULL) {
+        return SUBTRACT_OPERATOR;
+    } else if (token_length == 1 && strchr(token, '*') != NULL) {
+        return MULTIPLY_OPERATOR;
+    } else if (token_length == 1 && strchr(token, '/') != NULL) {
+        return DIVIDE_OPERATOR;
+    } else if (token_length == 1 && strchr(token, '(') != NULL) {
+        return OPEN_PAREN;
+    } else if (token_length == 1 && strchr(token, ')') != NULL) {
+        return CLOSE_PAREN;
+    } else if (token_length == 1 && strchr(token, '.') != NULL) {
+        return FLOAT;
+    } else if (token_length == 1 && strchr(token, ';') != NULL) {
+        return SEMICOLON;
+    } else if (token_length == 1 && strchr(token, '=') != NULL) {
+        return ASSIGN;
+    } else if (strcmp(token, "int") == 0){
+        return INTEGER_TYPE;
+    } else if (strcmp(token, "float") == 0) {
+        return FLOAT_TYPE;
+    } else {
+        short number_token_type = is_number_token(token, token_length);
+        if (number_token_type == 0) return INTEGER;
+        else if (number_token_type == 1) return FLOAT;
+        else return IDENTIFIER;
+    }
 }
 
 void remove_leading_spaces(tokenizer_handle tokenizer) {
@@ -63,14 +90,14 @@ int get_next_token_length(tokenizer_handle tokenizer) {
 
     if (is_predefined_char(token[0])) return 1;
 
-    int is_float_token = 0;
+    short token_type = 0;
+    if (is_numeric(token[0])) token_type = 0;
+    if (is_alphabet(token[0])) token_type = 1;
+
     for (int i = 0; i < remaining_length; i++) {
-        if (!is_numeric(token[i])) {
-            if (token[i] == '.' && !is_float_token) { // no exception handling till now
-                is_float_token = 1;
-            } else {
-                return i;
-            }
+        if ((token_type == 0 && (!is_numeric(token[i]) && token[i] != '.')) || 
+            (token_type == 1 && (!is_alphabet(token[i]) && token[i] != '_'))) {
+            return i;
         }
     }
     return remaining_length;
@@ -88,7 +115,7 @@ token_t *get_next_token(tokenizer_handle tokenizer) {
     char *new_value = malloc(token_length + 1);
     strncpy(new_value, tokenizer->input + tokenizer->current, token_length);
     new_value[token_length] = '\0';
-    next_token->type = get_token_type_from(new_value);
+    next_token->type = get_token_type_from(new_value, token_length);
     next_token->value = new_value;
 
     tokenizer->current += token_length;
