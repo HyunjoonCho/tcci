@@ -7,10 +7,7 @@ extern "C" {
 token_t *generate_test_token(token_type type, const char *value) {
     token_t *new_token = (token_t *)malloc(sizeof(token_t));
     new_token->type = type;
-
-    char *new_value = (char *)malloc(sizeof(*value));
-    strcpy(new_value, value);
-    new_token->value = new_value;
+    new_token->value = strdup(value);
 
     return new_token;
 }
