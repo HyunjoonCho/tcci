@@ -12,6 +12,24 @@ token_t *generate_test_token(token_type type, const char *value) {
     return new_token;
 }
 
+
+void check_op_expr(expr_t *op_expr, op_type op) {
+    EXPECT_EQ(op_expr->type, BINARY_OP);
+    EXPECT_EQ(op_expr->subtype.op_t, op);
+}
+
+void check_constant_expr(expr_t *const_expr, int value) {
+    EXPECT_EQ(const_expr->type, CONSTANT);
+    EXPECT_EQ(const_expr->subtype.const_t, INTEGER_CONST);
+    EXPECT_EQ(const_expr->value.int_value, value);
+}
+
+void check_constant_expr(expr_t *const_expr, float value) {
+    EXPECT_EQ(const_expr->type, CONSTANT);
+    EXPECT_EQ(const_expr->subtype.const_t, FLOAT_CONST);
+    EXPECT_FLOAT_EQ(const_expr->value.float_value, value);    
+}
+
 TEST(ParserTest, ParseSimpleIntegerExpression) {
     // Create an array of tokens representing a simple expression: "2 + 3"
     token_t *tokens[] = {
@@ -22,14 +40,9 @@ TEST(ParserTest, ParseSimpleIntegerExpression) {
 
     expr_t *expr = parse_expression(tokens, 3);
 
-    EXPECT_EQ(expr->type, BINARY_OP);
-    EXPECT_EQ(expr->subtype.op_t, ADD);
-    EXPECT_EQ(expr->left_operand->type, CONSTANT);
-    EXPECT_EQ(expr->left_operand->subtype.const_t, INTEGER_CONST);
-    EXPECT_EQ(expr->left_operand->value.int_value, 2);
-    EXPECT_EQ(expr->right_operand->type, CONSTANT);
-    EXPECT_EQ(expr->right_operand->subtype.const_t, INTEGER_CONST);
-    EXPECT_EQ(expr->right_operand->value.int_value, 3);
+    check_op_expr(expr, ADD);
+    check_constant_expr(expr->left_operand, 2);
+    check_constant_expr(expr->right_operand, 3);
 }
 
 TEST(ParserTest, ParseSimpleFloatExpression) {
@@ -42,14 +55,9 @@ TEST(ParserTest, ParseSimpleFloatExpression) {
 
     expr_t *expr = parse_expression(tokens, 3);
 
-    EXPECT_EQ(expr->type, BINARY_OP);
-    EXPECT_EQ(expr->subtype.op_t, ADD);
-    EXPECT_EQ(expr->left_operand->type, CONSTANT);
-    EXPECT_EQ(expr->left_operand->subtype.const_t, FLOAT_CONST);
-    EXPECT_FLOAT_EQ(expr->left_operand->value.float_value, 2.7);
-    EXPECT_EQ(expr->right_operand->type, CONSTANT);
-    EXPECT_EQ(expr->right_operand->subtype.const_t, FLOAT_CONST);
-    EXPECT_FLOAT_EQ(expr->right_operand->value.float_value, 3.2);
+    check_op_expr(expr, ADD);
+    check_constant_expr(expr->left_operand, 2.7f);
+    check_constant_expr(expr->right_operand, 3.2f);
 }
 
 TEST(ParserTest, ParseIntegerExpressionWithPriority) {
@@ -64,20 +72,12 @@ TEST(ParserTest, ParseIntegerExpressionWithPriority) {
 
     expr_t *expr = parse_expression(tokens, 5);
 
-    EXPECT_EQ(expr->type, BINARY_OP);
-    EXPECT_EQ(expr->subtype.op_t, SUBTRACT);
-    EXPECT_EQ(expr->left_operand->type, CONSTANT);
-    EXPECT_EQ(expr->left_operand->subtype.const_t, INTEGER_CONST);
-    EXPECT_EQ(expr->left_operand->value.int_value, 2);
+    check_op_expr(expr, SUBTRACT);
+    check_constant_expr(expr->left_operand, 2);
 
-    EXPECT_EQ(expr->right_operand->type, BINARY_OP);
-    EXPECT_EQ(expr->right_operand->subtype.op_t, MULTIPLY);
-    EXPECT_EQ(expr->right_operand->left_operand->type, CONSTANT);
-    EXPECT_EQ(expr->right_operand->left_operand->subtype.const_t, INTEGER_CONST);
-    EXPECT_EQ(expr->right_operand->left_operand->value.int_value, 3);
-    EXPECT_EQ(expr->right_operand->right_operand->type, CONSTANT);
-    EXPECT_EQ(expr->right_operand->right_operand->subtype.const_t, INTEGER_CONST);
-    EXPECT_EQ(expr->right_operand->right_operand->value.int_value, 4);
+    check_op_expr(expr->right_operand, MULTIPLY);
+    check_constant_expr(expr->right_operand->left_operand, 3);
+    check_constant_expr(expr->right_operand->right_operand, 4);
 }
 
 TEST(ParserTest, ParseMixedExpressionWithPriority) {
@@ -92,21 +92,12 @@ TEST(ParserTest, ParseMixedExpressionWithPriority) {
 
     expr_t *expr = parse_expression(tokens, 5);
 
-    EXPECT_EQ(expr->type, BINARY_OP);
-    EXPECT_EQ(expr->subtype.op_t, ADD);
+    check_op_expr(expr, ADD);
 
-    EXPECT_EQ(expr->left_operand->type, BINARY_OP);
-    EXPECT_EQ(expr->left_operand->subtype.op_t, MULTIPLY);
-    EXPECT_EQ(expr->left_operand->left_operand->type, CONSTANT);
-    EXPECT_EQ(expr->left_operand->left_operand->subtype.const_t, INTEGER_CONST);
-    EXPECT_EQ(expr->left_operand->left_operand->value.int_value, 2);
-    EXPECT_EQ(expr->left_operand->right_operand->type, CONSTANT);
-    EXPECT_EQ(expr->left_operand->right_operand->subtype.const_t, FLOAT_CONST);
-    EXPECT_FLOAT_EQ(expr->left_operand->right_operand->value.float_value, 7.9);
-
-    EXPECT_EQ(expr->right_operand->type, CONSTANT);
-    EXPECT_EQ(expr->right_operand->subtype.const_t, INTEGER_CONST);
-    EXPECT_EQ(expr->right_operand->value.int_value, 9);
+    check_op_expr(expr->left_operand, MULTIPLY);
+    check_constant_expr(expr->left_operand->left_operand, 2);
+    check_constant_expr(expr->left_operand->right_operand, 7.9f);
+    check_constant_expr(expr->right_operand, 9);
 }
 
 TEST(ParserTest, ParseIntegerExpressionWithDivision) {
@@ -117,18 +108,11 @@ TEST(ParserTest, ParseIntegerExpressionWithDivision) {
         generate_test_token(INTEGER, "2"),
     };
 
-    // Parse the array of tokens
     expr_t *expr = parse_expression(tokens, 3);
 
-    // Assert the parsed expression
-    EXPECT_EQ(expr->type, BINARY_OP);
-    EXPECT_EQ(expr->subtype.op_t, DIVIDE);
-    EXPECT_EQ(expr->left_operand->type, CONSTANT);
-    EXPECT_EQ(expr->left_operand->subtype.const_t, INTEGER_CONST);
-    EXPECT_EQ(expr->left_operand->value.int_value, 8);
-    EXPECT_EQ(expr->right_operand->type, CONSTANT);
-    EXPECT_EQ(expr->right_operand->subtype.const_t, INTEGER_CONST);
-    EXPECT_EQ(expr->right_operand->value.int_value, 2);
+    check_op_expr(expr, DIVIDE);
+    check_constant_expr(expr->left_operand, 8);
+    check_constant_expr(expr->right_operand, 2);
 }
 
 TEST(ParserTest, ParseMixedExpressionWithParentheses) {
@@ -145,21 +129,12 @@ TEST(ParserTest, ParseMixedExpressionWithParentheses) {
 
     expr_t *expr = parse_expression(tokens, 7);
 
-    EXPECT_EQ(expr->type, BINARY_OP);
-    EXPECT_EQ(expr->subtype.op_t, MULTIPLY);
+    check_op_expr(expr, MULTIPLY);
 
-    EXPECT_EQ(expr->left_operand->type, BINARY_OP);
-    EXPECT_EQ(expr->left_operand->subtype.op_t, ADD);
-    EXPECT_EQ(expr->left_operand->left_operand->type, CONSTANT);
-    EXPECT_EQ(expr->left_operand->left_operand->subtype.const_t, INTEGER_CONST);
-    EXPECT_EQ(expr->left_operand->left_operand->value.int_value, 2);
-    EXPECT_EQ(expr->left_operand->right_operand->type, CONSTANT);
-    EXPECT_EQ(expr->left_operand->right_operand->subtype.const_t, INTEGER_CONST);
-    EXPECT_EQ(expr->left_operand->right_operand->value.int_value, 3);
-
-    EXPECT_EQ(expr->right_operand->type, CONSTANT);
-    EXPECT_EQ(expr->right_operand->subtype.const_t, INTEGER_CONST);
-    EXPECT_EQ(expr->right_operand->value.int_value, 4);
+    check_op_expr(expr->left_operand, ADD);
+    check_constant_expr(expr->left_operand->left_operand, 2);
+    check_constant_expr(expr->left_operand->right_operand, 3);
+    check_constant_expr(expr->right_operand, 4);
 }
 
 TEST(ParserTest, ParseMoreThanThreeOperators) {
@@ -180,29 +155,16 @@ TEST(ParserTest, ParseMoreThanThreeOperators) {
 
     // TODO: dependency to op prioritizing algorithm > better correctness check needed
     // for this case, ADD may come first
-    EXPECT_EQ(expr->type, BINARY_OP);
-    EXPECT_EQ(expr->subtype.op_t, SUBTRACT);
+    check_op_expr(expr, SUBTRACT);
 
-    EXPECT_EQ(expr->left_operand->type, BINARY_OP);
-    EXPECT_EQ(expr->left_operand->subtype.op_t, ADD);
-    EXPECT_EQ(expr->left_operand->left_operand->type, CONSTANT);
-    EXPECT_EQ(expr->left_operand->left_operand->subtype.const_t, INTEGER_CONST);
-    EXPECT_EQ(expr->left_operand->left_operand->value.int_value, 1);
-    EXPECT_EQ(expr->left_operand->right_operand->type, BINARY_OP);
-    EXPECT_EQ(expr->left_operand->right_operand->subtype.op_t, MULTIPLY);
-    EXPECT_EQ(expr->left_operand->right_operand->left_operand->type, CONSTANT);
-    EXPECT_EQ(expr->left_operand->right_operand->left_operand->subtype.const_t, INTEGER_CONST);
-    EXPECT_EQ(expr->left_operand->right_operand->left_operand->value.int_value, 2);
-    EXPECT_EQ(expr->left_operand->right_operand->right_operand->type, CONSTANT);
-    EXPECT_EQ(expr->left_operand->right_operand->right_operand->subtype.const_t, INTEGER_CONST);
-    EXPECT_EQ(expr->left_operand->right_operand->right_operand->value.int_value, 3);
+    check_op_expr(expr->left_operand, ADD);
+    check_constant_expr(expr->left_operand->left_operand, 1);
 
-    EXPECT_EQ(expr->right_operand->type, BINARY_OP);
-    EXPECT_EQ(expr->right_operand->subtype.op_t, DIVIDE);
-    EXPECT_EQ(expr->right_operand->left_operand->type, CONSTANT);
-    EXPECT_EQ(expr->right_operand->left_operand->subtype.const_t, INTEGER_CONST);
-    EXPECT_EQ(expr->right_operand->left_operand->value.int_value, 4);
-    EXPECT_EQ(expr->right_operand->right_operand->type, CONSTANT);
-    EXPECT_EQ(expr->right_operand->right_operand->subtype.const_t, INTEGER_CONST);
-    EXPECT_EQ(expr->right_operand->right_operand->value.int_value, 2);
+    check_op_expr(expr->left_operand->right_operand, MULTIPLY);
+    check_constant_expr(expr->left_operand->right_operand->left_operand, 2);
+    check_constant_expr(expr->left_operand->right_operand->right_operand, 3);
+
+    check_op_expr(expr->right_operand, DIVIDE);
+    check_constant_expr(expr->right_operand->left_operand, 4);
+    check_constant_expr(expr->right_operand->right_operand, 2);
 }
