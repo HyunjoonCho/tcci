@@ -18,10 +18,15 @@ enable_testing()
 
 file(GLOB LIB_SOURCES "src/*.c")
 list(FILTER LIB_SOURCES EXCLUDE REGEX "src/repl\\.c")
+list(FILTER LIB_SOURCES EXCLUDE REGEX "src/debug\\.c")
+
 add_library(common_lib ${LIB_SOURCES})
 
 add_executable(repl src/repl.c)
 target_link_libraries(repl common_lib)
+
+add_executable(debug src/debug.c)
+target_link_libraries(debug common_lib)
 
 file(GLOB TEST_SOURCES "tests/*.cpp")
 
