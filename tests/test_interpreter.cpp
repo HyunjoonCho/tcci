@@ -7,14 +7,16 @@ extern "C" {
 
 expr_t *create_literal_expr(int value) {
     expr_t *literal_expr = (expr_t *)malloc(sizeof(expr_t));
-    literal_expr->type = INTEGER_EXPR;
+    literal_expr->type = CONSTANT;
+    literal_expr->subtype.const_t = INTEGER_CONST;
     literal_expr->value.int_value = value;
     return literal_expr;
 }
 
 expr_t *create_literal_expr(float value) {
     expr_t *literal_expr = (expr_t *)malloc(sizeof(expr_t));
-    literal_expr->type = FLOAT_EXPR;
+    literal_expr->type = CONSTANT;
+    literal_expr->subtype.const_t = FLOAT_CONST;
     literal_expr->value.float_value = value;
     return literal_expr;
 }
@@ -22,7 +24,7 @@ expr_t *create_literal_expr(float value) {
 expr_t *create_binary_op_expr(op_type op, expr_t *left, expr_t *right) {
     expr_t *binary_op_expr = (expr_t *)malloc(sizeof(expr_t));
     binary_op_expr->type = BINARY_OP;
-    binary_op_expr->op = op;
+    binary_op_expr->subtype.op_t = op;
     binary_op_expr->left_operand = left;
     binary_op_expr->right_operand = right;
     return binary_op_expr;

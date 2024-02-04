@@ -11,18 +11,20 @@ expr_t *turn_token_into_expr(token_t *token, int *paren_openings) {
 
     expr_t *expr = malloc(sizeof(expr_t));
     if (token->type == INTEGER) {
-        expr->type = INTEGER_EXPR;
+        expr->type = CONSTANT;
+        expr->subtype.const_t = INTEGER_CONST;
         expr->value.int_value = atoi(token->value);
     } else if (token->type == FLOAT) {
-        expr->type = FLOAT_EXPR;
+        expr->type = CONSTANT;
+        expr->subtype.const_t = FLOAT_CONST;
         expr->value.float_value = atof(token->value);      
     } else {
         int paren_priority = *paren_openings;
         expr->type = BINARY_OP;
-        if (token->type == ADD_OPERATOR) expr->op = ADD;
-        else if (token->type == SUBTRACT_OPERATOR) expr->op = SUBTRACT;
-        else if (token->type == MULTIPLY_OPERATOR) expr->op = MULTIPLY;
-        else if (token->type == DIVIDE_OPERATOR) expr->op = DIVIDE;
+        if (token->type == ADD_OPERATOR) expr->subtype.op_t = ADD;
+        else if (token->type == SUBTRACT_OPERATOR) expr->subtype.op_t = SUBTRACT;
+        else if (token->type == MULTIPLY_OPERATOR) expr->subtype.op_t = MULTIPLY;
+        else if (token->type == DIVIDE_OPERATOR) expr->subtype.op_t = DIVIDE;
 
         if (token->type == ADD_OPERATOR || token->type == SUBTRACT_OPERATOR) expr->op_priority = 2 - 2 * paren_priority;
         else expr->op_priority = 1 - 2 * paren_priority;

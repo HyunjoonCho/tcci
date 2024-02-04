@@ -25,8 +25,7 @@ struct token_t {
 
 typedef enum {
     BINARY_OP,
-    INTEGER_EXPR,
-    FLOAT_EXPR,
+    CONSTANT,
 } expr_type;
 
 typedef enum {
@@ -36,6 +35,11 @@ typedef enum {
     DIVIDE,
 } op_type;
 
+typedef enum {
+    INTEGER_CONST,
+    FLOAT_CONST,
+} const_type;
+
 union literal_value {
     int int_value;
     float float_value;
@@ -43,9 +47,16 @@ union literal_value {
 
 typedef union literal_value literal_value;
 
+union expr_subtype {
+    op_type op_t;
+    const_type const_t;
+};
+
+typedef union expr_subtype expr_subtype;
+
 struct expr_t {
     expr_type type;
-    op_type op;
+    expr_subtype subtype;
     literal_value value;
     int op_priority;
     struct expr_t *left_operand;
