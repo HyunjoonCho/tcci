@@ -39,14 +39,14 @@ int main() {
                 token_count++;
                 token = get_next_token(tokenizer);
             }
-            expr_t *expr = parse_expression(tokens, token_count);
-            literal_t *literal = interpret_expr(expr);
+            node_t *node = parse(tokens, token_count);
+            literal_t *literal = interpret(node);
             print_literal(literal);
 
             free_tokens(tokens, token_count);
             free(tokens);
 
-            free_expr(expr);
+            free_node(node);
             free(literal);
         }
 

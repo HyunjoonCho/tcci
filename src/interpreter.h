@@ -17,6 +17,6 @@ struct literal_t {
 
 typedef struct literal_t literal_t;
 
-literal_t *interpret_expr(expr_t *root);
+literal_t *interpret(node_t *root);
 
 #endif
