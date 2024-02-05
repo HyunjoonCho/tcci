@@ -30,14 +30,14 @@ int main() {
         } else {
             int token_count = 0;
 
-            tokenizer_handle tokenizer = tokenizer_init(input);
+            lexer_handle lexer = lexer_init(input);
             token_t **tokens = malloc(20 * sizeof(token_t)); // Assume: tokens being less than 20
 
-            token_t *token = get_next_token(tokenizer); // Assume: at least one token?
+            token_t *token = get_next_token(lexer); // Assume: at least one token?
             while (token->type != NULLTOKEN) {
                 tokens[token_count] = token;
                 token_count++;
-                token = get_next_token(tokenizer);
+                token = get_next_token(lexer);
             }
             node_t *node = parse(tokens, token_count);
             literal_t *literal = interpret(node);

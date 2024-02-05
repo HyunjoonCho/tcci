@@ -66,11 +66,11 @@ struct node_t {
 typedef struct token_t token_t;
 typedef struct node_t node_t;
 
-typedef struct tokenizer tokenizer;
-typedef tokenizer *tokenizer_handle;
+typedef struct lexer lexer;
+typedef lexer *lexer_handle;
 
-tokenizer_handle tokenizer_init(const char *input);
-token_t *get_next_token(tokenizer_handle tokenizer);
+lexer_handle lexer_init(const char *input);
+token_t *get_next_token(lexer_handle lexer);
 void free_tokens(token_t **tokens, int token_count);
 
 node_t *parse(token_t **tokens,int token_count);

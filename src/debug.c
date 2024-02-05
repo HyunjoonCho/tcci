@@ -5,7 +5,7 @@
 #include "interpreter.h"
 
 int main() {
-    tokenizer_handle tokenizer = tokenizer_init("123");
-    token_t *token = get_next_token(tokenizer);
+    lexer_handle lexer = lexer_init("123");
+    token_t *token = get_next_token(lexer);
     return 0;
 }

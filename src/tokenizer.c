@@ -4,18 +4,18 @@
 #include <stdbool.h>
 #include "commons.h"
 
-struct tokenizer {
+struct lexer {
     int current;
     char *input;
 };
 
-tokenizer_handle tokenizer_init(const char *input) {
-    tokenizer_handle new_tokenizer = malloc(sizeof(tokenizer));
-    new_tokenizer->current = 0;
+lexer_handle lexer_init(const char *input) {
+    lexer_handle new_lexer = malloc(sizeof(lexer));
+    new_lexer->current = 0;
     char *new_input = malloc(strlen(input) + 1);
     strcpy(new_input, input);
-    new_tokenizer->input = new_input;
-    return new_tokenizer;
+    new_lexer->input = new_input;
+    return new_lexer;
 }
 
 bool is_predefined_char(char c) {
@@ -72,20 +72,20 @@ token_type get_token_type_from(char *token, int token_length) {
     }
 }
 
-void remove_leading_spaces(tokenizer_handle tokenizer) {
-    char *token = tokenizer->input + tokenizer->current;
+void remove_leading_spaces(lexer_handle lexer) {
+    char *token = lexer->input + lexer->current;
     size_t remaining_length = strlen(token);
 
     for (int i = 0; i < remaining_length; i++) {
         if (token[i] != ' ') {
-            tokenizer->current += i;
+            lexer->current += i;
             break;
         }
     }
 }
 
-int get_next_token_length(tokenizer_handle tokenizer) {
-    char *token = tokenizer->input + tokenizer->current;
+int get_next_token_length(lexer_handle lexer) {
+    char *token = lexer->input + lexer->current;
     size_t remaining_length = strlen(token);
 
     if (is_predefined_char(token[0])) return 1;
@@ -103,22 +103,22 @@ int get_next_token_length(tokenizer_handle tokenizer) {
     return remaining_length;
 }
 
-token_t *get_next_token(tokenizer_handle tokenizer) {
+token_t *get_next_token(lexer_handle lexer) {
     token_t *next_token = malloc(sizeof(token_t));
-    if (tokenizer->current >= strlen(tokenizer->input)) {
+    if (lexer->current >= strlen(lexer->input)) {
         next_token->type = NULLTOKEN;
         return next_token;
     }
 
-    remove_leading_spaces(tokenizer);
-    int token_length = get_next_token_length(tokenizer);
+    remove_leading_spaces(lexer);
+    int token_length = get_next_token_length(lexer);
     char *new_value = malloc(token_length + 1);
-    strncpy(new_value, tokenizer->input + tokenizer->current, token_length);
+    strncpy(new_value, lexer->input + lexer->current, token_length);
     new_value[token_length] = '\0';
     next_token->type = get_token_type_from(new_value, token_length);
     next_token->value = new_value;
 
-    tokenizer->current += token_length;
+    lexer->current += token_length;
 
     return next_token;
 }
