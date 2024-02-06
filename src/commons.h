@@ -16,10 +16,10 @@ typedef enum {
     ASSIGN,
     SEMICOLON,
     NULLTOKEN,
-} token_type;
+} type_t;
 
 struct token_t {
-    token_type type;
+    type_t type;
     char *value;
 };
 
@@ -54,17 +54,17 @@ union node_subtype {
 
 typedef union node_subtype node_subtype;
 
+typedef struct node_t node_t;
 struct node_t {
     node_type type;
     node_subtype subtype;
     literal_value value;
     int op_priority;
-    struct node_t *left_operand;
-    struct node_t *right_operand;
+    node_t *left_child;
+    node_t *right_child;
 };
 
 typedef struct token_t token_t;
-typedef struct node_t node_t;
 
 typedef struct lexer lexer;
 typedef lexer *lexer_handle;

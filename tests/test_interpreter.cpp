@@ -25,8 +25,8 @@ node_t *create_binary_op_node(op_type op, node_t *left, node_t *right) {
     node_t *binary_op_node = (node_t *)malloc(sizeof(node_t));
     binary_op_node->type = BINARY_OP;
     binary_op_node->subtype.op_t = op;
-    binary_op_node->left_operand = left;
-    binary_op_node->right_operand = right;
+    binary_op_node->left_child = left;
+    binary_op_node->right_child = right;
     return binary_op_node;
 }
 

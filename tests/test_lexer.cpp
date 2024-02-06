@@ -4,7 +4,7 @@ extern "C" {
     #include "../src/commons.h"
 }
 
-void check_token(token_t *token, token_type expected_type, const char *expected_value) {
+void check_token(token_t *token, type_t expected_type, const char *expected_value) {
     EXPECT_EQ(token->type, expected_type);
     EXPECT_STREQ(token->value, expected_value);
 }

@@ -48,8 +48,8 @@ node_t *assemble_tree(node_t **nodes, int start_index, int end_index) {
     }
 
     current_node = nodes[least_prioritized_index];
-    current_node->left_operand = assemble_tree(nodes, start_index, least_prioritized_index);
-    current_node->right_operand = assemble_tree(nodes, least_prioritized_index + 1, end_index);
+    current_node->left_child = assemble_tree(nodes, start_index, least_prioritized_index);
+    current_node->right_child = assemble_tree(nodes, least_prioritized_index + 1, end_index);
 
     return current_node;
 }
@@ -74,8 +74,8 @@ node_t *parse(token_t **tokens, int token_count) {
 
 void free_node(node_t *node) {
     if (node->type == BINARY_OP) {
-        free_node(node->left_operand);
-        free_node(node->right_operand);
+        free_node(node->left_child);
+        free_node(node->right_child);
         free(node);
     } else {
         free(node);

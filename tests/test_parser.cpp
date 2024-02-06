@@ -4,7 +4,7 @@ extern "C" {
     #include "../src/commons.h"
 }
 
-token_t *generate_test_token(token_type type, const char *value) {
+token_t *generate_test_token(type_t type, const char *value) {
     token_t *new_token = (token_t *)malloc(sizeof(token_t));
     new_token->type = type;
     new_token->value = strdup(value);
@@ -41,8 +41,8 @@ TEST(ParserTest, ParseSimpleIntegerAddition) {
     node_t *root = parse(tokens, 3);
 
     check_op_node(root, ADD);
-    check_constant_node(root->left_operand, 2);
-    check_constant_node(root->right_operand, 3);
+    check_constant_node(root->left_child, 2);
+    check_constant_node(root->right_child, 3);
 }
 
 TEST(ParserTest, ParseSimpleFloatAddition) {
@@ -56,8 +56,8 @@ TEST(ParserTest, ParseSimpleFloatAddition) {
     node_t *root = parse(tokens, 3);
 
     check_op_node(root, ADD);
-    check_constant_node(root->left_operand, 2.7f);
-    check_constant_node(root->right_operand, 3.2f);
+    check_constant_node(root->left_child, 2.7f);
+    check_constant_node(root->right_child, 3.2f);
 }
 
 TEST(ParserTest, ParseIntegerOpsWithPriority) {
@@ -73,11 +73,11 @@ TEST(ParserTest, ParseIntegerOpsWithPriority) {
     node_t *root = parse(tokens, 5);
 
     check_op_node(root, SUBTRACT);
-    check_constant_node(root->left_operand, 2);
+    check_constant_node(root->left_child, 2);
 
-    check_op_node(root->right_operand, MULTIPLY);
-    check_constant_node(root->right_operand->left_operand, 3);
-    check_constant_node(root->right_operand->right_operand, 4);
+    check_op_node(root->right_child, MULTIPLY);
+    check_constant_node(root->right_child->left_child, 3);
+    check_constant_node(root->right_child->right_child, 4);
 }
 
 TEST(ParserTest, ParseMixedOpsWithPriority) {
@@ -94,10 +94,10 @@ TEST(ParserTest, ParseMixedOpsWithPriority) {
 
     check_op_node(root, ADD);
 
-    check_op_node(root->left_operand, MULTIPLY);
-    check_constant_node(root->left_operand->left_operand, 2);
-    check_constant_node(root->left_operand->right_operand, 7.9f);
-    check_constant_node(root->right_operand, 9);
+    check_op_node(root->left_child, MULTIPLY);
+    check_constant_node(root->left_child->left_child, 2);
+    check_constant_node(root->left_child->right_child, 7.9f);
+    check_constant_node(root->right_child, 9);
 }
 
 TEST(ParserTest, ParseIntegerDivision) {
@@ -111,8 +111,8 @@ TEST(ParserTest, ParseIntegerDivision) {
     node_t *root = parse(tokens, 3);
 
     check_op_node(root, DIVIDE);
-    check_constant_node(root->left_operand, 8);
-    check_constant_node(root->right_operand, 2);
+    check_constant_node(root->left_child, 8);
+    check_constant_node(root->right_child, 2);
 }
 
 TEST(ParserTest, ParseMixedOpsWithParentheses) {
@@ -131,10 +131,10 @@ TEST(ParserTest, ParseMixedOpsWithParentheses) {
 
     check_op_node(root, MULTIPLY);
 
-    check_op_node(root->left_operand, ADD);
-    check_constant_node(root->left_operand->left_operand, 2);
-    check_constant_node(root->left_operand->right_operand, 3);
-    check_constant_node(root->right_operand, 4);
+    check_op_node(root->left_child, ADD);
+    check_constant_node(root->left_child->left_child, 2);
+    check_constant_node(root->left_child->right_child, 3);
+    check_constant_node(root->right_child, 4);
 }
 
 TEST(ParserTest, ParseMoreThanThreeOperators) {
@@ -157,14 +157,14 @@ TEST(ParserTest, ParseMoreThanThreeOperators) {
     // for this case, ADD may come first
     check_op_node(root, SUBTRACT);
 
-    check_op_node(root->left_operand, ADD);
-    check_constant_node(root->left_operand->left_operand, 1);
+    check_op_node(root->left_child, ADD);
+    check_constant_node(root->left_child->left_child, 1);
 
-    check_op_node(root->left_operand->right_operand, MULTIPLY);
-    check_constant_node(root->left_operand->right_operand->left_operand, 2);
-    check_constant_node(root->left_operand->right_operand->right_operand, 3);
+    check_op_node(root->left_child->right_child, MULTIPLY);
+    check_constant_node(root->left_child->right_child->left_child, 2);
+    check_constant_node(root->left_child->right_child->right_child, 3);
 
-    check_op_node(root->right_operand, DIVIDE);
-    check_constant_node(root->right_operand->left_operand, 4);
-    check_constant_node(root->right_operand->right_operand, 2);
+    check_op_node(root->right_child, DIVIDE);
+    check_constant_node(root->right_child->left_child, 4);
+    check_constant_node(root->right_child->right_child, 2);
 }

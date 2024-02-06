@@ -41,7 +41,7 @@ short is_number_token(char *token, int token_length) {
     return is_float ? 1 : 0;
 }
 
-token_type get_token_type_from(char *token, int token_length) {
+type_t get_token_type_from(char *token, int token_length) {
     if (token_length == 1 && strchr(token, '+') != NULL) {
         return ADD_OPERATOR;
     } else if (token_length == 1 && strchr(token, '-') != NULL) {
@@ -90,13 +90,13 @@ int get_next_token_length(lexer_handle lexer) {
 
     if (is_predefined_char(token[0])) return 1;
 
-    short token_type = 0;
-    if (is_numeric(token[0])) token_type = 0;
-    if (is_alphabet(token[0])) token_type = 1;
+    short type_t = 0;
+    if (is_numeric(token[0])) type_t = 0;
+    if (is_alphabet(token[0])) type_t = 1;
 
     for (int i = 0; i < remaining_length; i++) {
-        if ((token_type == 0 && (!is_numeric(token[i]) && token[i] != '.')) || 
-            (token_type == 1 && (!is_alphabet(token[i]) && token[i] != '_'))) {
+        if ((type_t == 0 && (!is_numeric(token[i]) && token[i] != '.')) || 
+            (type_t == 1 && (!is_alphabet(token[i]) && token[i] != '_'))) {
             return i;
         }
     }

@@ -5,8 +5,8 @@
 
 literal_t *evaluate_ast(node_t *node) {
     if (node->type == BINARY_OP) {
-        literal_t *l = evaluate_ast(node->left_operand);
-        literal_t *r = evaluate_ast(node->right_operand);
+        literal_t *l = evaluate_ast(node->left_child);
+        literal_t *r = evaluate_ast(node->right_child);
         if (l->type == INTEGER_LITERAL && r->type == INTEGER_LITERAL && node->subtype.op_t != DIVIDE) {
             if (node->subtype.op_t == ADD) l->value.int_value += r->value.int_value;
             else if (node->subtype.op_t == SUBTRACT) l->value.int_value -= r->value.int_value;
