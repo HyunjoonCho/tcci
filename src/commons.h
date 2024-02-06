@@ -28,18 +28,6 @@ typedef enum {
     CONSTANT,
 } node_type;
 
-typedef enum {
-    ADD,
-    SUBTRACT,
-    MULTIPLY,
-    DIVIDE,
-} op_type;
-
-typedef enum {
-    INTEGER_CONST,
-    FLOAT_CONST,
-} const_type;
-
 union literal_value {
     int int_value;
     float float_value;
@@ -47,17 +35,10 @@ union literal_value {
 
 typedef union literal_value literal_value;
 
-union node_subtype {
-    op_type op_t;
-    const_type const_t;
-};
-
-typedef union node_subtype node_subtype;
-
 typedef struct node_t node_t;
 struct node_t {
     node_type type;
-    node_subtype subtype;
+    type_t subtype;
     literal_value value;
     int op_priority;
     node_t *left_child;

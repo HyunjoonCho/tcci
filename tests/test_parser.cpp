@@ -13,20 +13,20 @@ token_t *generate_test_token(type_t type, const char *value) {
 }
 
 
-void check_op_node(node_t *op_node, op_type op) {
+void check_op_node(node_t *op_node, type_t op) {
     EXPECT_EQ(op_node->type, BINARY_OP);
-    EXPECT_EQ(op_node->subtype.op_t, op);
+    EXPECT_EQ(op_node->subtype, op);
 }
 
 void check_constant_node(node_t *const_node, int value) {
     EXPECT_EQ(const_node->type, CONSTANT);
-    EXPECT_EQ(const_node->subtype.const_t, INTEGER_CONST);
+    EXPECT_EQ(const_node->subtype, INTEGER);
     EXPECT_EQ(const_node->value.int_value, value);
 }
 
 void check_constant_node(node_t *const_node, float value) {
     EXPECT_EQ(const_node->type, CONSTANT);
-    EXPECT_EQ(const_node->subtype.const_t, FLOAT_CONST);
+    EXPECT_EQ(const_node->subtype, FLOAT);
     EXPECT_FLOAT_EQ(const_node->value.float_value, value);    
 }
 
@@ -40,7 +40,7 @@ TEST(ParserTest, ParseSimpleIntegerAddition) {
 
     node_t *root = parse(tokens, 3);
 
-    check_op_node(root, ADD);
+    check_op_node(root, ADD_OPERATOR);
     check_constant_node(root->left_child, 2);
     check_constant_node(root->right_child, 3);
 }
@@ -55,7 +55,7 @@ TEST(ParserTest, ParseSimpleFloatAddition) {
 
     node_t *root = parse(tokens, 3);
 
-    check_op_node(root, ADD);
+    check_op_node(root, ADD_OPERATOR);
     check_constant_node(root->left_child, 2.7f);
     check_constant_node(root->right_child, 3.2f);
 }
@@ -72,10 +72,10 @@ TEST(ParserTest, ParseIntegerOpsWithPriority) {
 
     node_t *root = parse(tokens, 5);
 
-    check_op_node(root, SUBTRACT);
+    check_op_node(root, SUBTRACT_OPERATOR);
     check_constant_node(root->left_child, 2);
 
-    check_op_node(root->right_child, MULTIPLY);
+    check_op_node(root->right_child, MULTIPLY_OPERATOR);
     check_constant_node(root->right_child->left_child, 3);
     check_constant_node(root->right_child->right_child, 4);
 }
@@ -92,9 +92,9 @@ TEST(ParserTest, ParseMixedOpsWithPriority) {
 
     node_t *root = parse(tokens, 5);
 
-    check_op_node(root, ADD);
+    check_op_node(root, ADD_OPERATOR);
 
-    check_op_node(root->left_child, MULTIPLY);
+    check_op_node(root->left_child, MULTIPLY_OPERATOR);
     check_constant_node(root->left_child->left_child, 2);
     check_constant_node(root->left_child->right_child, 7.9f);
     check_constant_node(root->right_child, 9);
@@ -110,7 +110,7 @@ TEST(ParserTest, ParseIntegerDivision) {
 
     node_t *root = parse(tokens, 3);
 
-    check_op_node(root, DIVIDE);
+    check_op_node(root, DIVIDE_OPERATOR);
     check_constant_node(root->left_child, 8);
     check_constant_node(root->right_child, 2);
 }
@@ -129,9 +129,9 @@ TEST(ParserTest, ParseMixedOpsWithParentheses) {
 
     node_t *root = parse(tokens, 7);
 
-    check_op_node(root, MULTIPLY);
+    check_op_node(root, MULTIPLY_OPERATOR);
 
-    check_op_node(root->left_child, ADD);
+    check_op_node(root->left_child, ADD_OPERATOR);
     check_constant_node(root->left_child->left_child, 2);
     check_constant_node(root->left_child->right_child, 3);
     check_constant_node(root->right_child, 4);
@@ -155,16 +155,16 @@ TEST(ParserTest, ParseMoreThanThreeOperators) {
 
     // TODO: dependency to op prioritizing algorithm > better correctness check needed
     // for this case, ADD may come first
-    check_op_node(root, SUBTRACT);
+    check_op_node(root, SUBTRACT_OPERATOR);
 
-    check_op_node(root->left_child, ADD);
+    check_op_node(root->left_child, ADD_OPERATOR);
     check_constant_node(root->left_child->left_child, 1);
 
-    check_op_node(root->left_child->right_child, MULTIPLY);
+    check_op_node(root->left_child->right_child, MULTIPLY_OPERATOR);
     check_constant_node(root->left_child->right_child->left_child, 2);
     check_constant_node(root->left_child->right_child->right_child, 3);
 
-    check_op_node(root->right_child, DIVIDE);
+    check_op_node(root->right_child, DIVIDE_OPERATOR);
     check_constant_node(root->right_child->left_child, 4);
     check_constant_node(root->right_child->right_child, 2);
 }

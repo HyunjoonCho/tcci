@@ -12,19 +12,19 @@ node_t *turn_token_into_node(token_t *token, int *paren_openings) {
     node_t *node = malloc(sizeof(node_t));
     if (token->type == INTEGER) {
         node->type = CONSTANT;
-        node->subtype.const_t = INTEGER_CONST;
+        node->subtype = INTEGER;
         node->value.int_value = atoi(token->value);
     } else if (token->type == FLOAT) {
         node->type = CONSTANT;
-        node->subtype.const_t = FLOAT_CONST;
+        node->subtype = FLOAT;
         node->value.float_value = atof(token->value);      
     } else {
         int paren_priority = *paren_openings;
         node->type = BINARY_OP;
-        if (token->type == ADD_OPERATOR) node->subtype.op_t = ADD;
-        else if (token->type == SUBTRACT_OPERATOR) node->subtype.op_t = SUBTRACT;
-        else if (token->type == MULTIPLY_OPERATOR) node->subtype.op_t = MULTIPLY;
-        else if (token->type == DIVIDE_OPERATOR) node->subtype.op_t = DIVIDE;
+        if (token->type == ADD_OPERATOR) node->subtype = ADD_OPERATOR;
+        else if (token->type == SUBTRACT_OPERATOR) node->subtype = SUBTRACT_OPERATOR;
+        else if (token->type == MULTIPLY_OPERATOR) node->subtype = MULTIPLY_OPERATOR;
+        else if (token->type == DIVIDE_OPERATOR) node->subtype = DIVIDE_OPERATOR;
 
         if (token->type == ADD_OPERATOR || token->type == SUBTRACT_OPERATOR) node->op_priority = 2 - 2 * paren_priority;
         else node->op_priority = 1 - 2 * paren_priority;
