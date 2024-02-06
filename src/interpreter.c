@@ -28,7 +28,7 @@ literal_t *evaluate_ast(node_t *node) {
     } else {
         literal_t *literal = malloc(sizeof(literal_t));
         literal->value = node->value;
-        if (node->subtype == INTEGER) literal->type = INTEGER_LITERAL;
+        if (node->subtype == INTEGER_CONST) literal->type = INTEGER_LITERAL;
         else literal->type = FLOAT_LITERAL;
         return literal;
     }

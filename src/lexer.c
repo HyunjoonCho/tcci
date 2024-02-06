@@ -55,19 +55,19 @@ type_t get_token_type_from(char *token, int token_length) {
     } else if (token_length == 1 && strchr(token, ')') != NULL) {
         return CLOSE_PAREN;
     } else if (token_length == 1 && strchr(token, '.') != NULL) {
-        return FLOAT;
+        return FLOAT_CONST;
     } else if (token_length == 1 && strchr(token, ';') != NULL) {
         return SEMICOLON;
     } else if (token_length == 1 && strchr(token, '=') != NULL) {
         return ASSIGN;
     } else if (strcmp(token, "int") == 0){
-        return INTEGER_TYPE;
+        return INTEGER_KEYWORD;
     } else if (strcmp(token, "float") == 0) {
-        return FLOAT_TYPE;
+        return FLOAT_KEYWORD;
     } else {
         short number_token_type = is_number_token(token, token_length);
-        if (number_token_type == 0) return INTEGER;
-        else if (number_token_type == 1) return FLOAT;
+        if (number_token_type == 0) return INTEGER_CONST;
+        else if (number_token_type == 1) return FLOAT_CONST;
         else return IDENTIFIER;
     }
 }

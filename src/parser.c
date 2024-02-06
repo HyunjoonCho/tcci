@@ -10,13 +10,13 @@ node_t *turn_token_into_node(token_t *token, int *paren_openings) {
     }
 
     node_t *node = malloc(sizeof(node_t));
-    if (token->type == INTEGER) {
+    if (token->type == INTEGER_CONST) {
         node->type = CONSTANT;
-        node->subtype = INTEGER;
+        node->subtype = INTEGER_CONST;
         node->value.int_value = atoi(token->value);
-    } else if (token->type == FLOAT) {
+    } else if (token->type == FLOAT_CONST) {
         node->type = CONSTANT;
-        node->subtype = FLOAT;
+        node->subtype = FLOAT_CONST;
         node->value.float_value = atof(token->value);      
     } else {
         int paren_priority = *paren_openings;
