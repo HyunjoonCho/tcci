@@ -61,9 +61,9 @@ type_t get_token_type_from(char *token, int token_length) {
     } else if (token_length == 1 && strchr(token, '=') != NULL) {
         return EQ_ASSIGN;
     } else if (strcmp(token, "int") == 0){
-        return INTEGER_KEYWORD;
+        return INTEGER_TYPE;
     } else if (strcmp(token, "float") == 0) {
-        return FLOAT_KEYWORD;
+        return FLOAT_TYPE;
     } else {
         short number_token_type = is_number_token(token, token_length);
         if (number_token_type == 0) return INTEGER_CONST;

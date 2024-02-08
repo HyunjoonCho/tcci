@@ -140,7 +140,7 @@ TEST(MultiTokenTest, MoreThanThreeOperators) {
 TEST(VariableTest, IntegerDeclaration) {
     lexer_handle lexer = lexer_init("int x;");
     token_t *token = get_next_token(lexer);
-    EXPECT_EQ(token->type, INTEGER_KEYWORD);
+    EXPECT_EQ(token->type, INTEGER_TYPE);
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, IDENTIFIER);
     token = get_next_token(lexer);
@@ -150,7 +150,7 @@ TEST(VariableTest, IntegerDeclaration) {
 TEST(VariableTest, FloatInitialization) {
     lexer_handle lexer = lexer_init("float y = 3.14;");
     token_t *token = get_next_token(lexer);
-    EXPECT_EQ(token->type, FLOAT_KEYWORD);
+    EXPECT_EQ(token->type, FLOAT_TYPE);
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, IDENTIFIER);
     token = get_next_token(lexer);
@@ -164,7 +164,7 @@ TEST(VariableTest, FloatInitialization) {
 TEST(VariableTest, VariableDeclarationAndInitialization) {
     lexer_handle lexer = lexer_init("int a = 5;");
     token_t *token = get_next_token(lexer);
-    EXPECT_EQ(token->type, INTEGER_KEYWORD);
+    EXPECT_EQ(token->type, INTEGER_TYPE);
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, IDENTIFIER);
     token = get_next_token(lexer);
@@ -180,7 +180,7 @@ TEST(VariableTest, MultipleDeclarations) {
     
     // Test for the first declaration
     token_t *token = get_next_token(lexer);
-    EXPECT_EQ(token->type, INTEGER_KEYWORD);
+    EXPECT_EQ(token->type, INTEGER_TYPE);
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, IDENTIFIER);
     token = get_next_token(lexer);
@@ -188,7 +188,7 @@ TEST(VariableTest, MultipleDeclarations) {
 
     // Test for the second declaration
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, FLOAT_KEYWORD);
+    EXPECT_EQ(token->type, FLOAT_TYPE);
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, IDENTIFIER);
     token = get_next_token(lexer);
@@ -200,7 +200,7 @@ TEST(VariableTest, MultipleDeclarations) {
 
     // Test for the third declaration
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, INTEGER_KEYWORD);
+    EXPECT_EQ(token->type, INTEGER_TYPE);
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, IDENTIFIER);
     token = get_next_token(lexer);
