@@ -12,7 +12,7 @@ typedef enum {
 
 struct literal_t {
     literal_type type;
-    literal_value value;
+    value_t value;
 };
 
 typedef struct literal_t literal_t;

@@ -30,18 +30,18 @@ typedef enum {
     ASSIGN_OP,
 } node_type;
 
-union literal_value {
+union value_t {
     int int_value;
     float float_value;
 };
 
-typedef union literal_value literal_value;
+typedef union value_t value_t;
 
 typedef struct node_t node_t;
 struct node_t {
     node_type type;
     type_t subtype;
-    literal_value value;
+    value_t value;
     int op_priority;
     node_t *left_child;
     node_t *right_child;
