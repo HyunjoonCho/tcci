@@ -31,6 +31,7 @@ typedef enum {
 } node_type;
 
 union value_t {
+    char *id_name; 
     int int_value;
     float float_value;
 };

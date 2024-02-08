@@ -12,7 +12,6 @@ token_t *generate_test_token(type_t type, const char *value) {
     return new_token;
 }
 
-
 void check_op_node(node_t *op_node, type_t op) {
     EXPECT_EQ(op_node->type, BINARY_OP);
     EXPECT_EQ(op_node->subtype, op);
@@ -167,4 +166,48 @@ TEST(ParserTest, ParseMoreThanThreeOperators) {
     check_op_node(root->right_child, DIVIDE_OPERATOR);
     check_constant_node(root->right_child->left_child, 4);
     check_constant_node(root->right_child->right_child, 2);
+}
+
+TEST(ParserTest, ParseSimpleIntegerAssignment) {
+    // int x = 3;
+    token_t *tokens[] = {
+        generate_test_token(INTEGER_TYPE, "int"),
+        generate_test_token(IDENTIFIER, "x"),
+        generate_test_token(EQ_ASSIGN, "="),
+        generate_test_token(INTEGER_CONST, "3"),
+        generate_test_token(SEMICOLON, ";"),
+    };
+
+    node_t *root = parse(tokens, 5);
+
+    EXPECT_EQ(root->type, ASSIGN_OP);
+    EXPECT_EQ(root->subtype, EQ_ASSIGN);
+
+    EXPECT_EQ(root->left_child->type, ID);
+    EXPECT_EQ(root->left_child->subtype, INTEGER_TYPE);
+    EXPECT_STREQ(root->left_child->value.id_name, "x");
+
+    check_constant_node(root->right_child, 3);
+}
+
+TEST(ParserTest, ParseSimpleFloatAssignment) {
+    // int x = 3;
+    token_t *tokens[] = {
+        generate_test_token(FLOAT_TYPE, "float"),
+        generate_test_token(IDENTIFIER, "hey"),
+        generate_test_token(EQ_ASSIGN, "="),
+        generate_test_token(FLOAT_CONST, "12.76"),
+        generate_test_token(SEMICOLON, ";"),
+    };
+
+    node_t *root = parse(tokens, 5);
+
+    EXPECT_EQ(root->type, ASSIGN_OP);
+    EXPECT_EQ(root->subtype, EQ_ASSIGN);
+
+    EXPECT_EQ(root->left_child->type, ID);
+    EXPECT_EQ(root->left_child->subtype, FLOAT_TYPE);
+    EXPECT_STREQ(root->left_child->value.id_name, "hey");
+
+    check_constant_node(root->right_child, 12.76f);
 }
