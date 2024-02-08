@@ -154,7 +154,7 @@ TEST(VariableTest, FloatInitialization) {
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, IDENTIFIER);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, ASSIGN);
+    EXPECT_EQ(token->type, EQ_ASSIGN);
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, FLOAT_CONST);
     token = get_next_token(lexer);
@@ -168,7 +168,7 @@ TEST(VariableTest, VariableDeclarationAndInitialization) {
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, IDENTIFIER);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, ASSIGN);
+    EXPECT_EQ(token->type, EQ_ASSIGN);
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, INTEGER_CONST);
     token = get_next_token(lexer);
@@ -192,7 +192,7 @@ TEST(VariableTest, MultipleDeclarations) {
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, IDENTIFIER);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, ASSIGN);
+    EXPECT_EQ(token->type, EQ_ASSIGN);
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, FLOAT_CONST);
     token = get_next_token(lexer);
@@ -204,7 +204,7 @@ TEST(VariableTest, MultipleDeclarations) {
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, IDENTIFIER);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, ASSIGN);
+    EXPECT_EQ(token->type, EQ_ASSIGN);
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, INTEGER_CONST);
     token = get_next_token(lexer);

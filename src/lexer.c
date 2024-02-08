@@ -59,7 +59,7 @@ type_t get_token_type_from(char *token, int token_length) {
     } else if (token_length == 1 && strchr(token, ';') != NULL) {
         return SEMICOLON;
     } else if (token_length == 1 && strchr(token, '=') != NULL) {
-        return ASSIGN;
+        return EQ_ASSIGN;
     } else if (strcmp(token, "int") == 0){
         return INTEGER_KEYWORD;
     } else if (strcmp(token, "float") == 0) {

@@ -2,6 +2,7 @@
 #define COMMONS_H
 
 typedef enum {
+    IDENTIFIER,
     INTEGER_CONST,
     FLOAT_CONST,
     ADD_OPERATOR,
@@ -12,8 +13,7 @@ typedef enum {
     CLOSE_PAREN,
     INTEGER_KEYWORD,
     FLOAT_KEYWORD,
-    IDENTIFIER,
-    ASSIGN,
+    EQ_ASSIGN,
     SEMICOLON,
     NULLTOKEN,
 } type_t;
@@ -24,8 +24,10 @@ struct token_t {
 };
 
 typedef enum {
-    BINARY_OP,
     CONSTANT,
+    ID, // FIXME: doesn't seem so nice...
+    BINARY_OP,
+    ASSIGN_OP,
 } node_type;
 
 union literal_value {
