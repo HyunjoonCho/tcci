@@ -191,7 +191,7 @@ TEST(ParserTest, ParseSimpleIntegerAssignment) {
 }
 
 TEST(ParserTest, ParseSimpleFloatAssignment) {
-    // int x = 3;
+    // float hey = 12.76;
     token_t *tokens[] = {
         generate_test_token(FLOAT_TYPE, "float"),
         generate_test_token(IDENTIFIER, "hey"),
