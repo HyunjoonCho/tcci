@@ -36,7 +36,7 @@ TEST(InterpreterTest, AdditionInteger) {
                                          create_literal_node(3));
 
     literal_t *result = interpret(root);
-    EXPECT_EQ(result->type, INTEGER_LITERAL);
+    EXPECT_EQ(result->type, INTEGER_CONST);
     EXPECT_EQ(result->value.int_value, 8);
     free(result);
 }
@@ -47,7 +47,7 @@ TEST(InterpreterTest, SubtractionFloat) {
                                          create_literal_node(3.5f));
 
     literal_t *result = interpret(root);
-    EXPECT_EQ(result->type, FLOAT_LITERAL);
+    EXPECT_EQ(result->type, FLOAT_CONST);
     EXPECT_FLOAT_EQ(result->value.float_value, 7.0);
     free(result);
 }
@@ -58,7 +58,7 @@ TEST(InterpreterTest, MultiplicationMixed) {
                                          create_literal_node(2.5f));
 
     literal_t *result = interpret(root);
-    EXPECT_EQ(result->type, FLOAT_LITERAL);
+    EXPECT_EQ(result->type, FLOAT_CONST);
     EXPECT_FLOAT_EQ(result->value.float_value, 10.0);
     free(result);
 }
@@ -69,7 +69,7 @@ TEST(InterpreterTest, DivisionFloat) {
                                          create_literal_node(3.0f));
 
     literal_t *result = interpret(root);
-    EXPECT_EQ(result->type, FLOAT_LITERAL);
+    EXPECT_EQ(result->type, FLOAT_CONST);
     EXPECT_FLOAT_EQ(result->value.float_value, 5.0);
     free(result);
 }
@@ -80,7 +80,7 @@ TEST(InterpreterTest, DivisionInteger) {
                                          create_literal_node(8));
 
     literal_t *result = interpret(root);
-    EXPECT_EQ(result->type, FLOAT_LITERAL);
+    EXPECT_EQ(result->type, FLOAT_CONST);
     EXPECT_FLOAT_EQ(result->value.float_value, 0.5);
     free(result);
 }
@@ -97,7 +97,7 @@ TEST(InterpreterTest, MoreThanThreeOperators) {
                                          create_literal_node(1));
 
     literal_t *result = interpret(root);
-    EXPECT_EQ(result->type, FLOAT_LITERAL);
+    EXPECT_EQ(result->type, FLOAT_CONST);
     EXPECT_EQ(result->value.float_value, 7.5);
     free(result);
 }

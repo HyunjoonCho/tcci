@@ -4,14 +4,8 @@
 #include <stdbool.h>
 #include "commons.h"
 
-
-typedef enum {
-    INTEGER_LITERAL,
-    FLOAT_LITERAL,
-} literal_type;
-
 struct literal_t {
-    literal_type type;
+    type_t type;
     value_t value;
 };
 
