@@ -34,8 +34,8 @@ TEST(InterpreterTest, AdditionInteger) {
     node_t *root = create_binary_op_node(ADD_OPERATOR,
                                          create_literal_node(5),
                                          create_literal_node(3));
-
-    literal_t *result = interpret(root);
+    interpreter_handle interpreter = interpreter_init(root);
+    literal_t *result = interpret(interpreter);
     EXPECT_EQ(result->type, INTEGER_CONST);
     EXPECT_EQ(result->value.int_value, 8);
     free(result);
@@ -45,8 +45,8 @@ TEST(InterpreterTest, SubtractionFloat) {
     node_t *root = create_binary_op_node(SUBTRACT_OPERATOR,
                                          create_literal_node(10.5f),
                                          create_literal_node(3.5f));
-
-    literal_t *result = interpret(root);
+    interpreter_handle interpreter = interpreter_init(root);
+    literal_t *result = interpret(interpreter);
     EXPECT_EQ(result->type, FLOAT_CONST);
     EXPECT_FLOAT_EQ(result->value.float_value, 7.0);
     free(result);
@@ -56,8 +56,8 @@ TEST(InterpreterTest, MultiplicationMixed) {
     node_t *root = create_binary_op_node(MULTIPLY_OPERATOR,
                                          create_literal_node(4),
                                          create_literal_node(2.5f));
-
-    literal_t *result = interpret(root);
+    interpreter_handle interpreter = interpreter_init(root);
+    literal_t *result = interpret(interpreter);
     EXPECT_EQ(result->type, FLOAT_CONST);
     EXPECT_FLOAT_EQ(result->value.float_value, 10.0);
     free(result);
@@ -67,8 +67,8 @@ TEST(InterpreterTest, DivisionFloat) {
     node_t *root = create_binary_op_node(DIVIDE_OPERATOR,
                                          create_literal_node(15.0f),
                                          create_literal_node(3.0f));
-
-    literal_t *result = interpret(root);
+    interpreter_handle interpreter = interpreter_init(root);
+    literal_t *result = interpret(interpreter);
     EXPECT_EQ(result->type, FLOAT_CONST);
     EXPECT_FLOAT_EQ(result->value.float_value, 5.0);
     free(result);
@@ -78,8 +78,8 @@ TEST(InterpreterTest, DivisionInteger) {
     node_t *root = create_binary_op_node(DIVIDE_OPERATOR,
                                          create_literal_node(4),
                                          create_literal_node(8));
-
-    literal_t *result = interpret(root);
+    interpreter_handle interpreter = interpreter_init(root);
+    literal_t *result = interpret(interpreter);
     EXPECT_EQ(result->type, FLOAT_CONST);
     EXPECT_FLOAT_EQ(result->value.float_value, 0.5);
     free(result);
@@ -95,8 +95,8 @@ TEST(InterpreterTest, MoreThanThreeOperators) {
                                                                                    create_literal_node(5),
                                                                                    create_literal_node(2))),
                                          create_literal_node(1));
-
-    literal_t *result = interpret(root);
+    interpreter_handle interpreter = interpreter_init(root);
+    literal_t *result = interpret(interpreter);
     EXPECT_EQ(result->type, FLOAT_CONST);
     EXPECT_EQ(result->value.float_value, 7.5);
     free(result);

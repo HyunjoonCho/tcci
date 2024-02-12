@@ -11,6 +11,17 @@ struct literal_t {
 
 typedef struct literal_t literal_t;
 
-literal_t *interpret(node_t *root);
+struct identifier_t {
+    char *id_name;
+    literal_t literal;
+};
+
+typedef struct identifier_t identifier_t;
+
+typedef struct interpreter interpreter;
+typedef interpreter *interpreter_handle;
+
+interpreter_handle interpreter_init(node_t *root);
+literal_t *interpret(interpreter_handle interpreter);
 
 #endif

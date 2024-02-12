@@ -3,6 +3,18 @@
 #include <stdio.h>
 #include "interpreter.h"
 
+struct interpreter {
+    identifier_t *context;
+    node_t *root;
+};
+
+interpreter_handle interpreter_init(node_t *root) {
+    interpreter *new_interpreter = malloc(sizeof(interpreter));
+    new_interpreter->context = malloc(sizeof(identifier_t) * 10); // Assume: max 10 identifiers
+    new_interpreter->root = root;
+    return new_interpreter;
+}
+
 literal_t *evaluate_ast(node_t *node) {
     if (node->type == BINARY_OP) {
         literal_t *l = evaluate_ast(node->left_child);
@@ -39,6 +51,6 @@ literal_t *evaluate_ast(node_t *node) {
     return zero_literal;
 }
 
-literal_t *interpret(node_t *root) {
-    return evaluate_ast(root);
+literal_t *interpret(interpreter_handle interpreter) {
+    return evaluate_ast(interpreter->root);
 }

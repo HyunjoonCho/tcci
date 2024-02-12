@@ -40,7 +40,8 @@ int main() {
                 token = get_next_token(lexer);
             }
             node_t *node = parse(tokens, token_count);
-            literal_t *literal = interpret(node);
+            interpreter_handle interpreter = interpreter_init(node);
+            literal_t *literal = interpret(interpreter);
             print_literal(literal);
 
             free_tokens(tokens, token_count);
