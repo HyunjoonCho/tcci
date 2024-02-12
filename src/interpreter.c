@@ -15,6 +15,10 @@ interpreter_handle interpreter_init(node_t *root) {
     return new_interpreter;
 }
 
+literal_t *get_value_of(interpreter_handle interpreter, const char *id_name) {
+    return NULL;
+}
+
 literal_t *evaluate_ast(node_t *node) {
     if (node->type == BINARY_OP) {
         literal_t *l = evaluate_ast(node->left_child);
