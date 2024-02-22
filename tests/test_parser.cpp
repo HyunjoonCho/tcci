@@ -168,6 +168,26 @@ TEST(ParserTest, ParseMoreThanThreeOperators) {
     check_constant_node(root->right_child->right_child, 2);
 }
 
+TEST(ParserTest, ParseSimpleIntegerDeclaration) {
+    // int x = 3;
+    token_t *tokens[] = {
+        generate_test_token(INTEGER_TYPE, "int"),
+        generate_test_token(IDENTIFIER, "x"),
+        generate_test_token(SEMICOLON, ";"),
+    };
+
+    node_t *root = parse(tokens, 3);
+
+    EXPECT_EQ(root->type, DECL);
+    EXPECT_EQ(root->subtype, DECLARATION);
+
+    EXPECT_EQ(root->left_child->type, TYPE_SPECIFIER);
+    EXPECT_EQ(root->left_child->subtype, INTEGER_TYPE);
+    EXPECT_EQ(root->right_child->type, DECLARATOR);
+    EXPECT_EQ(root->right_child->subtype, IDENTIFIER);
+    EXPECT_STREQ(root->right_child->value.id_name, "x");
+}
+
 TEST(ParserTest, ParseSimpleIntegerAssignment) {
     // int x = 3;
     token_t *tokens[] = {
@@ -180,14 +200,20 @@ TEST(ParserTest, ParseSimpleIntegerAssignment) {
 
     node_t *root = parse(tokens, 5);
 
-    EXPECT_EQ(root->type, ASSIGN_OP);
-    EXPECT_EQ(root->subtype, EQ_ASSIGN);
+    EXPECT_EQ(root->type, DECL);
+    EXPECT_EQ(root->subtype, DECLARATION);
 
-    EXPECT_EQ(root->left_child->type, ID);
+    EXPECT_EQ(root->left_child->type, TYPE_SPECIFIER);
     EXPECT_EQ(root->left_child->subtype, INTEGER_TYPE);
-    EXPECT_STREQ(root->left_child->value.id_name, "x");
 
-    check_constant_node(root->right_child, 3);
+    EXPECT_EQ(root->right_child->type, ASSIGN_OP);
+    EXPECT_EQ(root->right_child->subtype, EQ_ASSIGN);
+
+    EXPECT_EQ(root->right_child->left_child->type, DECLARATOR);
+    EXPECT_EQ(root->right_child->left_child->subtype, IDENTIFIER);
+    EXPECT_STREQ(root->right_child->left_child->value.id_name, "x");
+    
+    check_constant_node(root->right_child->right_child, 3);
 }
 
 TEST(ParserTest, ParseSimpleFloatAssignment) {
@@ -202,12 +228,18 @@ TEST(ParserTest, ParseSimpleFloatAssignment) {
 
     node_t *root = parse(tokens, 5);
 
-    EXPECT_EQ(root->type, ASSIGN_OP);
-    EXPECT_EQ(root->subtype, EQ_ASSIGN);
+    EXPECT_EQ(root->type, DECL);
+    EXPECT_EQ(root->subtype, DECLARATION);
 
-    EXPECT_EQ(root->left_child->type, ID);
+    EXPECT_EQ(root->left_child->type, TYPE_SPECIFIER);
     EXPECT_EQ(root->left_child->subtype, FLOAT_TYPE);
-    EXPECT_STREQ(root->left_child->value.id_name, "hey");
 
+    EXPECT_EQ(root->right_child->type, ASSIGN_OP);
+    EXPECT_EQ(root->right_child->subtype, EQ_ASSIGN);
+
+    EXPECT_EQ(root->right_child->left_child->type, DECLARATOR);
+    EXPECT_EQ(root->right_child->left_child->subtype, IDENTIFIER);
+    EXPECT_STREQ(root->right_child->left_child->value.id_name, "hey");
+    
     check_constant_node(root->right_child, 12.76f);
 }

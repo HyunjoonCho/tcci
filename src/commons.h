@@ -5,6 +5,7 @@ typedef enum {
     IDENTIFIER,
     INTEGER_CONST,
     FLOAT_CONST,
+    DECLARATION,
     ADD_OPERATOR,
     SUBTRACT_OPERATOR,
     MULTIPLY_OPERATOR,
@@ -26,6 +27,9 @@ struct token_t {
 typedef enum {
     CONSTANT,
     ID, // FIXME: doesn't seem so nice...
+    DECL, // FIXME: abbreviation for DECLARATION, this may cause confusion
+    DECLARATOR,
+    TYPE_SPECIFIER,
     BINARY_OP,
     ASSIGN_OP,
 } node_type;
