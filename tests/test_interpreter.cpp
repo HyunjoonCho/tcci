@@ -21,9 +21,9 @@ node_t *create_literal_node(float value) {
     return literal_node;
 }
 
-node_t *create_identifier_node(const char *id_name, type_t id_type) {
+node_t *create_identifier_node(const char *id_name, node_type n_type, type_t id_type) {
     node_t *id_node = (node_t *)malloc(sizeof(node_t));
-    id_node->type = ID;
+    id_node->type = n_type;
     id_node->subtype = id_type;
     id_node->value.id_name = strdup(id_name);
     return id_node;
@@ -45,6 +45,22 @@ node_t *create_assign_op_node(type_t op, node_t *left, node_t *right) {
     assign_op_node->left_child = left;
     assign_op_node->right_child = right;
     return assign_op_node;
+}
+
+node_t *create_type_specifier_node(type_t type) {
+    node_t *type_specifier_node = (node_t *)malloc(sizeof(node_t));
+    type_specifier_node->type = TYPE_SPECIFIER;
+    type_specifier_node->subtype = type;
+    return type_specifier_node;
+}
+
+node_t *create_declaration_node(node_t *left, node_t *right) {
+    node_t *declaration_node = (node_t *)malloc(sizeof(node_t));
+    declaration_node->type = DECL;
+    declaration_node->subtype = DECLARATION;
+    declaration_node->left_child = left;
+    declaration_node->right_child = right;
+    return declaration_node;
 }
 
 TEST(InterpreterTest, AdditionInteger) {
@@ -119,10 +135,23 @@ TEST(InterpreterTest, MoreThanThreeOperators) {
     free(result);
 }
 
+TEST(InterpreterTest, DeclareInteger) {
+    node_t *root = create_declaration_node(
+                                          create_type_specifier_node(INTEGER_TYPE),
+                                          create_identifier_node("x", DECLARATOR, INTEGER_TYPE));
+    interpreter_handle interpreter = interpreter_init(root);
+    literal_t *result = interpret(interpreter);
+    literal_t *id = get_value_of(interpreter, "x");
+    EXPECT_EQ(id->type, INTEGER_CONST);
+    EXPECT_EQ(id->value.int_value, 0);
+}
+
 TEST(InterpreterTest, AssignInteger) {
-    node_t *root = create_assign_op_node(EQ_ASSIGN,
-                                         create_identifier_node("x", INTEGER_TYPE),
-                                         create_literal_node(12));
+    node_t *root = create_declaration_node(
+                                          create_type_specifier_node(INTEGER_TYPE),
+                                          create_assign_op_node(EQ_ASSIGN,
+                                                               create_identifier_node("x", DECLARATOR, INTEGER_TYPE),
+                                                               create_literal_node(12)));
     interpreter_handle interpreter = interpreter_init(root);
     literal_t *result = interpret(interpreter);
     literal_t *id = get_value_of(interpreter, "x");
@@ -131,9 +160,11 @@ TEST(InterpreterTest, AssignInteger) {
 }
 
 TEST(InterpreterTest, AssignFloat) {
-    node_t *root = create_assign_op_node(EQ_ASSIGN,
-                                         create_identifier_node("dude", FLOAT_TYPE),
-                                         create_literal_node(0.57f));
+    node_t *root = create_declaration_node(
+                                          create_type_specifier_node(FLOAT_TYPE),
+                                          create_assign_op_node(EQ_ASSIGN,
+                                                               create_identifier_node("dude", DECLARATOR, FLOAT_TYPE),
+                                                               create_literal_node(0.57f)));
     interpreter_handle interpreter = interpreter_init(root);
     literal_t *result = interpret(interpreter);
     literal_t *id = get_value_of(interpreter, "dude");
