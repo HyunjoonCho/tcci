@@ -241,5 +241,5 @@ TEST(ParserTest, ParseSimpleFloatAssignment) {
     EXPECT_EQ(root->right_child->left_child->subtype, IDENTIFIER);
     EXPECT_STREQ(root->right_child->left_child->value.id_name, "hey");
     
-    check_constant_node(root->right_child, 12.76f);
+    check_constant_node(root->right_child->right_child, 12.76f);
 }
