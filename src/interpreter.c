@@ -17,12 +17,19 @@ interpreter_handle interpreter_init(node_t *root) {
     return new_interpreter;
 }
 
-literal_t *get_value_of(interpreter_handle interpreter, const char *id_name) {
+
+identifier_t *lookup(interpreter_handle interpreter, const char *id_name) {
     for (int i = 0; i < interpreter->count; i++){
         identifier_t *identifier = interpreter->context[i];
-        if (strcmp(identifier->id_name, id_name) == 0) return &(identifier->literal);
+        if (strcmp(identifier->id_name, id_name) == 0) return identifier;
     }
     return NULL;
+}
+
+literal_t *get_value_of(interpreter_handle interpreter, const char *id_name) {
+    identifier_t *identifier = lookup(interpreter, id_name);
+    if (identifier == NULL) return NULL;
+    else return &(identifier->literal);
 }
 
 identifier_t *evaluate_identifier(node_t *node) {
@@ -32,8 +39,31 @@ identifier_t *evaluate_identifier(node_t *node) {
     return identifier;
 }
 
+void initialize_identifier_literal(identifier_t *identifier, type_t specifier_type) {
+    if (specifier_type == INTEGER_TYPE) {
+        identifier->literal.type = INTEGER_CONST;
+        identifier->literal.value.int_value = 0;
+    } else {
+        identifier->literal.type = FLOAT_CONST;
+        identifier->literal.value.float_value = 0.0f;
+    }
+}
+
+void initialize_identifier_name(identifier_t *identifier, node_t *decl_node) {
+    node_t *declarator;
+    if (decl_node->right_child->type == DECLARATOR) declarator = decl_node->right_child;
+    else if (decl_node->right_child->subtype == EQ_ASSIGN) declarator = decl_node->right_child->left_child;
+    identifier->id_name = strdup(declarator->value.id_name);
+}
+
 literal_t *evaluate_ast(interpreter_handle interpreter, node_t *node) {
-    if (node->type == BINARY_OP) {
+    if (node->type == DECL) {
+        identifier_t *identifier = malloc(sizeof(identifier_t));
+        interpreter->context[interpreter->count++] = identifier;
+        initialize_identifier_literal(identifier, node->left_child->subtype);
+        initialize_identifier_name(identifier, node);
+        if (node->right_child->subtype == EQ_ASSIGN) evaluate_ast(interpreter, node->right_child);
+    } else if (node->type == BINARY_OP) {
         literal_t *l = evaluate_ast(interpreter, node->left_child);
         literal_t *r = evaluate_ast(interpreter, node->right_child);
         if (l->type == INTEGER_CONST && r->type == INTEGER_CONST && node->subtype != DIVIDE_OPERATOR) {
@@ -55,12 +85,10 @@ literal_t *evaluate_ast(interpreter_handle interpreter, node_t *node) {
         free(r);
         return l;
     } else if (node->type == ASSIGN_OP) {
-        identifier_t *identifier = evaluate_identifier(node->left_child);
+        identifier_t *identifier = lookup(interpreter, node->left_child->value.id_name);
         literal_t *value = evaluate_ast(interpreter, node->right_child);
-        identifier->literal.type = value->type;
         identifier->literal.value = value->value;
         free(value);
-        interpreter->context[interpreter->count++] = identifier;
     } else {
         literal_t *literal = malloc(sizeof(literal_t));
         literal->value = node->value;
