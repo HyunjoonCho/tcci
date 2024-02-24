@@ -29,6 +29,11 @@ void check_constant_node(node_t *const_node, float value) {
     EXPECT_FLOAT_EQ(const_node->value.float_value, value);    
 }
 
+void teardown(token_t **tokens, int token_count, node_t *root) {
+    free_tokens(tokens, token_count); 
+    free_node(root);
+}
+
 TEST(ParserTest, ParseSimpleIntegerAddition) {
     // 2 + 3
     token_t *tokens[] = {
@@ -42,6 +47,8 @@ TEST(ParserTest, ParseSimpleIntegerAddition) {
     check_op_node(root, ADD_OPERATOR);
     check_constant_node(root->left_child, 2);
     check_constant_node(root->right_child, 3);
+
+    teardown(tokens, 3, root);
 }
 
 TEST(ParserTest, ParseSimpleFloatAddition) {
@@ -57,6 +64,8 @@ TEST(ParserTest, ParseSimpleFloatAddition) {
     check_op_node(root, ADD_OPERATOR);
     check_constant_node(root->left_child, 2.7f);
     check_constant_node(root->right_child, 3.2f);
+
+    teardown(tokens, 3, root);
 }
 
 TEST(ParserTest, ParseIntegerOpsWithPriority) {
@@ -77,6 +86,8 @@ TEST(ParserTest, ParseIntegerOpsWithPriority) {
     check_op_node(root->right_child, MULTIPLY_OPERATOR);
     check_constant_node(root->right_child->left_child, 3);
     check_constant_node(root->right_child->right_child, 4);
+
+    teardown(tokens, 5, root);
 }
 
 TEST(ParserTest, ParseMixedOpsWithPriority) {
@@ -97,6 +108,8 @@ TEST(ParserTest, ParseMixedOpsWithPriority) {
     check_constant_node(root->left_child->left_child, 2);
     check_constant_node(root->left_child->right_child, 7.9f);
     check_constant_node(root->right_child, 9);
+
+    teardown(tokens, 5, root);
 }
 
 TEST(ParserTest, ParseIntegerDivision) {
@@ -112,6 +125,8 @@ TEST(ParserTest, ParseIntegerDivision) {
     check_op_node(root, DIVIDE_OPERATOR);
     check_constant_node(root->left_child, 8);
     check_constant_node(root->right_child, 2);
+
+    teardown(tokens, 3, root);
 }
 
 TEST(ParserTest, ParseMixedOpsWithParentheses) {
@@ -134,6 +149,8 @@ TEST(ParserTest, ParseMixedOpsWithParentheses) {
     check_constant_node(root->left_child->left_child, 2);
     check_constant_node(root->left_child->right_child, 3);
     check_constant_node(root->right_child, 4);
+
+    teardown(tokens, 7, root);
 }
 
 TEST(ParserTest, ParseMoreThanThreeOperators) {
@@ -166,6 +183,8 @@ TEST(ParserTest, ParseMoreThanThreeOperators) {
     check_op_node(root->right_child, DIVIDE_OPERATOR);
     check_constant_node(root->right_child->left_child, 4);
     check_constant_node(root->right_child->right_child, 2);
+
+    teardown(tokens, 9, root);
 }
 
 TEST(ParserTest, ParseSimpleIntegerDeclaration) {
@@ -186,6 +205,8 @@ TEST(ParserTest, ParseSimpleIntegerDeclaration) {
     EXPECT_EQ(root->right_child->type, DECLARATOR);
     EXPECT_EQ(root->right_child->subtype, IDENTIFIER);
     EXPECT_STREQ(root->right_child->value.id_name, "x");
+
+    teardown(tokens, 3, root);
 }
 
 TEST(ParserTest, ParseSimpleIntegerAssignment) {
@@ -214,6 +235,8 @@ TEST(ParserTest, ParseSimpleIntegerAssignment) {
     EXPECT_STREQ(root->right_child->left_child->value.id_name, "x");
     
     check_constant_node(root->right_child->right_child, 3);
+
+    teardown(tokens, 5, root);
 }
 
 TEST(ParserTest, ParseSimpleFloatAssignment) {
@@ -242,4 +265,6 @@ TEST(ParserTest, ParseSimpleFloatAssignment) {
     EXPECT_STREQ(root->right_child->left_child->value.id_name, "hey");
     
     check_constant_node(root->right_child->right_child, 12.76f);
+
+    teardown(tokens, 5, root);
 }

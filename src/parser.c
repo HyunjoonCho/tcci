@@ -79,7 +79,7 @@ node_t *parse(token_t **tokens, int token_count) {
     int parentheses_openings = 0;
     if (token_count == 1) return turn_token_into_node(tokens[0], &parentheses_openings);
 
-    node_t **nodes = malloc((token_count + 1) * sizeof(node_t *)); // Leave room for DECL node to be added
+    node_t **nodes = malloc((token_count + 3) * sizeof(node_t *)); // Leave room for DECL node to be added
 
     int node_count = 0;
     for (int i = 0; i < token_count; i++) {
@@ -96,11 +96,11 @@ node_t *parse(token_t **tokens, int token_count) {
 }
 
 void free_node(node_t *node) {
-    if (node->type == BINARY_OP) {
+    if (node->type == BINARY_OP || node->type == ASSIGN_OP|| node->type == DECL) {
         free_node(node->left_child);
         free_node(node->right_child);
-        free(node);
-    } else {
-        free(node);
+    } else if (node->subtype == IDENTIFIER) {
+        free(node->value.id_name);
     }
+    free(node);
 }
