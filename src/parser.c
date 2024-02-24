@@ -24,6 +24,7 @@ node_t *turn_token_into_node(token_t *token, int *paren_openings) {
         node->value.float_value = atof(token->value);      
     } else if (token->type == IDENTIFIER) {
         node->type = ID;
+        node->subtype = IDENTIFIER;
         node->value.id_name = strdup(token->value);
     } else if (token->type == EQ_ASSIGN) {
         node->type = ASSIGN_OP;
