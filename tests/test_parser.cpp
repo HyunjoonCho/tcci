@@ -34,7 +34,7 @@ void teardown(token_t **tokens, int token_count, node_t *root) {
     free_node(root);
 }
 
-TEST(ParserTest, ParseSimpleIntegerAddition) {
+TEST(ParserArithmetic, SimpleIntegerAddition) {
     // 2 + 3
     token_t *tokens[] = {
         generate_test_token(INTEGER_CONST, "2"),
@@ -51,7 +51,7 @@ TEST(ParserTest, ParseSimpleIntegerAddition) {
     teardown(tokens, 3, root);
 }
 
-TEST(ParserTest, ParseSimpleFloatAddition) {
+TEST(ParserArithmetic, SimpleFloatAddition) {
     // 2.7 + 3.2
     token_t *tokens[] = {
         generate_test_token(FLOAT_CONST, "2.7"),
@@ -68,7 +68,7 @@ TEST(ParserTest, ParseSimpleFloatAddition) {
     teardown(tokens, 3, root);
 }
 
-TEST(ParserTest, ParseIntegerOpsWithPriority) {
+TEST(ParserArithmetic, IntegerOpsWithPriority) {
     // 2 - 3 * 4
     token_t *tokens[] = {
         generate_test_token(INTEGER_CONST, "2"),
@@ -90,7 +90,7 @@ TEST(ParserTest, ParseIntegerOpsWithPriority) {
     teardown(tokens, 5, root);
 }
 
-TEST(ParserTest, ParseMixedOpsWithPriority) {
+TEST(ParserArithmetic, MixedOpsWithPriority) {
     // 2 * 7.9 + 9
     token_t *tokens[] = {
         generate_test_token(INTEGER_CONST, "2"),
@@ -112,7 +112,7 @@ TEST(ParserTest, ParseMixedOpsWithPriority) {
     teardown(tokens, 5, root);
 }
 
-TEST(ParserTest, ParseIntegerDivision) {
+TEST(ParserArithmetic, IntegerDivision) {
     // 8 / 2
     token_t *tokens[] = {
         generate_test_token(INTEGER_CONST, "8"),
@@ -129,7 +129,7 @@ TEST(ParserTest, ParseIntegerDivision) {
     teardown(tokens, 3, root);
 }
 
-TEST(ParserTest, ParseMixedOpsWithParentheses) {
+TEST(ParserArithmetic, MixedOpsWithParentheses) {
     // (2 + 3) * 4
     token_t *tokens[] = {
         generate_test_token(OPEN_PAREN, "("),
@@ -153,7 +153,7 @@ TEST(ParserTest, ParseMixedOpsWithParentheses) {
     teardown(tokens, 7, root);
 }
 
-TEST(ParserTest, ParseMoreThanThreeOperators) {
+TEST(ParserArithmetic, MoreThanThreeOperators) {
     // 1 + 2 * 3 - 4 / 2
     token_t *tokens[] = {
         generate_test_token(INTEGER_CONST, "1"),
@@ -187,7 +187,7 @@ TEST(ParserTest, ParseMoreThanThreeOperators) {
     teardown(tokens, 9, root);
 }
 
-TEST(ParserTest, ParseSimpleIntegerDeclaration) {
+TEST(ParserDeclarations, SimpleIntegerDeclaration) {
     // int x = 3;
     token_t *tokens[] = {
         generate_test_token(INTEGER_TYPE, "int"),
@@ -209,7 +209,7 @@ TEST(ParserTest, ParseSimpleIntegerDeclaration) {
     teardown(tokens, 3, root);
 }
 
-TEST(ParserTest, ParseSimpleIntegerAssignment) {
+TEST(ParserDeclarations, SimpleIntegerAssignment) {
     // int x = 3;
     token_t *tokens[] = {
         generate_test_token(INTEGER_TYPE, "int"),
@@ -239,7 +239,7 @@ TEST(ParserTest, ParseSimpleIntegerAssignment) {
     teardown(tokens, 5, root);
 }
 
-TEST(ParserTest, ParseSimpleFloatAssignment) {
+TEST(ParserDeclarations, SimpleFloatAssignment) {
     // float hey = 12.76;
     token_t *tokens[] = {
         generate_test_token(FLOAT_TYPE, "float"),

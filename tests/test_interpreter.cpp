@@ -63,7 +63,7 @@ node_t *create_declaration_node(node_t *left, node_t *right) {
     return declaration_node;
 }
 
-TEST(InterpreterTest, AdditionInteger) {
+TEST(InterpreterArithmetic, AdditionInteger) {
     node_t *root = create_binary_op_node(ADD_OPERATOR,
                                          create_literal_node(5),
                                          create_literal_node(3));
@@ -74,7 +74,7 @@ TEST(InterpreterTest, AdditionInteger) {
     free(result);
 }
 
-TEST(InterpreterTest, SubtractionFloat) {
+TEST(InterpreterArithmetic, SubtractionFloat) {
     node_t *root = create_binary_op_node(SUBTRACT_OPERATOR,
                                          create_literal_node(10.5f),
                                          create_literal_node(3.5f));
@@ -85,7 +85,7 @@ TEST(InterpreterTest, SubtractionFloat) {
     free(result);
 }
 
-TEST(InterpreterTest, MultiplicationMixed) {
+TEST(InterpreterArithmetic, MultiplicationMixed) {
     node_t *root = create_binary_op_node(MULTIPLY_OPERATOR,
                                          create_literal_node(4),
                                          create_literal_node(2.5f));
@@ -96,7 +96,7 @@ TEST(InterpreterTest, MultiplicationMixed) {
     free(result);
 }
 
-TEST(InterpreterTest, DivisionFloat) {
+TEST(InterpreterArithmetic, DivisionFloat) {
     node_t *root = create_binary_op_node(DIVIDE_OPERATOR,
                                          create_literal_node(15.0f),
                                          create_literal_node(3.0f));
@@ -107,7 +107,7 @@ TEST(InterpreterTest, DivisionFloat) {
     free(result);
 }
 
-TEST(InterpreterTest, DivisionInteger) {
+TEST(InterpreterArithmetic, DivisionInteger) {
     node_t *root = create_binary_op_node(DIVIDE_OPERATOR,
                                          create_literal_node(4),
                                          create_literal_node(8));
@@ -118,7 +118,7 @@ TEST(InterpreterTest, DivisionInteger) {
     free(result);
 }
 
-TEST(InterpreterTest, MoreThanThreeOperators) {
+TEST(InterpreterArithmetic, MoreThanThreeOperators) {
     node_t *root = create_binary_op_node(SUBTRACT_OPERATOR,
                                          create_binary_op_node(ADD_OPERATOR,
                                                               create_binary_op_node(MULTIPLY_OPERATOR,
@@ -135,7 +135,7 @@ TEST(InterpreterTest, MoreThanThreeOperators) {
     free(result);
 }
 
-TEST(InterpreterTest, DeclareInteger) {
+TEST(InterpreterDeclarations, DeclareInteger) {
     node_t *root = create_declaration_node(
                                           create_type_specifier_node(INTEGER_TYPE),
                                           create_identifier_node("x", DECLARATOR, INTEGER_TYPE));
@@ -146,7 +146,7 @@ TEST(InterpreterTest, DeclareInteger) {
     EXPECT_EQ(id->value.int_value, 0);
 }
 
-TEST(InterpreterTest, AssignInteger) {
+TEST(InterpreterDeclarations, AssignInteger) {
     node_t *root = create_declaration_node(
                                           create_type_specifier_node(INTEGER_TYPE),
                                           create_assign_op_node(EQ_ASSIGN,
@@ -159,7 +159,7 @@ TEST(InterpreterTest, AssignInteger) {
     EXPECT_EQ(id->value.int_value, 12);
 }
 
-TEST(InterpreterTest, AssignFloat) {
+TEST(InterpreterDeclarations, AssignFloat) {
     node_t *root = create_declaration_node(
                                           create_type_specifier_node(FLOAT_TYPE),
                                           create_assign_op_node(EQ_ASSIGN,
