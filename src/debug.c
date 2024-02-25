@@ -22,6 +22,7 @@ int main() {
         generate_test_token(SEMICOLON, ";"),
     };
 
-    node_t *root = parse(tokens, 5);    
+    parser_handle parser = parser_init(tokens, 5);
+    node_t *root = parse(parser);    
     return 0;
 }

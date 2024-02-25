@@ -39,7 +39,8 @@ int main() {
                 token_count++;
                 token = get_next_token(lexer);
             }
-            node_t *node = parse(tokens, token_count);
+            parser_handle parser = parser_init(tokens, token_count);
+            node_t *node = parse(parser);
             interpreter_handle interpreter = interpreter_init(node);
             literal_t *literal = interpret(interpreter);
             print_literal(literal);

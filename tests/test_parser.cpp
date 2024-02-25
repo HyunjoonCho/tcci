@@ -42,7 +42,8 @@ TEST(ParserArithmetic, SimpleIntegerAddition) {
         generate_test_token(INTEGER_CONST, "3"),
     };
 
-    node_t *root = parse(tokens, 3);
+    parser_handle parser = parser_init(tokens, 3);
+    node_t *root = parse(parser);
 
     check_op_node(root, ADD_OPERATOR);
     check_constant_node(root->left_child, 2);
@@ -59,7 +60,8 @@ TEST(ParserArithmetic, SimpleFloatAddition) {
         generate_test_token(FLOAT_CONST, "3.2"),
     };
 
-    node_t *root = parse(tokens, 3);
+    parser_handle parser = parser_init(tokens, 3);
+    node_t *root = parse(parser);
 
     check_op_node(root, ADD_OPERATOR);
     check_constant_node(root->left_child, 2.7f);
@@ -78,7 +80,8 @@ TEST(ParserArithmetic, IntegerOpsWithPriority) {
         generate_test_token(INTEGER_CONST, "4"),
     };
 
-    node_t *root = parse(tokens, 5);
+    parser_handle parser = parser_init(tokens, 5);
+    node_t *root = parse(parser);
 
     check_op_node(root, SUBTRACT_OPERATOR);
     check_constant_node(root->left_child, 2);
@@ -100,7 +103,8 @@ TEST(ParserArithmetic, MixedOpsWithPriority) {
         generate_test_token(INTEGER_CONST, "9"),
     };
 
-    node_t *root = parse(tokens, 5);
+    parser_handle parser = parser_init(tokens, 5);
+    node_t *root = parse(parser);
 
     check_op_node(root, ADD_OPERATOR);
 
@@ -120,7 +124,8 @@ TEST(ParserArithmetic, IntegerDivision) {
         generate_test_token(INTEGER_CONST, "2"),
     };
 
-    node_t *root = parse(tokens, 3);
+    parser_handle parser = parser_init(tokens, 3);
+    node_t *root = parse(parser);
 
     check_op_node(root, DIVIDE_OPERATOR);
     check_constant_node(root->left_child, 8);
@@ -141,7 +146,8 @@ TEST(ParserArithmetic, MixedOpsWithParentheses) {
         generate_test_token(INTEGER_CONST, "4"),
     };
 
-    node_t *root = parse(tokens, 7);
+    parser_handle parser = parser_init(tokens, 7);
+    node_t *root = parse(parser);
 
     check_op_node(root, MULTIPLY_OPERATOR);
 
@@ -167,7 +173,8 @@ TEST(ParserArithmetic, MoreThanThreeOperators) {
         generate_test_token(INTEGER_CONST, "2"),
     };
 
-    node_t *root = parse(tokens, 9);
+    parser_handle parser = parser_init(tokens, 9);
+    node_t *root = parse(parser);
 
     // TODO: dependency to op prioritizing algorithm > better correctness check needed
     // for this case, ADD may come first
@@ -195,7 +202,8 @@ TEST(ParserDeclarations, SimpleIntegerDeclaration) {
         generate_test_token(SEMICOLON, ";"),
     };
 
-    node_t *root = parse(tokens, 3);
+    parser_handle parser = parser_init(tokens, 3);
+    node_t *root = parse(parser);
 
     EXPECT_EQ(root->type, DECL);
     EXPECT_EQ(root->subtype, DECLARATION);
@@ -219,7 +227,8 @@ TEST(ParserDeclarations, SimpleIntegerAssignment) {
         generate_test_token(SEMICOLON, ";"),
     };
 
-    node_t *root = parse(tokens, 5);
+    parser_handle parser = parser_init(tokens, 5);
+    node_t *root = parse(parser);
 
     EXPECT_EQ(root->type, DECL);
     EXPECT_EQ(root->subtype, DECLARATION);
@@ -249,7 +258,8 @@ TEST(ParserDeclarations, SimpleFloatAssignment) {
         generate_test_token(SEMICOLON, ";"),
     };
 
-    node_t *root = parse(tokens, 5);
+    parser_handle parser = parser_init(tokens, 5);
+    node_t *root = parse(parser);
 
     EXPECT_EQ(root->type, DECL);
     EXPECT_EQ(root->subtype, DECLARATION);

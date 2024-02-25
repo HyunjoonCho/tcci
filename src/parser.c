@@ -3,6 +3,22 @@
 #include <string.h>
 #include "commons.h"
 
+struct parser {
+    token_t **tokens;
+    int token_count;
+    int current;
+    int opened_paren_count;
+};
+
+parser_handle parser_init(token_t **tokens, int token_count) {
+    parser_handle new_parser = malloc(sizeof(parser));
+    new_parser->tokens = tokens; // may copy the tokens?
+    new_parser->token_count = token_count;
+    new_parser->current = 0;
+    new_parser->opened_paren_count = 0;
+    return new_parser;
+}
+
 node_t *turn_token_into_node(token_t *token, int *paren_openings) {
     if (token->type == SEMICOLON) return NULL;
     if (token->type == OPEN_PAREN || token->type == CLOSE_PAREN) {
@@ -67,7 +83,10 @@ node_t *assemble_tree(node_t **nodes, int start_index, int end_index) {
     return current_node;
 }
 
-node_t *parse(token_t **tokens, int token_count) {
+node_t *parse(parser_handle parser) {
+    token_t **tokens = parser->tokens;
+    int token_count = parser->token_count; 
+
     int parentheses_openings = 0;
     if (token_count == 1) return turn_token_into_node(tokens[0], &parentheses_openings);
 
@@ -85,6 +104,10 @@ node_t *parse(token_t **tokens, int token_count) {
     free(nodes);
 
     return root;
+}
+
+void free_parser(parser_handle parser) {
+
 }
 
 void free_node(node_t *node) {

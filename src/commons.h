@@ -61,7 +61,12 @@ lexer_handle lexer_init(const char *input);
 token_t *get_next_token(lexer_handle lexer);
 void free_tokens(token_t **tokens, int token_count);
 
-node_t *parse(token_t **tokens,int token_count);
+typedef struct parser parser;
+typedef parser *parser_handle;
+
+parser_handle parser_init(token_t **tokens, int token_count);
+node_t *parse(parser_handle parser);
+void free_parser(parser_handle parser);
 void free_node(node_t *root);
 
 #endif
