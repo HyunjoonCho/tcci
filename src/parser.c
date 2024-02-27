@@ -8,6 +8,7 @@ struct parser {
     int token_count;
     int current;
     int opened_paren_count;
+    node_t **nodes;
 };
 
 parser_handle parser_init(token_t **tokens, int token_count) {
@@ -19,10 +20,15 @@ parser_handle parser_init(token_t **tokens, int token_count) {
     return new_parser;
 }
 
-node_t *turn_token_into_node(token_t *token, int *paren_openings) {
+int has_next(parser_handle parser) {
+    return parser->current < parser->token_count;
+}
+
+node_t *turn_token_into_node(parser_handle parser) {
+    token_t *token = parser->tokens[parser->current++];
     if (token->type == SEMICOLON) return NULL;
     if (token->type == OPEN_PAREN || token->type == CLOSE_PAREN) {
-        *paren_openings += (token->type == OPEN_PAREN) - (token->type == CLOSE_PAREN);
+        parser->opened_paren_count += (token->type == OPEN_PAREN) - (token->type == CLOSE_PAREN);
         return NULL;
     }
 
@@ -43,7 +49,7 @@ node_t *turn_token_into_node(token_t *token, int *paren_openings) {
         node->type = ASSIGN_OP;
         node->op_priority = 3;
     } else {
-        int paren_priority = *paren_openings;
+        int paren_priority = parser->opened_paren_count;
         node->type = BINARY_OP;
         if (token->type == ADD_OPERATOR || token->type == SUBTRACT_OPERATOR) node->op_priority = 2 - 2 * paren_priority;
         else node->op_priority = 1 - 2 * paren_priority;
@@ -87,27 +93,26 @@ node_t *parse(parser_handle parser) {
     token_t **tokens = parser->tokens;
     int token_count = parser->token_count; 
 
-    int parentheses_openings = 0;
-    if (token_count == 1) return turn_token_into_node(tokens[0], &parentheses_openings);
-
-    node_t **nodes = malloc((token_count + 3) * sizeof(node_t *)); // Leave room for DECL node to be added
+    parser->nodes = malloc((token_count + 3) * sizeof(node_t *)); // Leave room for DECL node to be added
 
     int node_count = 0;
-    for (int i = 0; i < token_count; i++) {
-        node_t *node = turn_token_into_node(tokens[i], &parentheses_openings);
+    while (has_next(parser)) {
+        node_t *node = turn_token_into_node(parser);
         if (node == NULL) continue;
-        nodes[node_count++] = node;
-        if (node->type == TYPE_SPECIFIER) nodes[node_count++] = generate_decl_token();
+        parser->nodes[node_count++] = node;
+        if (node->type == TYPE_SPECIFIER) parser->nodes[node_count++] = generate_decl_token();
     }
 
-    node_t *root = assemble_tree(nodes, 0, node_count);    
-    free(nodes);
+    node_t *root = assemble_tree(parser->nodes, 0, node_count);    
 
     return root;
 }
 
 void free_parser(parser_handle parser) {
-
+    free_tokens(parser->tokens, parser->token_count);
+    free(parser->tokens);
+    free(parser->nodes);
+    free(parser);
 }
 
 void free_node(node_t *node) {

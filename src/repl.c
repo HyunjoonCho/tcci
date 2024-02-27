@@ -45,9 +45,8 @@ int main() {
             literal_t *literal = interpret(interpreter);
             print_literal(literal);
 
-            free_tokens(tokens, token_count);
-            free(tokens);
-
+            free_parser(parser);
+            
             free_node(node);
             free(literal);
         }
