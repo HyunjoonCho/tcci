@@ -110,6 +110,7 @@ node_t *parse(parser_handle parser) {
 
 void free_parser(parser_handle parser) {
     free_tokens(parser->tokens, parser->token_count);
+    // FIXME: Unless tokens are explicitly copied, this freeing may lead to confusion.
     free(parser->tokens);
     free(parser->nodes);
     free(parser);

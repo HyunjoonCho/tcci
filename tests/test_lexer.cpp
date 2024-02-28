@@ -174,7 +174,7 @@ TEST(LexerDeclarations, VariableDeclarationAndInitialization) {
     EXPECT_EQ(token->type, SEMICOLON);
 }
 
-TEST(LexerDeclarations, MultipleDeclarations) {
+TEST(LexerCompoundStatements, MultipleDeclarations) {
     lexer_handle lexer = lexer_init("int x; float y = 3.14; int z = 42;");
     
     // Test for the first declaration
@@ -204,6 +204,44 @@ TEST(LexerDeclarations, MultipleDeclarations) {
     EXPECT_EQ(token->type, IDENTIFIER);
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, EQ_ASSIGN);
+    token = get_next_token(lexer);
+    EXPECT_EQ(token->type, INTEGER_CONST);
+    token = get_next_token(lexer);
+    EXPECT_EQ(token->type, SEMICOLON);
+}
+
+TEST(LexerCompoundStatements, DeclareAndAdd) {
+    lexer_handle lexer = lexer_init("int x; int y = 12; x = y + 16;");
+    
+    // Test for the first declaration
+    token_t *token = get_next_token(lexer);
+    EXPECT_EQ(token->type, INTEGER_TYPE);
+    token = get_next_token(lexer);
+    EXPECT_EQ(token->type, IDENTIFIER);
+    token = get_next_token(lexer);
+    EXPECT_EQ(token->type, SEMICOLON);
+
+    // Test for the second declaration
+    token = get_next_token(lexer);
+    EXPECT_EQ(token->type, INTEGER_TYPE);
+    token = get_next_token(lexer);
+    EXPECT_EQ(token->type, IDENTIFIER);
+    token = get_next_token(lexer);
+    EXPECT_EQ(token->type, EQ_ASSIGN);
+    token = get_next_token(lexer);
+    EXPECT_EQ(token->type, INTEGER_CONST);
+    token = get_next_token(lexer);
+    EXPECT_EQ(token->type, SEMICOLON);
+
+    // Test for the third declaration
+    token = get_next_token(lexer);
+    EXPECT_EQ(token->type, IDENTIFIER);
+    token = get_next_token(lexer);
+    EXPECT_EQ(token->type, EQ_ASSIGN);
+    token = get_next_token(lexer);
+    EXPECT_EQ(token->type, IDENTIFIER);
+    token = get_next_token(lexer);
+    EXPECT_EQ(token->type, ADD_OPERATOR);
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, INTEGER_CONST);
     token = get_next_token(lexer);
