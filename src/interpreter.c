@@ -35,7 +35,7 @@ literal_t *get_value_of(interpreter_handle interpreter, const char *id_name) {
 identifier_t *evaluate_identifier(node_t *node) {
     if (node->type != ID) return NULL;
     identifier_t *identifier = malloc(sizeof(identifier_t));
-    identifier->id_name = strdup(node->value.id_name);
+    identifier->id_name = strdup(node->actual_node->value.id_name);
     return identifier;
 }
 
@@ -51,25 +51,25 @@ void initialize_identifier_literal(identifier_t *identifier, type_t specifier_ty
 
 void initialize_identifier_name(identifier_t *identifier, node_t *decl_node) {
     node_t *declarator;
-    if (decl_node->right_child->type == DECLARATOR) declarator = decl_node->right_child;
-    else if (decl_node->right_child->subtype == EQ_ASSIGN) declarator = decl_node->right_child->left_child;
-    identifier->id_name = strdup(declarator->value.id_name);
+    if (decl_node->actual_node->right_child->type == DECLARATOR) declarator = decl_node->actual_node->right_child;
+    else if (decl_node->actual_node->right_child->actual_node->subtype == EQ_ASSIGN) declarator = decl_node->actual_node->right_child->actual_node->left_child;
+    identifier->id_name = strdup(declarator->actual_node->value.id_name);
 }
 
 literal_t *evaluate_ast(interpreter_handle interpreter, node_t *node) {
     if (node->type == DECL) {
         identifier_t *identifier = malloc(sizeof(identifier_t));
         interpreter->context[interpreter->count++] = identifier;
-        initialize_identifier_literal(identifier, node->left_child->subtype);
+        initialize_identifier_literal(identifier, node->actual_node->left_child->actual_node->subtype);
         initialize_identifier_name(identifier, node);
-        if (node->right_child->subtype == EQ_ASSIGN) evaluate_ast(interpreter, node->right_child);
+        if (node->actual_node->right_child->actual_node->subtype == EQ_ASSIGN) evaluate_ast(interpreter, node->actual_node->right_child);
     } else if (node->type == BINARY_OP) {
-        literal_t *l = evaluate_ast(interpreter, node->left_child);
-        literal_t *r = evaluate_ast(interpreter, node->right_child);
-        if (l->type == INTEGER_CONST && r->type == INTEGER_CONST && node->subtype != DIVIDE_OPERATOR) {
-            if (node->subtype == ADD_OPERATOR) l->value.int_value += r->value.int_value;
-            else if (node->subtype == SUBTRACT_OPERATOR) l->value.int_value -= r->value.int_value;
-            else if (node->subtype == MULTIPLY_OPERATOR) l->value.int_value *= r->value.int_value;
+        literal_t *l = evaluate_ast(interpreter, node->actual_node->left_child);
+        literal_t *r = evaluate_ast(interpreter, node->actual_node->right_child);
+        if (l->type == INTEGER_CONST && r->type == INTEGER_CONST && node->actual_node->subtype != DIVIDE_OPERATOR) {
+            if (node->actual_node->subtype == ADD_OPERATOR) l->value.int_value += r->value.int_value;
+            else if (node->actual_node->subtype == SUBTRACT_OPERATOR) l->value.int_value -= r->value.int_value;
+            else if (node->actual_node->subtype == MULTIPLY_OPERATOR) l->value.int_value *= r->value.int_value;
         } else {
             if (l->type == INTEGER_CONST) {
                 l->value.float_value = (float) l->value.int_value;
@@ -77,22 +77,22 @@ literal_t *evaluate_ast(interpreter_handle interpreter, node_t *node) {
             } 
             if (r->type == INTEGER_CONST) r->value.float_value = (float) r->value.int_value;
 
-            if (node->subtype == ADD_OPERATOR) l->value.float_value += r->value.float_value;
-            else if (node->subtype == SUBTRACT_OPERATOR) l->value.float_value -= r->value.float_value;
-            else if (node->subtype == MULTIPLY_OPERATOR) l->value.float_value *= r->value.float_value;
-            else if (node->subtype == DIVIDE_OPERATOR) l->value.float_value /= r->value.float_value;
+            if (node->actual_node->subtype == ADD_OPERATOR) l->value.float_value += r->value.float_value;
+            else if (node->actual_node->subtype == SUBTRACT_OPERATOR) l->value.float_value -= r->value.float_value;
+            else if (node->actual_node->subtype == MULTIPLY_OPERATOR) l->value.float_value *= r->value.float_value;
+            else if (node->actual_node->subtype == DIVIDE_OPERATOR) l->value.float_value /= r->value.float_value;
         } 
         free(r);
         return l;
     } else if (node->type == ASSIGN_OP) {
-        identifier_t *identifier = lookup(interpreter, node->left_child->value.id_name);
-        literal_t *value = evaluate_ast(interpreter, node->right_child);
+        identifier_t *identifier = lookup(interpreter, node->actual_node->left_child->actual_node->value.id_name);
+        literal_t *value = evaluate_ast(interpreter, node->actual_node->right_child);
         identifier->literal.value = value->value;
         free(value);
     } else {
         literal_t *literal = malloc(sizeof(literal_t));
-        literal->value = node->value;
-        if (node->subtype == INTEGER_CONST) literal->type = INTEGER_CONST;
+        literal->value = node->actual_node->value;
+        if (node->actual_node->subtype == INTEGER_CONST) literal->type = INTEGER_CONST;
         else literal->type = FLOAT_CONST;
         return literal;
     }

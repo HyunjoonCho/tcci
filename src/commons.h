@@ -43,8 +43,14 @@ union value_t {
 typedef union value_t value_t;
 
 typedef struct node_t node_t;
+typedef struct dummy_node dummy_node;
+
 struct node_t {
     node_type type;
+    dummy_node *actual_node;
+};
+
+struct dummy_node {
     type_t subtype;
     value_t value;
     int op_priority;
