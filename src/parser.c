@@ -34,26 +34,26 @@ node_t *turn_token_into_node(parser_handle parser) {
 
     node_t *node = malloc(sizeof(node_t));
     node->actual_node = malloc(sizeof(dummy_node));
-    node->actual_node->subtype = token->type;
+    ((dummy_node *)node->actual_node)->subtype = token->type;
     if (token->type == INTEGER_TYPE || token->type == FLOAT_TYPE) {
         node->type = TYPE_SPECIFIER;
     } else if (token->type == INTEGER_CONST) {
         node->type = CONSTANT;
-        node->actual_node->value.int_value = atoi(token->value);
+        ((dummy_node *)node->actual_node)->value.int_value = atoi(token->value);
     } else if (token->type == FLOAT_CONST) {
         node->type = CONSTANT;
-        node->actual_node->value.float_value = atof(token->value);      
+        ((dummy_node *)node->actual_node)->value.float_value = atof(token->value);      
     } else if (token->type == IDENTIFIER) {
         node->type = ID;
-        node->actual_node->value.id_name = strdup(token->value);
+        ((dummy_node *)node->actual_node)->value.id_name = strdup(token->value);
     } else if (token->type == EQ_ASSIGN) {
         node->type = ASSIGN_OP;
-        node->actual_node->op_priority= 3;
+        ((dummy_node *)node->actual_node)->op_priority= 3;
     } else {
         int paren_priority = parser->opened_paren_count;
         node->type = BINARY_OP;
-        if (token->type == ADD_OPERATOR || token->type == SUBTRACT_OPERATOR) node->actual_node->op_priority= 2 - 2 * paren_priority;
-        else node->actual_node->op_priority= 1 - 2 * paren_priority;
+        if (token->type == ADD_OPERATOR || token->type == SUBTRACT_OPERATOR) ((dummy_node *)node->actual_node)->op_priority= 2 - 2 * paren_priority;
+        else ((dummy_node *)node->actual_node)->op_priority= 1 - 2 * paren_priority;
     }
     return node;
 }
@@ -62,8 +62,8 @@ node_t *generate_decl_token() {
     node_t *decl_node = malloc(sizeof(node_t));
     decl_node->actual_node = malloc(sizeof(dummy_node));
     decl_node->type = DECL;
-    decl_node->actual_node->subtype = DECLARATION;
-    decl_node->actual_node->op_priority= 4;
+    ((dummy_node *)decl_node->actual_node)->subtype = DECLARATION;
+    ((dummy_node *)decl_node->actual_node)->op_priority= 4;
     return decl_node;
 }
 
@@ -77,16 +77,16 @@ node_t *assemble_tree(node_t **nodes, int start_index, int end_index) {
     for (int i = start_index; i < end_index; i++) {
         current_node = nodes[i];
         if ((current_node->type == DECL || current_node->type == BINARY_OP || current_node->type == ASSIGN_OP) && 
-             current_node->actual_node->op_priority>= max_priority) {
-            max_priority = current_node->actual_node->op_priority;
+             ((dummy_node *)current_node->actual_node)->op_priority>= max_priority) {
+            max_priority = ((dummy_node *)current_node->actual_node)->op_priority;
             least_prioritized_index = i;
         }
     }
 
     current_node = nodes[least_prioritized_index];
     if (current_node->type == DECL) nodes[least_prioritized_index + 1]->type = DECLARATOR; // Assume: following token must be identifier
-    current_node->actual_node->left_child = assemble_tree(nodes, start_index, least_prioritized_index);
-    current_node->actual_node->right_child = assemble_tree(nodes, least_prioritized_index + 1, end_index);
+    ((dummy_node *)current_node->actual_node)->left_child = assemble_tree(nodes, start_index, least_prioritized_index);
+    ((dummy_node *)current_node->actual_node)->right_child = assemble_tree(nodes, least_prioritized_index + 1, end_index);
 
     return current_node;
 }
@@ -120,10 +120,10 @@ void free_parser(parser_handle parser) {
 
 void free_node(node_t *node) {
     if (node->type == BINARY_OP || node->type == ASSIGN_OP|| node->type == DECL) {
-        free_node(node->actual_node->left_child);
-        free_node(node->actual_node->right_child);
-    } else if (node->actual_node->subtype == IDENTIFIER) {
-        free(node->actual_node->value.id_name);
+        free_node(((dummy_node *)node->actual_node)->left_child);
+        free_node(((dummy_node *)node->actual_node)->right_child);
+    } else if (((dummy_node *)node->actual_node)->subtype == IDENTIFIER) {
+        free(((dummy_node *)node->actual_node)->value.id_name);
     }
     free(node);
 }

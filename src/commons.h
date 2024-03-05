@@ -47,7 +47,7 @@ typedef struct dummy_node dummy_node;
 
 struct node_t {
     node_type type;
-    dummy_node *actual_node;
+    void *actual_node;
 };
 
 struct dummy_node {

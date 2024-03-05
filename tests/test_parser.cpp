@@ -14,19 +14,19 @@ token_t *generate_test_token(type_t type, const char *value) {
 
 void check_op_node(node_t *op_node, type_t op) {
     EXPECT_EQ(op_node->type, BINARY_OP);
-    EXPECT_EQ(op_node->actual_node->subtype, op);
+    EXPECT_EQ(((dummy_node *)op_node->actual_node)->subtype, op);
 }
 
 void check_constant_node(node_t *const_node, int value) {
     EXPECT_EQ(const_node->type, CONSTANT);
-    EXPECT_EQ(const_node->actual_node->subtype, INTEGER_CONST);
-    EXPECT_EQ(const_node->actual_node->value.int_value, value);
+    EXPECT_EQ(((dummy_node *)const_node->actual_node)->subtype, INTEGER_CONST);
+    EXPECT_EQ(((dummy_node *)const_node->actual_node)->value.int_value, value);
 }
 
 void check_constant_node(node_t *const_node, float value) {
     EXPECT_EQ(const_node->type, CONSTANT);
-    EXPECT_EQ(const_node->actual_node->subtype, FLOAT_CONST);
-    EXPECT_FLOAT_EQ(const_node->actual_node->value.float_value, value);    
+    EXPECT_EQ(((dummy_node *)const_node->actual_node)->subtype, FLOAT_CONST);
+    EXPECT_FLOAT_EQ(((dummy_node *)const_node->actual_node)->value.float_value, value);    
 }
 
 void teardown(token_t **tokens, int token_count, node_t *root) {
@@ -45,8 +45,8 @@ TEST(ParserArithmetic, SimpleIntegerAddition) {
     node_t *root = parse(parser);
 
     check_op_node(root, ADD_OPERATOR);
-    check_constant_node(root->actual_node->left_child, 2);
-    check_constant_node(root->actual_node->right_child, 3);
+    check_constant_node(((dummy_node *)root->actual_node)->left_child, 2);
+    check_constant_node(((dummy_node *)root->actual_node)->right_child, 3);
 
     free_parser(parser);
 }
@@ -63,8 +63,8 @@ TEST(ParserArithmetic, SimpleFloatAddition) {
     node_t *root = parse(parser);
 
     check_op_node(root, ADD_OPERATOR);
-    check_constant_node(root->actual_node->left_child, 2.7f);
-    check_constant_node(root->actual_node->right_child, 3.2f);
+    check_constant_node(((dummy_node *)root->actual_node)->left_child, 2.7f);
+    check_constant_node(((dummy_node *)root->actual_node)->right_child, 3.2f);
 
     free_parser(parser);
 }
@@ -82,11 +82,11 @@ TEST(ParserArithmetic, IntegerOpsWithPriority) {
     node_t *root = parse(parser);
 
     check_op_node(root, SUBTRACT_OPERATOR);
-    check_constant_node(root->actual_node->left_child, 2);
+    check_constant_node(((dummy_node *)root->actual_node)->left_child, 2);
 
-    check_op_node(root->actual_node->right_child, MULTIPLY_OPERATOR);
-    check_constant_node(root->actual_node->right_child->actual_node->left_child, 3);
-    check_constant_node(root->actual_node->right_child->actual_node->right_child, 4);
+    check_op_node(((dummy_node *)root->actual_node)->right_child, MULTIPLY_OPERATOR);
+    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->left_child, 3);
+    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->right_child, 4);
 
     free_parser(parser);
 }
@@ -105,10 +105,10 @@ TEST(ParserArithmetic, MixedOpsWithPriority) {
 
     check_op_node(root, ADD_OPERATOR);
 
-    check_op_node(root->actual_node->left_child, MULTIPLY_OPERATOR);
-    check_constant_node(root->actual_node->left_child->actual_node->left_child, 2);
-    check_constant_node(root->actual_node->left_child->actual_node->right_child, 7.9f);
-    check_constant_node(root->actual_node->right_child, 9);
+    check_op_node(((dummy_node *)root->actual_node)->left_child, MULTIPLY_OPERATOR);
+    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->left_child, 2);
+    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->right_child, 7.9f);
+    check_constant_node(((dummy_node *)root->actual_node)->right_child, 9);
 
     free_parser(parser);
 }
@@ -124,8 +124,8 @@ TEST(ParserArithmetic, IntegerDivision) {
     node_t *root = parse(parser);
 
     check_op_node(root, DIVIDE_OPERATOR);
-    check_constant_node(root->actual_node->left_child, 8);
-    check_constant_node(root->actual_node->right_child, 2);
+    check_constant_node(((dummy_node *)root->actual_node)->left_child, 8);
+    check_constant_node(((dummy_node *)root->actual_node)->right_child, 2);
 
     free_parser(parser);
 }
@@ -146,10 +146,10 @@ TEST(ParserArithmetic, MixedOpsWithParentheses) {
 
     check_op_node(root, MULTIPLY_OPERATOR);
 
-    check_op_node(root->actual_node->left_child, ADD_OPERATOR);
-    check_constant_node(root->actual_node->left_child->actual_node->left_child, 2);
-    check_constant_node(root->actual_node->left_child->actual_node->right_child, 3);
-    check_constant_node(root->actual_node->right_child, 4);
+    check_op_node(((dummy_node *)root->actual_node)->left_child, ADD_OPERATOR);
+    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->left_child, 2);
+    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->right_child, 3);
+    check_constant_node(((dummy_node *)root->actual_node)->right_child, 4);
 
     free_parser(parser);
 }
@@ -175,16 +175,16 @@ TEST(ParserArithmetic, MoreThanThreeOperators) {
     // for this case, ADD may come first
     check_op_node(root, SUBTRACT_OPERATOR);
 
-    check_op_node(root->actual_node->left_child, ADD_OPERATOR);
-    check_constant_node(root->actual_node->left_child->actual_node->left_child, 1);
+    check_op_node(((dummy_node *)root->actual_node)->left_child, ADD_OPERATOR);
+    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->left_child, 1);
 
-    check_op_node(root->actual_node->left_child->actual_node->right_child, MULTIPLY_OPERATOR);
-    check_constant_node(root->actual_node->left_child->actual_node->right_child->actual_node->left_child, 2);
-    check_constant_node(root->actual_node->left_child->actual_node->right_child->actual_node->right_child, 3);
+    check_op_node(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->right_child, MULTIPLY_OPERATOR);
+    check_constant_node(((dummy_node *)((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->right_child->actual_node)->left_child, 2);
+    check_constant_node(((dummy_node *)((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->right_child->actual_node)->right_child, 3);
 
-    check_op_node(root->actual_node->right_child, DIVIDE_OPERATOR);
-    check_constant_node(root->actual_node->right_child->actual_node->left_child, 4);
-    check_constant_node(root->actual_node->right_child->actual_node->right_child, 2);
+    check_op_node(((dummy_node *)root->actual_node)->right_child, DIVIDE_OPERATOR);
+    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->left_child, 4);
+    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->right_child, 2);
 
     free_parser(parser);
 }
@@ -200,13 +200,13 @@ TEST(ParserDeclarations, SimpleIntegerDeclaration) {
     node_t *root = parse(parser);
 
     EXPECT_EQ(root->type, DECL);
-    EXPECT_EQ(root->actual_node->subtype, DECLARATION);
+    EXPECT_EQ(((dummy_node *)root->actual_node)->subtype, DECLARATION);
 
-    EXPECT_EQ(root->actual_node->left_child->type, TYPE_SPECIFIER);
-    EXPECT_EQ(root->actual_node->left_child->actual_node->subtype, INTEGER_TYPE);
-    EXPECT_EQ(root->actual_node->right_child->type, DECLARATOR);
-    EXPECT_EQ(root->actual_node->right_child->actual_node->subtype, IDENTIFIER);
-    EXPECT_STREQ(root->actual_node->right_child->actual_node->value.id_name, "x");
+    EXPECT_EQ(((dummy_node *)root->actual_node)->left_child->type, TYPE_SPECIFIER);
+    EXPECT_EQ(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->subtype, INTEGER_TYPE);
+    EXPECT_EQ(((dummy_node *)root->actual_node)->right_child->type, DECLARATOR);
+    EXPECT_EQ(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->subtype, IDENTIFIER);
+    EXPECT_STREQ(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->value.id_name, "x");
 
     free_parser(parser);
 }
@@ -225,19 +225,19 @@ TEST(ParserDeclarations, SimpleIntegerAssignment) {
     node_t *root = parse(parser);
 
     EXPECT_EQ(root->type, DECL);
-    EXPECT_EQ(root->actual_node->subtype, DECLARATION);
+    EXPECT_EQ(((dummy_node *)root->actual_node)->subtype, DECLARATION);
 
-    EXPECT_EQ(root->actual_node->left_child->type, TYPE_SPECIFIER);
-    EXPECT_EQ(root->actual_node->left_child->actual_node->subtype, INTEGER_TYPE);
+    EXPECT_EQ(((dummy_node *)root->actual_node)->left_child->type, TYPE_SPECIFIER);
+    EXPECT_EQ(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->subtype, INTEGER_TYPE);
 
-    EXPECT_EQ(root->actual_node->right_child->type, ASSIGN_OP);
-    EXPECT_EQ(root->actual_node->right_child->actual_node->subtype, EQ_ASSIGN);
+    EXPECT_EQ(((dummy_node *)root->actual_node)->right_child->type, ASSIGN_OP);
+    EXPECT_EQ(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->subtype, EQ_ASSIGN);
 
-    EXPECT_EQ(root->actual_node->right_child->actual_node->left_child->type, DECLARATOR);
-    EXPECT_EQ(root->actual_node->right_child->actual_node->left_child->actual_node->subtype, IDENTIFIER);
-    EXPECT_STREQ(root->actual_node->right_child->actual_node->left_child->actual_node->value.id_name, "x");
+    EXPECT_EQ(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->left_child->type, DECLARATOR);
+    EXPECT_EQ(((dummy_node *)((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->left_child->actual_node)->subtype, IDENTIFIER);
+    EXPECT_STREQ(((dummy_node *)((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->left_child->actual_node)->value.id_name, "x");
     
-    check_constant_node(root->actual_node->right_child->actual_node->right_child, 3);
+    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->right_child, 3);
 
     free_parser(parser);
 }
@@ -256,19 +256,19 @@ TEST(ParserDeclarations, SimpleFloatAssignment) {
     node_t *root = parse(parser);
 
     EXPECT_EQ(root->type, DECL);
-    EXPECT_EQ(root->actual_node->subtype, DECLARATION);
+    EXPECT_EQ(((dummy_node *)root->actual_node)->subtype, DECLARATION);
 
-    EXPECT_EQ(root->actual_node->left_child->type, TYPE_SPECIFIER);
-    EXPECT_EQ(root->actual_node->left_child->actual_node->subtype, FLOAT_TYPE);
+    EXPECT_EQ(((dummy_node *)root->actual_node)->left_child->type, TYPE_SPECIFIER);
+    EXPECT_EQ(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->subtype, FLOAT_TYPE);
 
-    EXPECT_EQ(root->actual_node->right_child->type, ASSIGN_OP);
-    EXPECT_EQ(root->actual_node->right_child->actual_node->subtype, EQ_ASSIGN);
+    EXPECT_EQ(((dummy_node *)root->actual_node)->right_child->type, ASSIGN_OP);
+    EXPECT_EQ(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->subtype, EQ_ASSIGN);
 
-    EXPECT_EQ(root->actual_node->right_child->actual_node->left_child->type, DECLARATOR);
-    EXPECT_EQ(root->actual_node->right_child->actual_node->left_child->actual_node->subtype, IDENTIFIER);
-    EXPECT_STREQ(root->actual_node->right_child->actual_node->left_child->actual_node->value.id_name, "hey");
+    EXPECT_EQ(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->left_child->type, DECLARATOR);
+    EXPECT_EQ(((dummy_node *)((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->left_child->actual_node)->subtype, IDENTIFIER);
+    EXPECT_STREQ(((dummy_node *)((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->left_child->actual_node)->value.id_name, "hey");
     
-    check_constant_node(root->actual_node->right_child->actual_node->right_child, 12.76f);
+    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->right_child, 12.76f);
 
     free_parser(parser);
 }
