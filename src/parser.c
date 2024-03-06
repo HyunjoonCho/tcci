@@ -39,6 +39,13 @@ node_t *turn_token_into_node(parser_handle parser) {
         ((constant_node *)node->actual_node)->subtype = token->type;
         if (token->type == INTEGER_CONST) ((constant_node *)node->actual_node)->value.int_value = atoi(token->value);
         else ((constant_node *)node->actual_node)->value.float_value = atof(token->value);
+    } else if (token->type == ADD_OPERATOR || token->type == SUBTRACT_OPERATOR || token->type == MULTIPLY_OPERATOR || token->type == DIVIDE_OPERATOR) {
+        node->actual_node = malloc(sizeof(binary_op_node));
+        node->type = BINARY_OP;
+        ((binary_op_node *)node->actual_node)->subtype = token->type;
+        int paren_priority = parser->opened_paren_count;
+        if (token->type == ADD_OPERATOR || token->type == SUBTRACT_OPERATOR) ((binary_op_node *)node->actual_node)->op_priority= 2 - 2 * paren_priority;
+        else ((binary_op_node *)node->actual_node)->op_priority= 1 - 2 * paren_priority;
     } else {
         node->actual_node = malloc(sizeof(dummy_node));
         ((dummy_node *)node->actual_node)->subtype = token->type;
@@ -51,11 +58,6 @@ node_t *turn_token_into_node(parser_handle parser) {
         } else if (token->type == EQ_ASSIGN) {
             node->type = ASSIGN_OP;
             ((dummy_node *)node->actual_node)->op_priority= 3;
-        } else {
-            int paren_priority = parser->opened_paren_count;
-            node->type = BINARY_OP;
-            if (token->type == ADD_OPERATOR || token->type == SUBTRACT_OPERATOR) ((dummy_node *)node->actual_node)->op_priority= 2 - 2 * paren_priority;
-            else ((dummy_node *)node->actual_node)->op_priority= 1 - 2 * paren_priority;
         }
     }
     
@@ -71,6 +73,21 @@ node_t *generate_decl_token() {
     return decl_node;
 }
 
+int op_priority(node_t *node) {
+    if (node->type == BINARY_OP) return ((binary_op_node *)node->actual_node)->op_priority;
+    else return ((dummy_node *)node->actual_node)->op_priority;
+}
+
+void set_left_child(node_t *node, node_t *child) {
+    if (node->type == BINARY_OP) ((binary_op_node *)node->actual_node)->left_child = child;
+    else ((dummy_node *)node->actual_node)->left_child = child;
+}
+
+void set_right_child(node_t *node, node_t *child) {
+    if (node->type == BINARY_OP) ((binary_op_node *)node->actual_node)->right_child = child;
+    else ((dummy_node *)node->actual_node)->right_child = child;
+}
+
 node_t *assemble_tree(node_t **nodes, int start_index, int end_index) {
     if (start_index == end_index - 1) return nodes[start_index];
 
@@ -81,16 +98,16 @@ node_t *assemble_tree(node_t **nodes, int start_index, int end_index) {
     for (int i = start_index; i < end_index; i++) {
         current_node = nodes[i];
         if ((current_node->type == DECL || current_node->type == BINARY_OP || current_node->type == ASSIGN_OP) && 
-             ((dummy_node *)current_node->actual_node)->op_priority>= max_priority) {
-            max_priority = ((dummy_node *)current_node->actual_node)->op_priority;
+             op_priority(current_node) >= max_priority) {
+            max_priority = op_priority(current_node);
             least_prioritized_index = i;
         }
     }
 
     current_node = nodes[least_prioritized_index];
     if (current_node->type == DECL) nodes[least_prioritized_index + 1]->type = DECLARATOR; // Assume: following token must be identifier
-    ((dummy_node *)current_node->actual_node)->left_child = assemble_tree(nodes, start_index, least_prioritized_index);
-    ((dummy_node *)current_node->actual_node)->right_child = assemble_tree(nodes, least_prioritized_index + 1, end_index);
+    set_left_child(current_node, assemble_tree(nodes, start_index, least_prioritized_index));
+    set_right_child(current_node, assemble_tree(nodes, least_prioritized_index + 1, end_index));
 
     return current_node;
 }

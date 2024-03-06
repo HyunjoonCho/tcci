@@ -6,68 +6,68 @@ extern "C" {
 }
 
 node_t *create_literal_node(int value) {
-    node_t *literal_node = (node_t *)malloc(sizeof(node_t));
-    literal_node->type = CONSTANT;
-    literal_node->actual_node = malloc(sizeof(constant_node));
-    ((constant_node *)literal_node->actual_node)->subtype = INTEGER_CONST;
-    ((constant_node *)literal_node->actual_node)->value.int_value = value;
-    return literal_node;
+    node_t *node = (node_t *)malloc(sizeof(node_t));
+    node->type = CONSTANT;
+    node->actual_node = malloc(sizeof(constant_node));
+    ((constant_node *)node->actual_node)->subtype = INTEGER_CONST;
+    ((constant_node *)node->actual_node)->value.int_value = value;
+    return node;
 }
 
 node_t *create_literal_node(float value) {
-    node_t *literal_node = (node_t *)malloc(sizeof(node_t));
-    literal_node->type = CONSTANT;
-    literal_node->actual_node = malloc(sizeof(constant_node));
-    ((constant_node *)literal_node->actual_node)->subtype = FLOAT_CONST;
-    ((constant_node *)literal_node->actual_node)->value.float_value = value;
-    return literal_node;
+    node_t *node = (node_t *)malloc(sizeof(node_t));
+    node->type = CONSTANT;
+    node->actual_node = malloc(sizeof(constant_node));
+    ((constant_node *)node->actual_node)->subtype = FLOAT_CONST;
+    ((constant_node *)node->actual_node)->value.float_value = value;
+    return node;
 }
 
 node_t *create_identifier_node(const char *id_name, node_type n_type, type_t id_type) {
-    node_t *id_node = (node_t *)malloc(sizeof(node_t));
-    id_node->type = n_type;
-    id_node->actual_node = malloc(sizeof(dummy_node));
-    ((dummy_node *)id_node->actual_node)->subtype = id_type;
-    ((dummy_node *)id_node->actual_node)->value.id_name = strdup(id_name);
-    return id_node;
+    node_t *node = (node_t *)malloc(sizeof(node_t));
+    node->type = n_type;
+    node->actual_node = malloc(sizeof(dummy_node));
+    ((dummy_node *)node->actual_node)->subtype = id_type;
+    ((dummy_node *)node->actual_node)->value.id_name = strdup(id_name);
+    return node;
 }
 
 node_t *create_binary_op_node(type_t op, node_t *left, node_t *right) {
-    node_t *binary_op_node = (node_t *)malloc(sizeof(node_t));
-    binary_op_node->type = BINARY_OP;
-    binary_op_node->actual_node = malloc(sizeof(dummy_node));
-    ((dummy_node *)binary_op_node->actual_node)->subtype = op;
-    ((dummy_node *)binary_op_node->actual_node)->left_child = left;
-    ((dummy_node *)binary_op_node->actual_node)->right_child = right;
-    return binary_op_node;
+    node_t *node = (node_t *)malloc(sizeof(node_t));
+    node->type = BINARY_OP;
+    node->actual_node = malloc(sizeof(binary_op_node));
+    ((binary_op_node *)node->actual_node)->subtype = op;
+    ((binary_op_node *)node->actual_node)->left_child = left;
+    ((binary_op_node *)node->actual_node)->right_child = right;
+    return node;
 }
 
 node_t *create_assign_op_node(type_t op, node_t *left, node_t *right) {
-    node_t *assign_op_node = (node_t *)malloc(sizeof(node_t));
-    assign_op_node->type = ASSIGN_OP;
-    assign_op_node->actual_node = malloc(sizeof(dummy_node));
-    ((dummy_node *)assign_op_node->actual_node)->subtype = op;
-    ((dummy_node *)assign_op_node->actual_node)->left_child = left;
-    ((dummy_node *)assign_op_node->actual_node)->right_child = right;
-    return assign_op_node;
+    node_t *node = (node_t *)malloc(sizeof(node_t));
+    node->type = ASSIGN_OP;
+    node->actual_node = malloc(sizeof(dummy_node));
+    ((dummy_node *)node->actual_node)->subtype = op;
+    ((dummy_node *)node->actual_node)->left_child = left;
+    ((dummy_node *)node->actual_node)->right_child = right;
+    return node;
 }
 
 node_t *create_type_specifier_node(type_t type) {
-    node_t *type_specifier_node = (node_t *)malloc(sizeof(node_t));
-    type_specifier_node->type = TYPE_SPECIFIER;
-    type_specifier_node->actual_node = malloc(sizeof(dummy_node));
-    ((dummy_node *)type_specifier_node->actual_node)->subtype = type;
-    return type_specifier_node;
+    node_t *node = (node_t *)malloc(sizeof(node_t));
+    node->type = TYPE_SPECIFIER;
+    node->actual_node = malloc(sizeof(dummy_node));
+    ((dummy_node *)node->actual_node)->subtype = type;
+    return node;
 }
 
 node_t *create_declaration_node(node_t *left, node_t *right) {
-    node_t *declaration_node = (node_t *)malloc(sizeof(node_t));
-    declaration_node->type = DECL;
-    declaration_node->actual_node = malloc(sizeof(dummy_node));
-    ((dummy_node *)declaration_node->actual_node)->subtype = DECLARATION;
-    ((dummy_node *)declaration_node->actual_node)->left_child = left;
-    ((dummy_node *)declaration_node->actual_node)->right_child = right;
-    return declaration_node;
+    node_t *node = (node_t *)malloc(sizeof(node_t));
+    node->type = DECL;
+    node->actual_node = malloc(sizeof(dummy_node));
+    ((dummy_node *)node->actual_node)->subtype = DECLARATION;
+    ((dummy_node *)node->actual_node)->left_child = left;
+    ((dummy_node *)node->actual_node)->right_child = right;
+    return node;
 }
 
 TEST(InterpreterArithmetic, AdditionInteger) {

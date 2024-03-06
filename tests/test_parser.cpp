@@ -45,8 +45,8 @@ TEST(ParserArithmetic, SimpleIntegerAddition) {
     node_t *root = parse(parser);
 
     check_op_node(root, ADD_OPERATOR);
-    check_constant_node(((dummy_node *)root->actual_node)->left_child, 2);
-    check_constant_node(((dummy_node *)root->actual_node)->right_child, 3);
+    check_constant_node(((binary_op_node *)root->actual_node)->left_child, 2);
+    check_constant_node(((binary_op_node *)root->actual_node)->right_child, 3);
 
     free_parser(parser);
 }
@@ -63,8 +63,8 @@ TEST(ParserArithmetic, SimpleFloatAddition) {
     node_t *root = parse(parser);
 
     check_op_node(root, ADD_OPERATOR);
-    check_constant_node(((dummy_node *)root->actual_node)->left_child, 2.7f);
-    check_constant_node(((dummy_node *)root->actual_node)->right_child, 3.2f);
+    check_constant_node(((binary_op_node *)root->actual_node)->left_child, 2.7f);
+    check_constant_node(((binary_op_node *)root->actual_node)->right_child, 3.2f);
 
     free_parser(parser);
 }
@@ -82,11 +82,11 @@ TEST(ParserArithmetic, IntegerOpsWithPriority) {
     node_t *root = parse(parser);
 
     check_op_node(root, SUBTRACT_OPERATOR);
-    check_constant_node(((dummy_node *)root->actual_node)->left_child, 2);
+    check_constant_node(((binary_op_node *)root->actual_node)->left_child, 2);
 
-    check_op_node(((dummy_node *)root->actual_node)->right_child, MULTIPLY_OPERATOR);
-    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->left_child, 3);
-    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->right_child, 4);
+    check_op_node(((binary_op_node *)root->actual_node)->right_child, MULTIPLY_OPERATOR);
+    check_constant_node(((binary_op_node *)((binary_op_node *)root->actual_node)->right_child->actual_node)->left_child, 3);
+    check_constant_node(((binary_op_node *)((binary_op_node *)root->actual_node)->right_child->actual_node)->right_child, 4);
 
     free_parser(parser);
 }
@@ -105,10 +105,10 @@ TEST(ParserArithmetic, MixedOpsWithPriority) {
 
     check_op_node(root, ADD_OPERATOR);
 
-    check_op_node(((dummy_node *)root->actual_node)->left_child, MULTIPLY_OPERATOR);
-    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->left_child, 2);
-    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->right_child, 7.9f);
-    check_constant_node(((dummy_node *)root->actual_node)->right_child, 9);
+    check_op_node(((binary_op_node *)root->actual_node)->left_child, MULTIPLY_OPERATOR);
+    check_constant_node(((binary_op_node *)((binary_op_node *)root->actual_node)->left_child->actual_node)->left_child, 2);
+    check_constant_node(((binary_op_node *)((binary_op_node *)root->actual_node)->left_child->actual_node)->right_child, 7.9f);
+    check_constant_node(((binary_op_node *)root->actual_node)->right_child, 9);
 
     free_parser(parser);
 }
@@ -124,8 +124,8 @@ TEST(ParserArithmetic, IntegerDivision) {
     node_t *root = parse(parser);
 
     check_op_node(root, DIVIDE_OPERATOR);
-    check_constant_node(((dummy_node *)root->actual_node)->left_child, 8);
-    check_constant_node(((dummy_node *)root->actual_node)->right_child, 2);
+    check_constant_node(((binary_op_node *)root->actual_node)->left_child, 8);
+    check_constant_node(((binary_op_node *)root->actual_node)->right_child, 2);
 
     free_parser(parser);
 }
@@ -146,10 +146,10 @@ TEST(ParserArithmetic, MixedOpsWithParentheses) {
 
     check_op_node(root, MULTIPLY_OPERATOR);
 
-    check_op_node(((dummy_node *)root->actual_node)->left_child, ADD_OPERATOR);
-    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->left_child, 2);
-    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->right_child, 3);
-    check_constant_node(((dummy_node *)root->actual_node)->right_child, 4);
+    check_op_node(((binary_op_node *)root->actual_node)->left_child, ADD_OPERATOR);
+    check_constant_node(((binary_op_node *)((binary_op_node *)root->actual_node)->left_child->actual_node)->left_child, 2);
+    check_constant_node(((binary_op_node *)((binary_op_node *)root->actual_node)->left_child->actual_node)->right_child, 3);
+    check_constant_node(((binary_op_node *)root->actual_node)->right_child, 4);
 
     free_parser(parser);
 }
@@ -175,16 +175,16 @@ TEST(ParserArithmetic, MoreThanThreeOperators) {
     // for this case, ADD may come first
     check_op_node(root, SUBTRACT_OPERATOR);
 
-    check_op_node(((dummy_node *)root->actual_node)->left_child, ADD_OPERATOR);
-    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->left_child, 1);
+    check_op_node(((binary_op_node *)root->actual_node)->left_child, ADD_OPERATOR);
+    check_constant_node(((binary_op_node *)((binary_op_node *)root->actual_node)->left_child->actual_node)->left_child, 1);
 
-    check_op_node(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->right_child, MULTIPLY_OPERATOR);
-    check_constant_node(((dummy_node *)((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->right_child->actual_node)->left_child, 2);
-    check_constant_node(((dummy_node *)((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->right_child->actual_node)->right_child, 3);
+    check_op_node(((binary_op_node *)((binary_op_node *)root->actual_node)->left_child->actual_node)->right_child, MULTIPLY_OPERATOR);
+    check_constant_node(((binary_op_node *)((binary_op_node *)((binary_op_node *)root->actual_node)->left_child->actual_node)->right_child->actual_node)->left_child, 2);
+    check_constant_node(((binary_op_node *)((binary_op_node *)((binary_op_node *)root->actual_node)->left_child->actual_node)->right_child->actual_node)->right_child, 3);
 
-    check_op_node(((dummy_node *)root->actual_node)->right_child, DIVIDE_OPERATOR);
-    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->left_child, 4);
-    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->right_child, 2);
+    check_op_node(((binary_op_node *)root->actual_node)->right_child, DIVIDE_OPERATOR);
+    check_constant_node(((binary_op_node *)((binary_op_node *)root->actual_node)->right_child->actual_node)->left_child, 4);
+    check_constant_node(((binary_op_node *)((binary_op_node *)root->actual_node)->right_child->actual_node)->right_child, 2);
 
     free_parser(parser);
 }

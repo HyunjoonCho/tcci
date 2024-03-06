@@ -63,8 +63,8 @@ literal_t *evaluate_ast(interpreter_handle interpreter, node_t *node) {
         initialize_identifier_name(identifier, node);
         if (((dummy_node *)((dummy_node *)node->actual_node)->right_child->actual_node)->subtype == EQ_ASSIGN) evaluate_ast(interpreter, ((dummy_node *)node->actual_node)->right_child);
     } else if (node->type == BINARY_OP) {
-        literal_t *l = evaluate_ast(interpreter, ((dummy_node *)node->actual_node)->left_child);
-        literal_t *r = evaluate_ast(interpreter, ((dummy_node *)node->actual_node)->right_child);
+        literal_t *l = evaluate_ast(interpreter, ((binary_op_node *)node->actual_node)->left_child);
+        literal_t *r = evaluate_ast(interpreter, ((binary_op_node *)node->actual_node)->right_child);
         if (l->type == INTEGER_CONST && r->type == INTEGER_CONST && ((dummy_node *)node->actual_node)->subtype != DIVIDE_OPERATOR) {
             if (((dummy_node *)node->actual_node)->subtype == ADD_OPERATOR) l->value.int_value += r->value.int_value;
             else if (((dummy_node *)node->actual_node)->subtype == SUBTRACT_OPERATOR) l->value.int_value -= r->value.int_value;
