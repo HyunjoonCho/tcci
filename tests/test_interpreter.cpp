@@ -8,18 +8,18 @@ extern "C" {
 node_t *create_literal_node(int value) {
     node_t *literal_node = (node_t *)malloc(sizeof(node_t));
     literal_node->type = CONSTANT;
-    literal_node->actual_node = malloc(sizeof(dummy_node));
-    ((dummy_node *)literal_node->actual_node)->subtype = INTEGER_CONST;
-    ((dummy_node *)literal_node->actual_node)->value.int_value = value;
+    literal_node->actual_node = malloc(sizeof(constant_node));
+    ((constant_node *)literal_node->actual_node)->subtype = INTEGER_CONST;
+    ((constant_node *)literal_node->actual_node)->value.int_value = value;
     return literal_node;
 }
 
 node_t *create_literal_node(float value) {
     node_t *literal_node = (node_t *)malloc(sizeof(node_t));
     literal_node->type = CONSTANT;
-    literal_node->actual_node = malloc(sizeof(dummy_node));
-    ((dummy_node *)literal_node->actual_node)->subtype = FLOAT_CONST;
-    ((dummy_node *)literal_node->actual_node)->value.float_value = value;
+    literal_node->actual_node = malloc(sizeof(constant_node));
+    ((constant_node *)literal_node->actual_node)->subtype = FLOAT_CONST;
+    ((constant_node *)literal_node->actual_node)->value.float_value = value;
     return literal_node;
 }
 

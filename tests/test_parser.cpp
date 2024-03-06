@@ -19,14 +19,14 @@ void check_op_node(node_t *op_node, type_t op) {
 
 void check_constant_node(node_t *const_node, int value) {
     EXPECT_EQ(const_node->type, CONSTANT);
-    EXPECT_EQ(((dummy_node *)const_node->actual_node)->subtype, INTEGER_CONST);
-    EXPECT_EQ(((dummy_node *)const_node->actual_node)->value.int_value, value);
+    EXPECT_EQ(((constant_node *)const_node->actual_node)->subtype, INTEGER_CONST);
+    EXPECT_EQ(((constant_node *)const_node->actual_node)->value.int_value, value);
 }
 
 void check_constant_node(node_t *const_node, float value) {
     EXPECT_EQ(const_node->type, CONSTANT);
-    EXPECT_EQ(((dummy_node *)const_node->actual_node)->subtype, FLOAT_CONST);
-    EXPECT_FLOAT_EQ(((dummy_node *)const_node->actual_node)->value.float_value, value);    
+    EXPECT_EQ(((constant_node *)const_node->actual_node)->subtype, FLOAT_CONST);
+    EXPECT_FLOAT_EQ(((constant_node *)const_node->actual_node)->value.float_value, value);    
 }
 
 void teardown(token_t **tokens, int token_count, node_t *root) {

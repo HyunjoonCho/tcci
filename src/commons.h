@@ -44,6 +44,7 @@ typedef union value_t value_t;
 
 typedef struct node_t node_t;
 typedef struct dummy_node dummy_node;
+typedef struct constant_node constant_node;
 
 struct node_t {
     node_type type;
@@ -56,6 +57,11 @@ struct dummy_node {
     int op_priority;
     node_t *left_child;
     node_t *right_child;
+};
+
+struct constant_node {
+    type_t subtype;
+    value_t value;
 };
 
 typedef struct token_t token_t;

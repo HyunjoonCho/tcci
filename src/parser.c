@@ -33,28 +33,32 @@ node_t *turn_token_into_node(parser_handle parser) {
     }
 
     node_t *node = malloc(sizeof(node_t));
-    node->actual_node = malloc(sizeof(dummy_node));
-    ((dummy_node *)node->actual_node)->subtype = token->type;
-    if (token->type == INTEGER_TYPE || token->type == FLOAT_TYPE) {
-        node->type = TYPE_SPECIFIER;
-    } else if (token->type == INTEGER_CONST) {
+    if (token->type == INTEGER_CONST || token->type == FLOAT_CONST){
+        node->actual_node = malloc(sizeof(constant_node));
         node->type = CONSTANT;
-        ((dummy_node *)node->actual_node)->value.int_value = atoi(token->value);
-    } else if (token->type == FLOAT_CONST) {
-        node->type = CONSTANT;
-        ((dummy_node *)node->actual_node)->value.float_value = atof(token->value);      
-    } else if (token->type == IDENTIFIER) {
-        node->type = ID;
-        ((dummy_node *)node->actual_node)->value.id_name = strdup(token->value);
-    } else if (token->type == EQ_ASSIGN) {
-        node->type = ASSIGN_OP;
-        ((dummy_node *)node->actual_node)->op_priority= 3;
+        ((constant_node *)node->actual_node)->subtype = token->type;
+        if (token->type == INTEGER_CONST) ((constant_node *)node->actual_node)->value.int_value = atoi(token->value);
+        else ((constant_node *)node->actual_node)->value.float_value = atof(token->value);
     } else {
-        int paren_priority = parser->opened_paren_count;
-        node->type = BINARY_OP;
-        if (token->type == ADD_OPERATOR || token->type == SUBTRACT_OPERATOR) ((dummy_node *)node->actual_node)->op_priority= 2 - 2 * paren_priority;
-        else ((dummy_node *)node->actual_node)->op_priority= 1 - 2 * paren_priority;
+        node->actual_node = malloc(sizeof(dummy_node));
+        ((dummy_node *)node->actual_node)->subtype = token->type;
+
+        if (token->type == INTEGER_TYPE || token->type == FLOAT_TYPE) {
+            node->type = TYPE_SPECIFIER;
+        } else if (token->type == IDENTIFIER) {
+            node->type = ID;
+            ((dummy_node *)node->actual_node)->value.id_name = strdup(token->value);
+        } else if (token->type == EQ_ASSIGN) {
+            node->type = ASSIGN_OP;
+            ((dummy_node *)node->actual_node)->op_priority= 3;
+        } else {
+            int paren_priority = parser->opened_paren_count;
+            node->type = BINARY_OP;
+            if (token->type == ADD_OPERATOR || token->type == SUBTRACT_OPERATOR) ((dummy_node *)node->actual_node)->op_priority= 2 - 2 * paren_priority;
+            else ((dummy_node *)node->actual_node)->op_priority= 1 - 2 * paren_priority;
+        }
     }
+    
     return node;
 }
 

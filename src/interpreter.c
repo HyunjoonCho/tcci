@@ -90,8 +90,8 @@ literal_t *evaluate_ast(interpreter_handle interpreter, node_t *node) {
         free(value);
     } else {
         literal_t *literal = malloc(sizeof(literal_t));
-        literal->value = ((dummy_node *)node->actual_node)->value;
-        if (((dummy_node *)node->actual_node)->subtype == INTEGER_CONST) literal->type = INTEGER_CONST;
+        literal->value = ((constant_node *)node->actual_node)->value;
+        if (((constant_node *)node->actual_node)->subtype == INTEGER_CONST) literal->type = INTEGER_CONST;
         else literal->type = FLOAT_CONST;
         return literal;
     }
