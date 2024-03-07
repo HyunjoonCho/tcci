@@ -46,46 +46,65 @@ node_t *turn_token_into_node(parser_handle parser) {
         int paren_priority = parser->opened_paren_count;
         if (token->type == ADD_OPERATOR || token->type == SUBTRACT_OPERATOR) ((binary_op_node *)node->actual_node)->op_priority= 2 - 2 * paren_priority;
         else ((binary_op_node *)node->actual_node)->op_priority= 1 - 2 * paren_priority;
-    } else {
-        node->actual_node = malloc(sizeof(dummy_node));
-        ((dummy_node *)node->actual_node)->subtype = token->type;
-
-        if (token->type == INTEGER_TYPE || token->type == FLOAT_TYPE) {
-            node->type = TYPE_SPECIFIER;
-        } else if (token->type == IDENTIFIER) {
-            node->type = ID;
-            ((dummy_node *)node->actual_node)->value.id_name = strdup(token->value);
-        } else if (token->type == EQ_ASSIGN) {
-            node->type = ASSIGN_OP;
-            ((dummy_node *)node->actual_node)->op_priority= 3;
-        }
+    } else if (token->type == INTEGER_TYPE || token->type == FLOAT_TYPE) {
+        node->actual_node = malloc(sizeof(type_specifier_node));
+        node->type = TYPE_SPECIFIER;
+        ((type_specifier_node *)node->actual_node)->subtype = token->type;
+    } else if (token->type == IDENTIFIER) {
+        node->actual_node = malloc(sizeof(identifier_node));
+        node->type = ID;
+        ((identifier_node *)node->actual_node)->subtype = token->type;
+        ((identifier_node *)node->actual_node)->id_name = strdup(token->value);
+    } else if (token->type == EQ_ASSIGN) {
+        node->actual_node = malloc(sizeof(assign_op_node));
+        node->type = ASSIGN_OP;
+        ((assign_op_node *)node->actual_node)->subtype = token->type;
+        ((assign_op_node *)node->actual_node)->op_priority= 3;
     }
     
     return node;
 }
 
 node_t *generate_decl_token() {
-    node_t *decl_node = malloc(sizeof(node_t));
-    decl_node->actual_node = malloc(sizeof(dummy_node));
-    decl_node->type = DECL;
-    ((dummy_node *)decl_node->actual_node)->subtype = DECLARATION;
-    ((dummy_node *)decl_node->actual_node)->op_priority= 4;
-    return decl_node;
+    node_t *node = malloc(sizeof(node_t));
+    node->actual_node = malloc(sizeof(declaration_node));
+    node->type = DECL;
+    ((declaration_node *)node->actual_node)->subtype = DECLARATION;
+    ((declaration_node *)node->actual_node)->op_priority= 4;
+    return node;
 }
 
 int op_priority(node_t *node) {
+    if (node->type == DECL) return ((declaration_node *)node->actual_node)->op_priority;
     if (node->type == BINARY_OP) return ((binary_op_node *)node->actual_node)->op_priority;
-    else return ((dummy_node *)node->actual_node)->op_priority;
+    if (node->type == ASSIGN_OP) return ((assign_op_node *)node->actual_node)->op_priority;
+    else return 0;
+}
+
+node_t *get_left_child(node_t *node) {
+    if (node->type == DECL) return ((declaration_node *)node->actual_node)->left_child;
+    if (node->type == BINARY_OP) return ((binary_op_node *)node->actual_node)->left_child;
+    if (node->type == ASSIGN_OP) return ((assign_op_node *)node->actual_node)->left_child;
+    else return NULL;
+}
+
+node_t *get_right_child(node_t *node) {
+    if (node->type == DECL) return ((declaration_node *)node->actual_node)->right_child;
+    if (node->type == BINARY_OP) return ((binary_op_node *)node->actual_node)->right_child;
+    if (node->type == ASSIGN_OP) return ((assign_op_node *)node->actual_node)->right_child;
+    else return NULL;
 }
 
 void set_left_child(node_t *node, node_t *child) {
+    if (node->type == DECL) ((declaration_node *)node->actual_node)->left_child = child;
     if (node->type == BINARY_OP) ((binary_op_node *)node->actual_node)->left_child = child;
-    else ((dummy_node *)node->actual_node)->left_child = child;
+    if (node->type == ASSIGN_OP) ((assign_op_node *)node->actual_node)->left_child = child;
 }
 
 void set_right_child(node_t *node, node_t *child) {
+    if (node->type == DECL) ((declaration_node *)node->actual_node)->right_child = child;
     if (node->type == BINARY_OP) ((binary_op_node *)node->actual_node)->right_child = child;
-    else ((dummy_node *)node->actual_node)->right_child = child;
+    if (node->type == ASSIGN_OP) ((assign_op_node *)node->actual_node)->right_child = child;
 }
 
 node_t *assemble_tree(node_t **nodes, int start_index, int end_index) {
@@ -141,10 +160,10 @@ void free_parser(parser_handle parser) {
 
 void free_node(node_t *node) {
     if (node->type == BINARY_OP || node->type == ASSIGN_OP|| node->type == DECL) {
-        free_node(((dummy_node *)node->actual_node)->left_child);
-        free_node(((dummy_node *)node->actual_node)->right_child);
-    } else if (((dummy_node *)node->actual_node)->subtype == IDENTIFIER) {
-        free(((dummy_node *)node->actual_node)->value.id_name);
+        free_node(get_left_child(node));
+        free_node(get_right_child(node));
+    } else if (node->type == ID) {
+        free(((identifier_node *)node->actual_node)->id_name);
     }
     free(node);
 }

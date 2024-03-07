@@ -14,7 +14,7 @@ token_t *generate_test_token(type_t type, const char *value) {
 
 void check_op_node(node_t *op_node, type_t op) {
     EXPECT_EQ(op_node->type, BINARY_OP);
-    EXPECT_EQ(((dummy_node *)op_node->actual_node)->subtype, op);
+    EXPECT_EQ(((binary_op_node *)op_node->actual_node)->subtype, op);
 }
 
 void check_constant_node(node_t *const_node, int value) {
@@ -200,13 +200,13 @@ TEST(ParserDeclarations, SimpleIntegerDeclaration) {
     node_t *root = parse(parser);
 
     EXPECT_EQ(root->type, DECL);
-    EXPECT_EQ(((dummy_node *)root->actual_node)->subtype, DECLARATION);
+    EXPECT_EQ(((declaration_node *)root->actual_node)->subtype, DECLARATION);
 
-    EXPECT_EQ(((dummy_node *)root->actual_node)->left_child->type, TYPE_SPECIFIER);
-    EXPECT_EQ(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->subtype, INTEGER_TYPE);
-    EXPECT_EQ(((dummy_node *)root->actual_node)->right_child->type, DECLARATOR);
-    EXPECT_EQ(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->subtype, IDENTIFIER);
-    EXPECT_STREQ(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->value.id_name, "x");
+    EXPECT_EQ(((declaration_node *)root->actual_node)->left_child->type, TYPE_SPECIFIER);
+    EXPECT_EQ(((type_specifier_node *)((declaration_node *)root->actual_node)->left_child->actual_node)->subtype, INTEGER_TYPE);
+    EXPECT_EQ(((declaration_node *)root->actual_node)->right_child->type, DECLARATOR);
+    EXPECT_EQ(((identifier_node *)((declaration_node *)root->actual_node)->right_child->actual_node)->subtype, IDENTIFIER);
+    EXPECT_STREQ(((identifier_node *)((declaration_node *)root->actual_node)->right_child->actual_node)->id_name, "x");
 
     free_parser(parser);
 }
@@ -225,19 +225,19 @@ TEST(ParserDeclarations, SimpleIntegerAssignment) {
     node_t *root = parse(parser);
 
     EXPECT_EQ(root->type, DECL);
-    EXPECT_EQ(((dummy_node *)root->actual_node)->subtype, DECLARATION);
+    EXPECT_EQ(((declaration_node *)root->actual_node)->subtype, DECLARATION);
 
-    EXPECT_EQ(((dummy_node *)root->actual_node)->left_child->type, TYPE_SPECIFIER);
-    EXPECT_EQ(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->subtype, INTEGER_TYPE);
+    EXPECT_EQ(((declaration_node *)root->actual_node)->left_child->type, TYPE_SPECIFIER);
+    EXPECT_EQ(((type_specifier_node *)((declaration_node *)root->actual_node)->left_child->actual_node)->subtype, INTEGER_TYPE);
 
-    EXPECT_EQ(((dummy_node *)root->actual_node)->right_child->type, ASSIGN_OP);
-    EXPECT_EQ(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->subtype, EQ_ASSIGN);
+    EXPECT_EQ(((declaration_node *)root->actual_node)->right_child->type, ASSIGN_OP);
+    EXPECT_EQ(((assign_op_node *)((declaration_node *)root->actual_node)->right_child->actual_node)->subtype, EQ_ASSIGN);
 
-    EXPECT_EQ(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->left_child->type, DECLARATOR);
-    EXPECT_EQ(((dummy_node *)((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->left_child->actual_node)->subtype, IDENTIFIER);
-    EXPECT_STREQ(((dummy_node *)((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->left_child->actual_node)->value.id_name, "x");
+    EXPECT_EQ(((assign_op_node *)((declaration_node *)root->actual_node)->right_child->actual_node)->left_child->type, DECLARATOR);
+    EXPECT_EQ(((identifier_node *)((assign_op_node *)((declaration_node *)root->actual_node)->right_child->actual_node)->left_child->actual_node)->subtype, IDENTIFIER);
+    EXPECT_STREQ(((identifier_node *)((assign_op_node *)((declaration_node *)root->actual_node)->right_child->actual_node)->left_child->actual_node)->id_name, "x");
     
-    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->right_child, 3);
+    check_constant_node(((assign_op_node *)((declaration_node *)root->actual_node)->right_child->actual_node)->right_child, 3);
 
     free_parser(parser);
 }
@@ -256,19 +256,19 @@ TEST(ParserDeclarations, SimpleFloatAssignment) {
     node_t *root = parse(parser);
 
     EXPECT_EQ(root->type, DECL);
-    EXPECT_EQ(((dummy_node *)root->actual_node)->subtype, DECLARATION);
+    EXPECT_EQ(((declaration_node *)root->actual_node)->subtype, DECLARATION);
 
-    EXPECT_EQ(((dummy_node *)root->actual_node)->left_child->type, TYPE_SPECIFIER);
-    EXPECT_EQ(((dummy_node *)((dummy_node *)root->actual_node)->left_child->actual_node)->subtype, FLOAT_TYPE);
+    EXPECT_EQ(((declaration_node *)root->actual_node)->left_child->type, TYPE_SPECIFIER);
+    EXPECT_EQ(((type_specifier_node *)((declaration_node *)root->actual_node)->left_child->actual_node)->subtype, FLOAT_TYPE);
 
-    EXPECT_EQ(((dummy_node *)root->actual_node)->right_child->type, ASSIGN_OP);
-    EXPECT_EQ(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->subtype, EQ_ASSIGN);
+    EXPECT_EQ(((declaration_node *)root->actual_node)->right_child->type, ASSIGN_OP);
+    EXPECT_EQ(((assign_op_node *)((declaration_node *)root->actual_node)->right_child->actual_node)->subtype, EQ_ASSIGN);
 
-    EXPECT_EQ(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->left_child->type, DECLARATOR);
-    EXPECT_EQ(((dummy_node *)((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->left_child->actual_node)->subtype, IDENTIFIER);
-    EXPECT_STREQ(((dummy_node *)((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->left_child->actual_node)->value.id_name, "hey");
+    EXPECT_EQ(((assign_op_node *)((declaration_node *)root->actual_node)->right_child->actual_node)->left_child->type, DECLARATOR);
+    EXPECT_EQ(((identifier_node *)((assign_op_node *)((declaration_node *)root->actual_node)->right_child->actual_node)->left_child->actual_node)->subtype, IDENTIFIER);
+    EXPECT_STREQ(((identifier_node *)((assign_op_node *)((declaration_node *)root->actual_node)->right_child->actual_node)->left_child->actual_node)->id_name, "hey");
     
-    check_constant_node(((dummy_node *)((dummy_node *)root->actual_node)->right_child->actual_node)->right_child, 12.76f);
+    check_constant_node(((assign_op_node *)((declaration_node *)root->actual_node)->right_child->actual_node)->right_child, 12.76f);
 
     free_parser(parser);
 }

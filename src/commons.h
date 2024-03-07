@@ -35,7 +35,6 @@ typedef enum {
 } node_type;
 
 union value_t {
-    char *id_name; 
     int int_value;
     float float_value;
 };
@@ -43,21 +42,16 @@ union value_t {
 typedef union value_t value_t;
 
 typedef struct node_t node_t;
-typedef struct dummy_node dummy_node;
 typedef struct constant_node constant_node;
 typedef struct binary_op_node binary_op_node;
+typedef struct assign_op_node assign_op_node;
+typedef struct identifier_node identifier_node; // DECLARTOR node shares this struct
+typedef struct type_specifier_node type_specifier_node;
+typedef struct declaration_node declaration_node;
 
 struct node_t {
     node_type type;
     void *actual_node;
-};
-
-struct dummy_node {
-    type_t subtype;
-    value_t value;
-    int op_priority;
-    node_t *left_child;
-    node_t *right_child;
 };
 
 struct constant_node {
@@ -66,6 +60,29 @@ struct constant_node {
 };
 
 struct binary_op_node {
+    type_t subtype;
+    int op_priority;
+    node_t *left_child;
+    node_t *right_child;
+};
+
+struct assign_op_node {
+    type_t subtype;
+    int op_priority;
+    node_t *left_child;
+    node_t *right_child;
+};
+
+struct identifier_node {
+    type_t subtype;
+    char *id_name;
+};
+
+struct type_specifier_node {
+    type_t subtype;
+};
+
+struct declaration_node {
     type_t subtype;
     int op_priority;
     node_t *left_child;
