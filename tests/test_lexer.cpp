@@ -9,7 +9,7 @@ void check_token(token_t *token, type_t expected_type, const char *expected_valu
     EXPECT_STREQ(token->value, expected_value);
 }
 
-TEST(SingleTokenTest, IntegerToken) {
+TEST(LexerArithmeticSingleToken, IntegerToken) {
     lexer_handle lexer = lexer_init("123");
     token_t *token = get_next_token(lexer);
     check_token(token, INTEGER_CONST, "123");
