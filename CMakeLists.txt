@@ -28,7 +28,7 @@ target_link_libraries(repl common_lib)
 add_executable(debug src/debug.c)
 target_link_libraries(debug common_lib)
 
-file(GLOB TEST_SOURCES "tests/*.cpp")
+file(GLOB TEST_SOURCES "tests/*.hpp" "tests/*.cpp")
 
 add_executable(
   test_module
