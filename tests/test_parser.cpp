@@ -4,29 +4,14 @@ extern "C" {
     #include "../src/commons.h"
 }
 
+#include "helper.hpp"
+
 token_t *generate_test_token(type_t type, const char *value) {
     token_t *new_token = (token_t *)malloc(sizeof(token_t));
     new_token->type = type;
     new_token->value = strdup(value);
 
     return new_token;
-}
-
-void check_op_node(node_t *op_node, type_t op) {
-    EXPECT_EQ(op_node->type, BINARY_OP);
-    EXPECT_EQ(((binary_op_node *)op_node->actual_node)->subtype, op);
-}
-
-void check_constant_node(node_t *const_node, int value) {
-    EXPECT_EQ(const_node->type, CONSTANT);
-    EXPECT_EQ(((constant_node *)const_node->actual_node)->subtype, INTEGER_CONST);
-    EXPECT_EQ(((constant_node *)const_node->actual_node)->value.int_value, value);
-}
-
-void check_constant_node(node_t *const_node, float value) {
-    EXPECT_EQ(const_node->type, CONSTANT);
-    EXPECT_EQ(((constant_node *)const_node->actual_node)->subtype, FLOAT_CONST);
-    EXPECT_FLOAT_EQ(((constant_node *)const_node->actual_node)->value.float_value, value);    
 }
 
 void teardown(token_t **tokens, int token_count, node_t *root) {

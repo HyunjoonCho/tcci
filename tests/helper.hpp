@@ -5,6 +5,10 @@ extern "C" {
     #include "../src/commons.h"
 }
 
+void check_op_node(node_t *op_node, type_t op);
+void check_constant_node(node_t *const_node, int value);
+void check_constant_node(node_t *const_node, float value);
+
 node_t *create_literal_node(int value);
 node_t *create_literal_node(float value);
 node_t *create_identifier_node(const char *id_name, node_type n_type, type_t id_type);
