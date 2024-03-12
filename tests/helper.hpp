@@ -8,6 +8,7 @@ extern "C" {
 void check_op_node(node_t *op_node, type_t op);
 void check_constant_node(node_t *const_node, int value);
 void check_constant_node(node_t *const_node, float value);
+void node_equals(node_t *actual, node_t *expected);
 
 node_t *create_literal_node(int value);
 node_t *create_literal_node(float value);

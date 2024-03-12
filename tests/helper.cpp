@@ -23,6 +23,44 @@ void check_constant_node(node_t *const_node, float value) {
     EXPECT_FLOAT_EQ(((constant_node *)const_node->actual_node)->value.float_value, value);    
 }
 
+void node_equals(node_t *actual, node_t *expected) {
+    EXPECT_EQ(actual->type, expected->type);
+    if (actual->type == CONSTANT) {
+        constant_node *actual_ = (constant_node *)actual->actual_node;
+        constant_node *expected_ = (constant_node *)expected->actual_node;
+        EXPECT_EQ(actual_->subtype, expected_->subtype);
+        if (actual_->subtype == FLOAT_CONST) EXPECT_FLOAT_EQ(actual_->value.float_value, expected_->value.float_value);
+        else if (actual_->subtype == INTEGER_CONST) EXPECT_EQ(actual_->value.int_value, expected_->value.int_value);
+    } else if (actual->type == ID || actual->type == DECLARATOR) {
+        identifier_node *actual_ = (identifier_node *)actual->actual_node;
+        identifier_node *expected_ = (identifier_node *)expected->actual_node;
+        EXPECT_EQ(actual_->subtype, expected_->subtype);
+        EXPECT_STREQ(actual_->id_name, expected_->id_name);
+    } else if (actual->type == DECL) {
+        declaration_node *actual_ = (declaration_node *)actual->actual_node;
+        declaration_node *expected_ = (declaration_node *)expected->actual_node;
+        EXPECT_EQ(actual_->subtype, expected_->subtype);
+        node_equals(actual_->left_child, expected_->left_child);
+        node_equals(actual_->right_child, expected_->right_child);
+    } else if (actual->type == TYPE_SPECIFIER) {
+        type_specifier_node *actual_ = (type_specifier_node *)actual->actual_node;
+        type_specifier_node *expected_ = (type_specifier_node *)expected->actual_node;
+        EXPECT_EQ(actual_->subtype, expected_->subtype);
+    } else if (actual->type == BINARY_OP) {
+        binary_op_node *actual_ = (binary_op_node *)actual->actual_node;
+        binary_op_node *expected_ = (binary_op_node *)expected->actual_node;
+        EXPECT_EQ(actual_->subtype, expected_->subtype);
+        node_equals(actual_->left_child, expected_->left_child);
+        node_equals(actual_->right_child, expected_->right_child);        
+    } else if (actual->type == ASSIGN_OP) {
+        assign_op_node *actual_ = (assign_op_node *)actual->actual_node;
+        assign_op_node *expected_ = (assign_op_node *)expected->actual_node;
+        EXPECT_EQ(actual_->subtype, expected_->subtype);
+        node_equals(actual_->left_child, expected_->left_child);
+        node_equals(actual_->right_child, expected_->right_child);
+    }
+}
+
 node_t *create_literal_node(int value) {
     node_t *node = (node_t *)malloc(sizeof(node_t));
     node->type = CONSTANT;
