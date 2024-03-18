@@ -141,7 +141,7 @@ TEST(LexerDeclarations, IntegerDeclaration) {
     token_t *token = get_next_token(lexer);
     EXPECT_EQ(token->type, INTEGER_TYPE);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, IDENTIFIER);
+    check_token(token, IDENTIFIER, "x");
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, SEMICOLON);
 }
@@ -151,11 +151,11 @@ TEST(LexerDeclarations, FloatInitialization) {
     token_t *token = get_next_token(lexer);
     EXPECT_EQ(token->type, FLOAT_TYPE);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, IDENTIFIER);
+    check_token(token, IDENTIFIER, "y");
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, EQ_ASSIGN);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, FLOAT_CONST);
+    check_token(token, FLOAT_CONST, "3.14");
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, SEMICOLON);
 }
@@ -165,11 +165,11 @@ TEST(LexerDeclarations, VariableDeclarationAndInitialization) {
     token_t *token = get_next_token(lexer);
     EXPECT_EQ(token->type, INTEGER_TYPE);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, IDENTIFIER);
+    check_token(token, IDENTIFIER, "a");
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, EQ_ASSIGN);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, INTEGER_CONST);
+    check_token(token, INTEGER_CONST, "5");
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, SEMICOLON);
 }
@@ -181,7 +181,7 @@ TEST(LexerCompoundStatements, MultipleDeclarations) {
     token_t *token = get_next_token(lexer);
     EXPECT_EQ(token->type, INTEGER_TYPE);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, IDENTIFIER);
+    check_token(token, IDENTIFIER, "x");
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, SEMICOLON);
 
@@ -189,11 +189,11 @@ TEST(LexerCompoundStatements, MultipleDeclarations) {
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, FLOAT_TYPE);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, IDENTIFIER);
+    check_token(token, IDENTIFIER, "y");
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, EQ_ASSIGN);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, FLOAT_CONST);
+    check_token(token, FLOAT_CONST, "3.14");
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, SEMICOLON);
 
@@ -201,11 +201,11 @@ TEST(LexerCompoundStatements, MultipleDeclarations) {
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, INTEGER_TYPE);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, IDENTIFIER);
+    check_token(token, IDENTIFIER, "z");
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, EQ_ASSIGN);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, INTEGER_CONST);
+    check_token(token, INTEGER_CONST, "42");
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, SEMICOLON);
 }
@@ -217,7 +217,7 @@ TEST(LexerCompoundStatements, DeclareAndAdd) {
     token_t *token = get_next_token(lexer);
     EXPECT_EQ(token->type, INTEGER_TYPE);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, IDENTIFIER);
+    check_token(token, IDENTIFIER, "x");
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, SEMICOLON);
 
@@ -225,25 +225,25 @@ TEST(LexerCompoundStatements, DeclareAndAdd) {
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, INTEGER_TYPE);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, IDENTIFIER);
+    check_token(token, IDENTIFIER, "y");
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, EQ_ASSIGN);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, INTEGER_CONST);
+    check_token(token, INTEGER_CONST, "12");
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, SEMICOLON);
 
     // Test for the third declaration
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, IDENTIFIER);
+    check_token(token, IDENTIFIER, "x");
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, EQ_ASSIGN);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, IDENTIFIER);
+    check_token(token, IDENTIFIER, "y");
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, ADD_OPERATOR);
     token = get_next_token(lexer);
-    EXPECT_EQ(token->type, INTEGER_CONST);
+    check_token(token, INTEGER_CONST, "16");
     token = get_next_token(lexer);
     EXPECT_EQ(token->type, SEMICOLON);
 }
