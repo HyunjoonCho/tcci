@@ -17,5 +17,5 @@ node_t *create_binary_op_node(type_t op, node_t *left, node_t *right);
 node_t *create_assign_op_node(type_t op, node_t *left, node_t *right);
 node_t *create_type_specifier_node(type_t type);
 node_t *create_declaration_node(node_t *left, node_t *right);
-
+node_t *create_compound_statements_node(node_t **children, int children_count);
 #endif

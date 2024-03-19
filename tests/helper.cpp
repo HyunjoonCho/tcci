@@ -125,3 +125,15 @@ node_t *create_declaration_node(node_t *left, node_t *right) {
     ((declaration_node *)node->actual_node)->right_child = right;
     return node;
 }
+
+node_t *create_compound_statements_node(node_t **children, int children_count) {
+    node_t *node = (node_t *)malloc(sizeof(node_t));
+    node->type = COMPOUND;
+    node->actual_node = malloc(sizeof(compound_statment_node));
+    ((compound_statment_node *)node->actual_node)->subtype = COMPOUND_STATEMENT;
+    ((compound_statment_node *)node->actual_node)->children = (node_t **)malloc(children_count * sizeof(node_t *));
+    for (int i = 0; i < children_count; i++) {
+       ((node_t **)((compound_statment_node *)node->actual_node)->children)[i] = children[i];
+    }
+    return node; 
+}

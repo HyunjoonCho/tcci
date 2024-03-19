@@ -15,6 +15,7 @@ typedef enum {
     INTEGER_TYPE,
     FLOAT_TYPE,
     EQ_ASSIGN,
+    COMPOUND_STATEMENT,
     SEMICOLON,
     NULLTOKEN,
 } type_t;
@@ -32,6 +33,7 @@ typedef enum {
     TYPE_SPECIFIER,
     BINARY_OP,
     ASSIGN_OP,
+    COMPOUND,
 } node_type;
 
 union value_t {
@@ -48,6 +50,7 @@ typedef struct assign_op_node assign_op_node;
 typedef struct identifier_node identifier_node; // DECLARTOR node shares this struct
 typedef struct type_specifier_node type_specifier_node;
 typedef struct declaration_node declaration_node;
+typedef struct compound_statment_node compound_statment_node;
 
 struct node_t {
     node_type type;
@@ -87,6 +90,12 @@ struct declaration_node {
     int op_priority;
     node_t *left_child;
     node_t *right_child;
+};
+
+struct compound_statment_node {
+    type_t subtype; // may skip - and for the identifier, toos
+    int children_count;
+    node_t **children; // declaration || statment
 };
 
 typedef struct token_t token_t;

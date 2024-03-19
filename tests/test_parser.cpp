@@ -200,7 +200,6 @@ TEST(ParserDeclarations, SimpleIntegerAssignment) {
     tokens[3] = generate_test_token(INTEGER_CONST, "3");
     tokens[4] = generate_test_token(SEMICOLON, ";");
 
-
     parser_handle parser = parser_init(tokens, 5);
     node_t *root = parse(parser);
 
@@ -222,7 +221,6 @@ TEST(ParserDeclarations, SimpleFloatAssignment) {
     tokens[3] = generate_test_token(FLOAT_CONST, "12.76");
     tokens[4] = generate_test_token(SEMICOLON, ";");
 
-
     parser_handle parser = parser_init(tokens, 5);
     node_t *root = parse(parser);
 
@@ -233,4 +231,40 @@ TEST(ParserDeclarations, SimpleFloatAssignment) {
     node_equals(root, expected);
 
     free_parser(parser);
+}
+
+TEST(ParserCompoundStatements, TwoIntegerStatements) {
+    // int x = 12; x = x + 3;
+    token_t **tokens = (token_t **)malloc(sizeof(token_t *) * 11);
+    tokens[0] = generate_test_token(INTEGER_TYPE, "int");
+    tokens[1] = generate_test_token(IDENTIFIER, "x");
+    tokens[2] = generate_test_token(EQ_ASSIGN, "=");
+    tokens[3] = generate_test_token(INTEGER_CONST, "12");
+    tokens[4] = generate_test_token(SEMICOLON, ";");
+    tokens[5] = generate_test_token(IDENTIFIER, "x");
+    tokens[6] = generate_test_token(EQ_ASSIGN, "=");
+    tokens[7] = generate_test_token(IDENTIFIER, "x");
+    tokens[8] = generate_test_token(ADD_OPERATOR, "+");
+    tokens[9] = generate_test_token(INTEGER_CONST, "3");
+    tokens[10] = generate_test_token(SEMICOLON, ";");
+
+    parser_handle parser = parser_init(tokens, 11);
+    node_t *root = parse(parser);
+
+    node_t **children = (node_t **)malloc(2 * sizeof(node_t *));
+    children[0] = create_declaration_node(create_type_specifier_node(INTEGER_TYPE),
+                                          create_assign_op_node(EQ_ASSIGN,
+                                                                create_identifier_node("x", DECLARATOR, IDENTIFIER),
+                                                                create_literal_node(12)));
+    children[1] = create_assign_op_node(EQ_ASSIGN,
+                                        create_identifier_node("x", ID, IDENTIFIER),
+                                        create_binary_op_node(ADD_OPERATOR,
+                                                              create_identifier_node("x", ID, IDENTIFIER),
+                                                              create_literal_node(3)));
+    node_t *expected = create_compound_statements_node(children, 2);
+
+    node_equals(root, expected);
+
+    free_parser(parser);
+
 }
