@@ -26,14 +26,14 @@ struct token_t {
 };
 
 typedef enum {
-    CONSTANT,
-    ID, // FIXME: doesn't seem so nice...
-    DECL, // FIXME: abbreviation for DECLARATION, this may cause confusion
-    DECLARATOR,
-    TYPE_SPECIFIER,
-    BINARY_OP,
-    ASSIGN_OP,
-    COMPOUND,
+    CONSTANT_NODE,
+    IDENTIFIER_NODE,
+    DECLARATION_NODE,
+    DECLARATOR_NODE,
+    TYPE_SPECIFIER_NODE,
+    BINARY_OP_NODE,
+    ASSIGN_OP_NODE,
+    COMPOUND_STATEMENT_NODE,
 } node_type;
 
 union value_t {

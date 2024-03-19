@@ -81,7 +81,7 @@ TEST(InterpreterArithmetic, MoreThanThreeOperators) {
 
 TEST(InterpreterDeclarations, DeclareInteger) {
     node_t *root = create_declaration_node(create_type_specifier_node(INTEGER_TYPE),
-                                           create_identifier_node("x", DECLARATOR, IDENTIFIER));
+                                           create_identifier_node("x", DECLARATOR_NODE, IDENTIFIER));
     interpreter_handle interpreter = interpreter_init(root);
     literal_t *result = interpret(interpreter);
     literal_t *id = get_value_of(interpreter, "x");
@@ -92,7 +92,7 @@ TEST(InterpreterDeclarations, DeclareInteger) {
 TEST(InterpreterDeclarations, AssignInteger) {
     node_t *root = create_declaration_node(create_type_specifier_node(INTEGER_TYPE),
                                            create_assign_op_node(EQ_ASSIGN,
-                                                                 create_identifier_node("x", DECLARATOR, IDENTIFIER),
+                                                                 create_identifier_node("x", DECLARATOR_NODE, IDENTIFIER),
                                                                  create_literal_node(12)));
     interpreter_handle interpreter = interpreter_init(root);
     literal_t *result = interpret(interpreter);
@@ -104,7 +104,7 @@ TEST(InterpreterDeclarations, AssignInteger) {
 TEST(InterpreterDeclarations, AssignFloat) {
     node_t *root = create_declaration_node(create_type_specifier_node(FLOAT_TYPE),
                                            create_assign_op_node(EQ_ASSIGN,
-                                                                 create_identifier_node("dude", DECLARATOR, IDENTIFIER),
+                                                                 create_identifier_node("dude", DECLARATOR_NODE, IDENTIFIER),
                                                                  create_literal_node(0.57f)));
     interpreter_handle interpreter = interpreter_init(root);
     literal_t *result = interpret(interpreter);

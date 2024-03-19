@@ -35,28 +35,28 @@ node_t *turn_token_into_node(parser_handle parser) {
     node_t *node = malloc(sizeof(node_t));
     if (token->type == INTEGER_CONST || token->type == FLOAT_CONST){
         node->actual_node = malloc(sizeof(constant_node));
-        node->type = CONSTANT;
+        node->type = CONSTANT_NODE;
         ((constant_node *)node->actual_node)->subtype = token->type;
         if (token->type == INTEGER_CONST) ((constant_node *)node->actual_node)->value.int_value = atoi(token->value);
         else ((constant_node *)node->actual_node)->value.float_value = atof(token->value);
     } else if (token->type == ADD_OPERATOR || token->type == SUBTRACT_OPERATOR || token->type == MULTIPLY_OPERATOR || token->type == DIVIDE_OPERATOR) {
         node->actual_node = malloc(sizeof(binary_op_node));
-        node->type = BINARY_OP;
+        node->type = BINARY_OP_NODE;
         ((binary_op_node *)node->actual_node)->subtype = token->type;
         int paren_priority = parser->opened_paren_count;
         if (token->type == ADD_OPERATOR || token->type == SUBTRACT_OPERATOR) ((binary_op_node *)node->actual_node)->op_priority= 2 - 2 * paren_priority;
         else ((binary_op_node *)node->actual_node)->op_priority= 1 - 2 * paren_priority;
     } else if (token->type == INTEGER_TYPE || token->type == FLOAT_TYPE) {
         node->actual_node = malloc(sizeof(type_specifier_node));
-        node->type = TYPE_SPECIFIER;
+        node->type = TYPE_SPECIFIER_NODE;
         ((type_specifier_node *)node->actual_node)->subtype = token->type;
     } else if (token->type == IDENTIFIER) {
         node->actual_node = malloc(sizeof(identifier_node));
-        node->type = ID;
+        node->type = IDENTIFIER_NODE;
         ((identifier_node *)node->actual_node)->id_name = strdup(token->value);
     } else if (token->type == EQ_ASSIGN) {
         node->actual_node = malloc(sizeof(assign_op_node));
-        node->type = ASSIGN_OP;
+        node->type = ASSIGN_OP_NODE;
         ((assign_op_node *)node->actual_node)->subtype = token->type;
         ((assign_op_node *)node->actual_node)->op_priority= 3;
     }
@@ -67,43 +67,43 @@ node_t *turn_token_into_node(parser_handle parser) {
 node_t *generate_decl_token() {
     node_t *node = malloc(sizeof(node_t));
     node->actual_node = malloc(sizeof(declaration_node));
-    node->type = DECL;
+    node->type = DECLARATION_NODE;
     ((declaration_node *)node->actual_node)->subtype = DECLARATION;
     ((declaration_node *)node->actual_node)->op_priority= 4;
     return node;
 }
 
 int op_priority(node_t *node) {
-    if (node->type == DECL) return ((declaration_node *)node->actual_node)->op_priority;
-    if (node->type == BINARY_OP) return ((binary_op_node *)node->actual_node)->op_priority;
-    if (node->type == ASSIGN_OP) return ((assign_op_node *)node->actual_node)->op_priority;
+    if (node->type == DECLARATION_NODE) return ((declaration_node *)node->actual_node)->op_priority;
+    if (node->type == BINARY_OP_NODE) return ((binary_op_node *)node->actual_node)->op_priority;
+    if (node->type == ASSIGN_OP_NODE) return ((assign_op_node *)node->actual_node)->op_priority;
     else return 0;
 }
 
 node_t *get_left_child(node_t *node) {
-    if (node->type == DECL) return ((declaration_node *)node->actual_node)->left_child;
-    if (node->type == BINARY_OP) return ((binary_op_node *)node->actual_node)->left_child;
-    if (node->type == ASSIGN_OP) return ((assign_op_node *)node->actual_node)->left_child;
+    if (node->type == DECLARATION_NODE) return ((declaration_node *)node->actual_node)->left_child;
+    if (node->type == BINARY_OP_NODE) return ((binary_op_node *)node->actual_node)->left_child;
+    if (node->type == ASSIGN_OP_NODE) return ((assign_op_node *)node->actual_node)->left_child;
     else return NULL;
 }
 
 node_t *get_right_child(node_t *node) {
-    if (node->type == DECL) return ((declaration_node *)node->actual_node)->right_child;
-    if (node->type == BINARY_OP) return ((binary_op_node *)node->actual_node)->right_child;
-    if (node->type == ASSIGN_OP) return ((assign_op_node *)node->actual_node)->right_child;
+    if (node->type == DECLARATION_NODE) return ((declaration_node *)node->actual_node)->right_child;
+    if (node->type == BINARY_OP_NODE) return ((binary_op_node *)node->actual_node)->right_child;
+    if (node->type == ASSIGN_OP_NODE) return ((assign_op_node *)node->actual_node)->right_child;
     else return NULL;
 }
 
 void set_left_child(node_t *node, node_t *child) {
-    if (node->type == DECL) ((declaration_node *)node->actual_node)->left_child = child;
-    if (node->type == BINARY_OP) ((binary_op_node *)node->actual_node)->left_child = child;
-    if (node->type == ASSIGN_OP) ((assign_op_node *)node->actual_node)->left_child = child;
+    if (node->type == DECLARATION_NODE) ((declaration_node *)node->actual_node)->left_child = child;
+    if (node->type == BINARY_OP_NODE) ((binary_op_node *)node->actual_node)->left_child = child;
+    if (node->type == ASSIGN_OP_NODE) ((assign_op_node *)node->actual_node)->left_child = child;
 }
 
 void set_right_child(node_t *node, node_t *child) {
-    if (node->type == DECL) ((declaration_node *)node->actual_node)->right_child = child;
-    if (node->type == BINARY_OP) ((binary_op_node *)node->actual_node)->right_child = child;
-    if (node->type == ASSIGN_OP) ((assign_op_node *)node->actual_node)->right_child = child;
+    if (node->type == DECLARATION_NODE) ((declaration_node *)node->actual_node)->right_child = child;
+    if (node->type == BINARY_OP_NODE) ((binary_op_node *)node->actual_node)->right_child = child;
+    if (node->type == ASSIGN_OP_NODE) ((assign_op_node *)node->actual_node)->right_child = child;
 }
 
 node_t *assemble_tree(node_t **nodes, int start_index, int end_index) {
@@ -115,7 +115,7 @@ node_t *assemble_tree(node_t **nodes, int start_index, int end_index) {
     node_t *current_node;
     for (int i = start_index; i < end_index; i++) {
         current_node = nodes[i];
-        if ((current_node->type == DECL || current_node->type == BINARY_OP || current_node->type == ASSIGN_OP) && 
+        if ((current_node->type == DECLARATION_NODE || current_node->type == BINARY_OP_NODE || current_node->type == ASSIGN_OP_NODE) && 
              op_priority(current_node) >= max_priority) {
             max_priority = op_priority(current_node);
             least_prioritized_index = i;
@@ -123,7 +123,7 @@ node_t *assemble_tree(node_t **nodes, int start_index, int end_index) {
     }
 
     current_node = nodes[least_prioritized_index];
-    if (current_node->type == DECL) nodes[least_prioritized_index + 1]->type = DECLARATOR; // Assume: following token must be identifier
+    if (current_node->type == DECLARATION_NODE) nodes[least_prioritized_index + 1]->type = DECLARATOR_NODE; // Assume: following token must be identifier
     set_left_child(current_node, assemble_tree(nodes, start_index, least_prioritized_index));
     set_right_child(current_node, assemble_tree(nodes, least_prioritized_index + 1, end_index));
 
@@ -141,7 +141,7 @@ node_t *parse(parser_handle parser) {
         node_t *node = turn_token_into_node(parser);
         if (node == NULL) continue;
         parser->nodes[node_count++] = node;
-        if (node->type == TYPE_SPECIFIER) parser->nodes[node_count++] = generate_decl_token();
+        if (node->type == TYPE_SPECIFIER_NODE) parser->nodes[node_count++] = generate_decl_token();
     }
 
     node_t *root = assemble_tree(parser->nodes, 0, node_count);    
@@ -158,10 +158,10 @@ void free_parser(parser_handle parser) {
 }
 
 void free_node(node_t *node) {
-    if (node->type == BINARY_OP || node->type == ASSIGN_OP|| node->type == DECL) {
+    if (node->type == BINARY_OP_NODE || node->type == ASSIGN_OP_NODE|| node->type == DECLARATION_NODE) {
         free_node(get_left_child(node));
         free_node(get_right_child(node));
-    } else if (node->type == ID) {
+    } else if (node->type == IDENTIFIER_NODE) {
         free(((identifier_node *)node->actual_node)->id_name);
     }
     free(node);

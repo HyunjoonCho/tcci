@@ -185,7 +185,7 @@ TEST(ParserDeclarations, SimpleIntegerDeclaration) {
     node_t *root = parse(parser);
 
     node_t *expected = create_declaration_node(create_type_specifier_node(INTEGER_TYPE),
-                                               create_identifier_node("x", DECLARATOR, IDENTIFIER));
+                                               create_identifier_node("x", DECLARATOR_NODE, IDENTIFIER));
     node_equals(root, expected);
 
     free_parser(parser);
@@ -205,7 +205,7 @@ TEST(ParserDeclarations, SimpleIntegerAssignment) {
 
     node_t *expected = create_declaration_node(create_type_specifier_node(INTEGER_TYPE),
                                                create_assign_op_node(EQ_ASSIGN,
-                                                                     create_identifier_node("x", DECLARATOR, IDENTIFIER),
+                                                                     create_identifier_node("x", DECLARATOR_NODE, IDENTIFIER),
                                                                      create_literal_node(3)));
     node_equals(root, expected);
 
@@ -226,7 +226,7 @@ TEST(ParserDeclarations, SimpleFloatAssignment) {
 
     node_t *expected = create_declaration_node(create_type_specifier_node(FLOAT_TYPE),
                                                create_assign_op_node(EQ_ASSIGN,
-                                                                     create_identifier_node("hey", DECLARATOR, IDENTIFIER),
+                                                                     create_identifier_node("hey", DECLARATOR_NODE, IDENTIFIER),
                                                                      create_literal_node(12.76f)));
     node_equals(root, expected);
 
@@ -254,12 +254,12 @@ TEST(ParserCompoundStatements, TwoIntegerStatements) {
     node_t **children = (node_t **)malloc(2 * sizeof(node_t *));
     children[0] = create_declaration_node(create_type_specifier_node(INTEGER_TYPE),
                                           create_assign_op_node(EQ_ASSIGN,
-                                                                create_identifier_node("x", DECLARATOR, IDENTIFIER),
+                                                                create_identifier_node("x", DECLARATOR_NODE, IDENTIFIER),
                                                                 create_literal_node(12)));
     children[1] = create_assign_op_node(EQ_ASSIGN,
-                                        create_identifier_node("x", ID, IDENTIFIER),
+                                        create_identifier_node("x", IDENTIFIER_NODE, IDENTIFIER),
                                         create_binary_op_node(ADD_OPERATOR,
-                                                              create_identifier_node("x", ID, IDENTIFIER),
+                                                              create_identifier_node("x", IDENTIFIER_NODE, IDENTIFIER),
                                                               create_literal_node(3)));
     node_t *expected = create_compound_statements_node(children, 2);
 

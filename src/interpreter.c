@@ -32,7 +32,7 @@ literal_t *get_value_of(interpreter_handle interpreter, const char *id_name) {
 }
 
 identifier_t *evaluate_identifier(node_t *node) {
-    if (node->type != ID) return NULL;
+    if (node->type != IDENTIFIER_NODE) return NULL;
     identifier_t *identifier = malloc(sizeof(identifier_t));
     identifier->id_name = strdup(((identifier_node *)node->actual_node)->id_name);
     return identifier;
@@ -50,19 +50,19 @@ void initialize_identifier_literal(identifier_t *identifier, type_t specifier_ty
 
 void initialize_identifier_name(identifier_t *identifier, node_t *decl_node) {
     node_t *declarator;
-    if (((declaration_node *)decl_node->actual_node)->right_child->type == DECLARATOR) declarator = ((declaration_node *)decl_node->actual_node)->right_child;
+    if (((declaration_node *)decl_node->actual_node)->right_child->type == DECLARATOR_NODE) declarator = ((declaration_node *)decl_node->actual_node)->right_child;
     else if (((assign_op_node *)((declaration_node *)decl_node->actual_node)->right_child->actual_node)->subtype == EQ_ASSIGN) declarator = ((assign_op_node *)((declaration_node *)decl_node->actual_node)->right_child->actual_node)->left_child;
     identifier->id_name = strdup(((identifier_node *)declarator->actual_node)->id_name);
 }
 
 literal_t *evaluate_ast(interpreter_handle interpreter, node_t *node) {
-    if (node->type == DECL) {
+    if (node->type == DECLARATION_NODE) {
         identifier_t *identifier = malloc(sizeof(identifier_t));
         interpreter->context[interpreter->count++] = identifier;
         initialize_identifier_literal(identifier, ((type_specifier_node *)((declaration_node *)node->actual_node)->left_child->actual_node)->subtype);
         initialize_identifier_name(identifier, node);
         if (((assign_op_node *)((declaration_node *)node->actual_node)->right_child->actual_node)->subtype == EQ_ASSIGN) evaluate_ast(interpreter, ((declaration_node *)node->actual_node)->right_child);
-    } else if (node->type == BINARY_OP) {
+    } else if (node->type == BINARY_OP_NODE) {
         literal_t *l = evaluate_ast(interpreter, ((binary_op_node *)node->actual_node)->left_child);
         literal_t *r = evaluate_ast(interpreter, ((binary_op_node *)node->actual_node)->right_child);
         if (l->type == INTEGER_CONST && r->type == INTEGER_CONST && ((binary_op_node *)node->actual_node)->subtype != DIVIDE_OPERATOR) {
@@ -83,7 +83,7 @@ literal_t *evaluate_ast(interpreter_handle interpreter, node_t *node) {
         } 
         free(r);
         return l;
-    } else if (node->type == ASSIGN_OP) {
+    } else if (node->type == ASSIGN_OP_NODE) {
         identifier_t *identifier = lookup(interpreter, ((identifier_node *)((assign_op_node *)node->actual_node)->left_child->actual_node)->id_name);
         literal_t *value = evaluate_ast(interpreter, ((assign_op_node *)node->actual_node)->right_child);
         identifier->literal.value = value->value;
