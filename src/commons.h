@@ -77,7 +77,6 @@ struct assign_op_node {
 };
 
 struct identifier_node {
-    type_t subtype;
     char *id_name;
 };
 
@@ -93,7 +92,6 @@ struct declaration_node {
 };
 
 struct compound_statment_node {
-    type_t subtype; // may skip - and for the identifier, toos
     int children_count;
     node_t **children; // declaration || statment
 };

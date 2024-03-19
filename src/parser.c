@@ -53,7 +53,6 @@ node_t *turn_token_into_node(parser_handle parser) {
     } else if (token->type == IDENTIFIER) {
         node->actual_node = malloc(sizeof(identifier_node));
         node->type = ID;
-        ((identifier_node *)node->actual_node)->subtype = token->type;
         ((identifier_node *)node->actual_node)->id_name = strdup(token->value);
     } else if (token->type == EQ_ASSIGN) {
         node->actual_node = malloc(sizeof(assign_op_node));

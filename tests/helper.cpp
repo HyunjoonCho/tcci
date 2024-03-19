@@ -34,7 +34,6 @@ void node_equals(node_t *actual, node_t *expected) {
     } else if (actual->type == ID || actual->type == DECLARATOR) {
         identifier_node *actual_ = (identifier_node *)actual->actual_node;
         identifier_node *expected_ = (identifier_node *)expected->actual_node;
-        EXPECT_EQ(actual_->subtype, expected_->subtype);
         EXPECT_STREQ(actual_->id_name, expected_->id_name);
     } else if (actual->type == DECL) {
         declaration_node *actual_ = (declaration_node *)actual->actual_node;
@@ -83,7 +82,6 @@ node_t *create_identifier_node(const char *id_name, node_type n_type, type_t id_
     node_t *node = (node_t *)malloc(sizeof(node_t));
     node->type = n_type;
     node->actual_node = malloc(sizeof(identifier_node));
-    ((identifier_node *)node->actual_node)->subtype = id_type;
     ((identifier_node *)node->actual_node)->id_name = strdup(id_name);
     return node;
 }
@@ -130,7 +128,6 @@ node_t *create_compound_statements_node(node_t **children, int children_count) {
     node_t *node = (node_t *)malloc(sizeof(node_t));
     node->type = COMPOUND;
     node->actual_node = malloc(sizeof(compound_statment_node));
-    ((compound_statment_node *)node->actual_node)->subtype = COMPOUND_STATEMENT;
     ((compound_statment_node *)node->actual_node)->children = (node_t **)malloc(children_count * sizeof(node_t *));
     for (int i = 0; i < children_count; i++) {
        ((node_t **)((compound_statment_node *)node->actual_node)->children)[i] = children[i];
