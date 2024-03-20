@@ -57,6 +57,13 @@ void node_equals(node_t *actual, node_t *expected) {
         EXPECT_EQ(actual_->subtype, expected_->subtype);
         node_equals(actual_->left_child, expected_->left_child);
         node_equals(actual_->right_child, expected_->right_child);
+    } else if (actual->type == COMPOUND_STATEMENT_NODE) {
+        compound_statment_node *actual_ = (compound_statment_node *)actual->actual_node;
+        compound_statment_node *expected_ = (compound_statment_node *)expected->actual_node;
+        EXPECT_EQ(actual_->children_count, expected_->children_count);
+        for (int i = 0; i < actual_->children_count; i++) {
+            node_equals(actual_->children[i], expected_->children[i]);
+        }
     }
 }
 

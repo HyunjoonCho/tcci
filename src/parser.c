@@ -144,8 +144,13 @@ node_t *parse(parser_handle parser) {
         if (node->type == TYPE_SPECIFIER_NODE) parser->nodes[node_count++] = generate_decl_token();
     }
 
-    node_t *root = assemble_tree(parser->nodes, 0, node_count);    
-
+    node_t *node = assemble_tree(parser->nodes, 0, node_count);
+    node_t *root = (node_t *)malloc(sizeof(node_t));
+    root->type = COMPOUND_STATEMENT_NODE;
+    root->actual_node = malloc(sizeof(compound_statment_node));
+    ((compound_statment_node *)root->actual_node)->children = malloc(sizeof(node_t *));
+    ((node_t **)((compound_statment_node *)root->actual_node)->children)[0] = node;
+    
     return root;
 }
 
