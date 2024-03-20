@@ -136,20 +136,29 @@ node_t *parse(parser_handle parser) {
 
     parser->nodes = malloc((token_count + 3) * sizeof(node_t *)); // Leave room for DECL node to be added
 
-    int node_count = 0;
-    while (has_next(parser)) {
-        node_t *node = turn_token_into_node(parser);
-        if (node == NULL) continue;
-        parser->nodes[node_count++] = node;
-        if (node->type == TYPE_SPECIFIER_NODE) parser->nodes[node_count++] = generate_decl_token();
-    }
-
-    node_t *node = assemble_tree(parser->nodes, 0, node_count);
     node_t *root = (node_t *)malloc(sizeof(node_t));
     root->type = COMPOUND_STATEMENT_NODE;
     root->actual_node = malloc(sizeof(compound_statment_node));
     ((compound_statment_node *)root->actual_node)->children = malloc(sizeof(node_t *));
-    ((node_t **)((compound_statment_node *)root->actual_node)->children)[0] = node;
+    int children_count = 0;
+
+    int node_count = 0;
+    while (has_next(parser)) {
+        node_t *node = turn_token_into_node(parser);
+        if (node == NULL) {
+            if (parser->tokens[parser->current - 1]->type == SEMICOLON) {
+                node_t *node = assemble_tree(parser->nodes, 0, node_count);
+                ((node_t **)((compound_statment_node *)root->actual_node)->children)[children_count++] = node;
+                
+                node_count = 0;
+                parser->nodes = malloc((token_count + 3) * sizeof(node_t *));
+            }
+            continue;
+        }
+        parser->nodes[node_count++] = node;
+        if (node->type == TYPE_SPECIFIER_NODE) parser->nodes[node_count++] = generate_decl_token();
+    }
+    ((compound_statment_node *)root->actual_node)->children_count = children_count;
     
     return root;
 }

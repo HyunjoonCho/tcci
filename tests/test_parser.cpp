@@ -21,12 +21,13 @@ void teardown(token_t **tokens, int token_count, node_t *root) {
 
 TEST(ParserArithmetic, SimpleIntegerAddition) {
     // 2 + 3
-    token_t **tokens = (token_t **)malloc(sizeof(token_t *) * 3);
+    token_t **tokens = (token_t **)malloc(sizeof(token_t *) * 4);
     tokens[0] = generate_test_token(INTEGER_CONST, "2");
     tokens[1] = generate_test_token(ADD_OPERATOR, "+");
     tokens[2] = generate_test_token(INTEGER_CONST, "3");
+    tokens[3] = generate_test_token(SEMICOLON, ";");
 
-    parser_handle parser = parser_init(tokens, 3);
+    parser_handle parser = parser_init(tokens, 4);
     node_t *root = parse(parser);
 
     node_t **children = (node_t **)malloc(sizeof(node_t *));
@@ -41,12 +42,13 @@ TEST(ParserArithmetic, SimpleIntegerAddition) {
 
 TEST(ParserArithmetic, SimpleFloatAddition) {
     // 2.7 + 3.2
-    token_t **tokens = (token_t **)malloc(sizeof(token_t *) * 3);
+    token_t **tokens = (token_t **)malloc(sizeof(token_t *) * 4);
     tokens[0] = generate_test_token(FLOAT_CONST, "2.7");
     tokens[1] = generate_test_token(ADD_OPERATOR, "+");
     tokens[2] = generate_test_token(FLOAT_CONST, "3.2");
+    tokens[3] = generate_test_token(SEMICOLON, ";");
 
-    parser_handle parser = parser_init(tokens, 3);
+    parser_handle parser = parser_init(tokens, 4);
     node_t *root = parse(parser);
 
     node_t **children = (node_t **)malloc(sizeof(node_t *));
@@ -61,14 +63,15 @@ TEST(ParserArithmetic, SimpleFloatAddition) {
 
 TEST(ParserArithmetic, IntegerOpsWithPriority) {
     // 2 - 3 * 4
-    token_t **tokens = (token_t **)malloc(sizeof(token_t *) * 5);
+    token_t **tokens = (token_t **)malloc(sizeof(token_t *) * 6);
     tokens[0] = generate_test_token(INTEGER_CONST, "2");
     tokens[1] = generate_test_token(SUBTRACT_OPERATOR, "-");
     tokens[2] = generate_test_token(INTEGER_CONST, "3");
     tokens[3] = generate_test_token(MULTIPLY_OPERATOR, "*");
     tokens[4] = generate_test_token(INTEGER_CONST, "4");
+    tokens[5] = generate_test_token(SEMICOLON, ";");
 
-    parser_handle parser = parser_init(tokens, 5);
+    parser_handle parser = parser_init(tokens, 6);
     node_t *root = parse(parser);
 
     node_t **children = (node_t **)malloc(sizeof(node_t *));
@@ -85,14 +88,15 @@ TEST(ParserArithmetic, IntegerOpsWithPriority) {
 
 TEST(ParserArithmetic, MixedOpsWithPriority) {
     // 2 * 7.9 + 9
-    token_t **tokens = (token_t **)malloc(sizeof(token_t *) * 5);
+    token_t **tokens = (token_t **)malloc(sizeof(token_t *) * 6);
     tokens[0] = generate_test_token(INTEGER_CONST, "2");
     tokens[1] = generate_test_token(MULTIPLY_OPERATOR, "*");
     tokens[2] = generate_test_token(FLOAT_CONST, "7.9");
     tokens[3] = generate_test_token(ADD_OPERATOR, "+");
     tokens[4] = generate_test_token(INTEGER_CONST, "9");
+    tokens[5] = generate_test_token(SEMICOLON, ";");
 
-    parser_handle parser = parser_init(tokens, 5);
+    parser_handle parser = parser_init(tokens, 6);
     node_t *root = parse(parser);
 
     node_t **children = (node_t **)malloc(sizeof(node_t *));
@@ -109,12 +113,13 @@ TEST(ParserArithmetic, MixedOpsWithPriority) {
 
 TEST(ParserArithmetic, IntegerDivision) {
     // 8 / 2
-    token_t **tokens = (token_t **)malloc(sizeof(token_t *) * 3);
+    token_t **tokens = (token_t **)malloc(sizeof(token_t *) * 4);
     tokens[0] = generate_test_token(INTEGER_CONST, "8");
     tokens[1] = generate_test_token(DIVIDE_OPERATOR, "/");
     tokens[2] = generate_test_token(INTEGER_CONST, "2");
+    tokens[3] = generate_test_token(SEMICOLON, ";");
 
-    parser_handle parser = parser_init(tokens, 3);
+    parser_handle parser = parser_init(tokens, 4);
     node_t *root = parse(parser);
 
     node_t **children = (node_t **)malloc(sizeof(node_t *));
@@ -129,7 +134,7 @@ TEST(ParserArithmetic, IntegerDivision) {
 
 TEST(ParserArithmetic, MixedOpsWithParentheses) {
     // (2 + 3) * 4
-    token_t **tokens = (token_t **)malloc(sizeof(token_t *) * 7);
+    token_t **tokens = (token_t **)malloc(sizeof(token_t *) * 8);
     tokens[0] = generate_test_token(OPEN_PAREN, "(");
     tokens[1] = generate_test_token(INTEGER_CONST, "2");
     tokens[2] = generate_test_token(ADD_OPERATOR, "+");
@@ -137,8 +142,9 @@ TEST(ParserArithmetic, MixedOpsWithParentheses) {
     tokens[4] = generate_test_token(CLOSE_PAREN, ")");
     tokens[5] = generate_test_token(MULTIPLY_OPERATOR, "*");
     tokens[6] = generate_test_token(INTEGER_CONST, "4");
+    tokens[7] = generate_test_token(SEMICOLON, ";");
 
-    parser_handle parser = parser_init(tokens, 7);
+    parser_handle parser = parser_init(tokens, 8);
     node_t *root = parse(parser);
 
     node_t **children = (node_t **)malloc(sizeof(node_t *));
@@ -155,7 +161,7 @@ TEST(ParserArithmetic, MixedOpsWithParentheses) {
 
 TEST(ParserArithmetic, MoreThanThreeOperators) {
     // 1 + 2 * 3 - 4 / 2
-    token_t **tokens = (token_t **)malloc(sizeof(token_t *) * 9);
+    token_t **tokens = (token_t **)malloc(sizeof(token_t *) * 10);
     tokens[0] = generate_test_token(INTEGER_CONST, "1");
     tokens[1] = generate_test_token(ADD_OPERATOR, "+");
     tokens[2] = generate_test_token(INTEGER_CONST, "2");
@@ -165,9 +171,9 @@ TEST(ParserArithmetic, MoreThanThreeOperators) {
     tokens[6] = generate_test_token(INTEGER_CONST, "4");
     tokens[7] = generate_test_token(DIVIDE_OPERATOR, "/");
     tokens[8] = generate_test_token(INTEGER_CONST, "2");
+    tokens[9] = generate_test_token(SEMICOLON, ";");
 
-
-    parser_handle parser = parser_init(tokens, 9);
+    parser_handle parser = parser_init(tokens, 10);
     node_t *root = parse(parser);
 
     node_t **children = (node_t **)malloc(sizeof(node_t *));
@@ -190,7 +196,7 @@ TEST(ParserArithmetic, MoreThanThreeOperators) {
 
 TEST(ParserDeclarations, SimpleIntegerDeclaration) {
     // int x = 3;
-    token_t **tokens = (token_t **)malloc(sizeof(token_t *) * 5);
+    token_t **tokens = (token_t **)malloc(sizeof(token_t *) * 3);
     tokens[0] = generate_test_token(INTEGER_TYPE, "int");
     tokens[1] = generate_test_token(IDENTIFIER, "x");
     tokens[2] = generate_test_token(SEMICOLON, ";");

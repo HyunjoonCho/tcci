@@ -135,6 +135,7 @@ node_t *create_compound_statements_node(node_t **children, int children_count) {
     node_t *node = (node_t *)malloc(sizeof(node_t));
     node->type = COMPOUND_STATEMENT_NODE;
     node->actual_node = malloc(sizeof(compound_statment_node));
+    ((compound_statment_node *)node->actual_node)->children_count = children_count;
     ((compound_statment_node *)node->actual_node)->children = (node_t **)malloc(children_count * sizeof(node_t *));
     for (int i = 0; i < children_count; i++) {
        ((node_t **)((compound_statment_node *)node->actual_node)->children)[i] = children[i];
