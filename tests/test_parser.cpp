@@ -29,9 +29,11 @@ TEST(ParserArithmetic, SimpleIntegerAddition) {
     parser_handle parser = parser_init(tokens, 3);
     node_t *root = parse(parser);
 
-    node_t *expected = create_binary_op_node(ADD_OPERATOR,
+    node_t **children = (node_t **)malloc(sizeof(node_t *));
+    children[0] = create_binary_op_node(ADD_OPERATOR,
                                              create_literal_node(2),
                                              create_literal_node(3));
+    node_t *expected = create_compound_statements_node(children, 1);
     node_equals(root, expected);
 
     free_parser(parser);
@@ -47,9 +49,11 @@ TEST(ParserArithmetic, SimpleFloatAddition) {
     parser_handle parser = parser_init(tokens, 3);
     node_t *root = parse(parser);
 
-    node_t *expected = create_binary_op_node(ADD_OPERATOR,
+    node_t **children = (node_t **)malloc(sizeof(node_t *));
+    children[0] = create_binary_op_node(ADD_OPERATOR,
                                              create_literal_node(2.7f),
                                              create_literal_node(3.2f));
+    node_t *expected = create_compound_statements_node(children, 1);
     node_equals(root, expected);
 
     free_parser(parser);
@@ -67,11 +71,13 @@ TEST(ParserArithmetic, IntegerOpsWithPriority) {
     parser_handle parser = parser_init(tokens, 5);
     node_t *root = parse(parser);
 
-    node_t *expected = create_binary_op_node(SUBTRACT_OPERATOR,
+    node_t **children = (node_t **)malloc(sizeof(node_t *));
+    children[0] = create_binary_op_node(SUBTRACT_OPERATOR,
                                              create_literal_node(2),
                                              create_binary_op_node(MULTIPLY_OPERATOR,
                                                                    create_literal_node(3),
                                                                    create_literal_node(4)));
+    node_t *expected = create_compound_statements_node(children, 1);
     node_equals(root, expected);
 
     free_parser(parser);
@@ -89,11 +95,13 @@ TEST(ParserArithmetic, MixedOpsWithPriority) {
     parser_handle parser = parser_init(tokens, 5);
     node_t *root = parse(parser);
 
-    node_t *expected = create_binary_op_node(ADD_OPERATOR,
+    node_t **children = (node_t **)malloc(sizeof(node_t *));
+    children[0] = create_binary_op_node(ADD_OPERATOR,
                                              create_binary_op_node(MULTIPLY_OPERATOR,
                                                                    create_literal_node(2),
                                                                    create_literal_node(7.9f)),
                                              create_literal_node(9));
+    node_t *expected = create_compound_statements_node(children, 1);
     node_equals(root, expected);
 
     free_parser(parser);
@@ -109,9 +117,11 @@ TEST(ParserArithmetic, IntegerDivision) {
     parser_handle parser = parser_init(tokens, 3);
     node_t *root = parse(parser);
 
-    node_t *expected = create_binary_op_node(DIVIDE_OPERATOR,
+    node_t **children = (node_t **)malloc(sizeof(node_t *));
+    children[0] = create_binary_op_node(DIVIDE_OPERATOR,
                                              create_literal_node(8),
                                              create_literal_node(2));
+    node_t *expected = create_compound_statements_node(children, 1);
     node_equals(root, expected);
 
     free_parser(parser);
@@ -131,11 +141,13 @@ TEST(ParserArithmetic, MixedOpsWithParentheses) {
     parser_handle parser = parser_init(tokens, 7);
     node_t *root = parse(parser);
 
-    node_t *expected = create_binary_op_node(MULTIPLY_OPERATOR,
+    node_t **children = (node_t **)malloc(sizeof(node_t *));
+    children[0] = create_binary_op_node(MULTIPLY_OPERATOR,
                                              create_binary_op_node(ADD_OPERATOR,
                                                                    create_literal_node(2),
                                                                    create_literal_node(3)),
                                              create_literal_node(4));
+    node_t *expected = create_compound_statements_node(children, 1);
     node_equals(root, expected);
 
     free_parser(parser);
@@ -158,7 +170,8 @@ TEST(ParserArithmetic, MoreThanThreeOperators) {
     parser_handle parser = parser_init(tokens, 9);
     node_t *root = parse(parser);
 
-    node_t *expected = create_binary_op_node(SUBTRACT_OPERATOR,
+    node_t **children = (node_t **)malloc(sizeof(node_t *));
+    children[0] = create_binary_op_node(SUBTRACT_OPERATOR,
                                              create_binary_op_node(ADD_OPERATOR,
                                                                    create_literal_node(1),
                                                                    create_binary_op_node(MULTIPLY_OPERATOR,
@@ -167,6 +180,7 @@ TEST(ParserArithmetic, MoreThanThreeOperators) {
                                              create_binary_op_node(DIVIDE_OPERATOR,
                                                                    create_literal_node(4),
                                                                    create_literal_node(2)));
+    node_t *expected = create_compound_statements_node(children, 1);
     node_equals(root, expected);
     // TODO: dependency to op prioritizing algorithm > better correctness check needed
     // for this case, ADD may come first
@@ -184,8 +198,10 @@ TEST(ParserDeclarations, SimpleIntegerDeclaration) {
     parser_handle parser = parser_init(tokens, 3);
     node_t *root = parse(parser);
 
-    node_t *expected = create_declaration_node(create_type_specifier_node(INTEGER_TYPE),
+    node_t **children = (node_t **)malloc(sizeof(node_t *));
+    children[0] = create_declaration_node(create_type_specifier_node(INTEGER_TYPE),
                                                create_identifier_node("x", DECLARATOR_NODE, IDENTIFIER));
+    node_t *expected = create_compound_statements_node(children, 1);
     node_equals(root, expected);
 
     free_parser(parser);
@@ -203,10 +219,12 @@ TEST(ParserDeclarations, SimpleIntegerAssignment) {
     parser_handle parser = parser_init(tokens, 5);
     node_t *root = parse(parser);
 
-    node_t *expected = create_declaration_node(create_type_specifier_node(INTEGER_TYPE),
+    node_t **children = (node_t **)malloc(sizeof(node_t *));
+    children[0] = create_declaration_node(create_type_specifier_node(INTEGER_TYPE),
                                                create_assign_op_node(EQ_ASSIGN,
                                                                      create_identifier_node("x", DECLARATOR_NODE, IDENTIFIER),
                                                                      create_literal_node(3)));
+    node_t *expected = create_compound_statements_node(children, 1);
     node_equals(root, expected);
 
     free_parser(parser);
@@ -224,10 +242,12 @@ TEST(ParserDeclarations, SimpleFloatAssignment) {
     parser_handle parser = parser_init(tokens, 5);
     node_t *root = parse(parser);
 
-    node_t *expected = create_declaration_node(create_type_specifier_node(FLOAT_TYPE),
+    node_t **children = (node_t **)malloc(sizeof(node_t *));
+    children[0] = create_declaration_node(create_type_specifier_node(FLOAT_TYPE),
                                                create_assign_op_node(EQ_ASSIGN,
                                                                      create_identifier_node("hey", DECLARATOR_NODE, IDENTIFIER),
                                                                      create_literal_node(12.76f)));
+    node_t *expected = create_compound_statements_node(children, 1);
     node_equals(root, expected);
 
     free_parser(parser);
@@ -266,5 +286,4 @@ TEST(ParserCompoundStatements, TwoIntegerStatements) {
     node_equals(root, expected);
 
     free_parser(parser);
-
 }
